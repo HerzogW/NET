@@ -1,0 +1,790 @@
+<instrumentationManifest xmlns="http://schemas.microsoft.com/win/2004/08/events">
+ <instrumentation xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:win="http://manifests.microsoft.com/win/2004/08/windows/events">
+  <events xmlns="http://schemas.microsoft.com/win/2004/08/events">
+<provider name="ResourceProviderEventSource" guid="{3d0964db-0278-5c54-35fe-1395317d48e9}" resourceFileName="X:\bt\662597\repo\out\retail-amd64\Microsoft.Azure.ResourceProvider\Microsoft.Azure.ResourceProvider.ResourceProviderEventSource.etwManifest.dll" messageFileName="X:\bt\662597\repo\out\retail-amd64\Microsoft.Azure.ResourceProvider\Microsoft.Azure.ResourceProvider.ResourceProviderEventSource.etwManifest.dll" symbol="ResourceProviderEventSource">
+ <channels>
+  <channel chid="Operational" name="ResourceProviderEventSource/Operational" value="17" type="Operational" enabled="true"/>
+ </channels>
+ <tasks>
+  <task name="DispatcherQueueDepth" message="$(string.task_DispatcherQueueDepth)" value="63469"/>
+  <task name="DispatcherOperation" message="$(string.task_DispatcherOperation)" value="63470"/>
+  <task name="DispatcherCritical" message="$(string.task_DispatcherCritical)" value="63471"/>
+  <task name="DispatcherError" message="$(string.task_DispatcherError)" value="63472"/>
+  <task name="DispatcherWarning" message="$(string.task_DispatcherWarning)" value="63473"/>
+  <task name="DispatcherDebug" message="$(string.task_DispatcherDebug)" value="63474"/>
+  <task name="JobThrottle" message="$(string.task_JobThrottle)" value="63476"/>
+  <task name="JobDispatchingError" message="$(string.task_JobDispatchingError)" value="63477"/>
+  <task name="JobDefinition" message="$(string.task_JobDefinition)" value="63478"/>
+  <task name="JobHistory" message="$(string.task_JobHistory)" value="63479"/>
+  <task name="JobOperation" message="$(string.task_JobOperation)" value="63480"/>
+  <task name="JobCritical" message="$(string.task_JobCritical)" value="63481"/>
+  <task name="JobError" message="$(string.task_JobError)" value="63482"/>
+  <task name="JobWarning" message="$(string.task_JobWarning)" value="63483"/>
+  <task name="JobDebug" message="$(string.task_JobDebug)" value="63484"/>
+  <task name="StorageRequestEndWithClientFailure" message="$(string.task_StorageRequestEndWithClientFailure)" value="63493"/>
+  <task name="StorageRequestEndWithServerFailure" message="$(string.task_StorageRequestEndWithServerFailure)" value="63494"/>
+  <task name="StorageRequestEndWithSuccess" message="$(string.task_StorageRequestEndWithSuccess)" value="63495"/>
+  <task name="StorageRequestStart" message="$(string.task_StorageRequestStart)" value="63496"/>
+  <task name="HttpOutgoingRequestEndWithClientFailure" message="$(string.task_HttpOutgoingRequestEndWithClientFailure)" value="63497"/>
+  <task name="HttpOutgoingRequestEndWithServerFailure" message="$(string.task_HttpOutgoingRequestEndWithServerFailure)" value="63498"/>
+  <task name="HttpOutgoingRequestEndWithSuccess" message="$(string.task_HttpOutgoingRequestEndWithSuccess)" value="63499"/>
+  <task name="HttpOutgoingRequestStart" message="$(string.task_HttpOutgoingRequestStart)" value="63500"/>
+  <task name="HttpIncomingRequestEndWithClientFailure" message="$(string.task_HttpIncomingRequestEndWithClientFailure)" value="63501"/>
+  <task name="HttpIncomingRequestEndWithServerFailure" message="$(string.task_HttpIncomingRequestEndWithServerFailure)" value="63502"/>
+  <task name="HttpIncomingRequestEndWithSuccess" message="$(string.task_HttpIncomingRequestEndWithSuccess)" value="63503"/>
+  <task name="HttpIncomingRequestStart" message="$(string.task_HttpIncomingRequestStart)" value="63504"/>
+  <task name="Critical" message="$(string.task_Critical)" value="63511"/>
+  <task name="Error" message="$(string.task_Error)" value="63512"/>
+  <task name="Warning" message="$(string.task_Warning)" value="63513"/>
+  <task name="Debug" message="$(string.task_Debug)" value="63514"/>
+  <task name="ServiceConfiguration" message="$(string.task_ServiceConfiguration)" value="63520"/>
+  <task name="ServiceStopped" message="$(string.task_ServiceStopped)" value="63521"/>
+  <task name="ServiceStopping" message="$(string.task_ServiceStopping)" value="63522"/>
+  <task name="ServiceStarted" message="$(string.task_ServiceStarted)" value="63523"/>
+  <task name="ServiceStarting" message="$(string.task_ServiceStarting)" value="63524"/>
+  <task name="ActivityStart" message="$(string.task_ActivityStart)" value="63533"/>
+ </tasks>
+ <opcodes>
+ </opcodes>
+ <keywords>
+  <keyword name="Session3" message="$(string.keyword_Session3)" mask="0x100000000000"/>
+  <keyword name="Session2" message="$(string.keyword_Session2)" mask="0x200000000000"/>
+  <keyword name="Session1" message="$(string.keyword_Session1)" mask="0x400000000000"/>
+  <keyword name="Session0" message="$(string.keyword_Session0)" mask="0x800000000000"/>
+ </keywords>
+ <events>
+  <event value="2001" version="1" level="win:Informational" symbol="ActivityStart" message="$(string.event_ActivityStart)" task="ActivityStart" channel="Operational"/>
+  <event value="2010" version="1" level="win:Informational" symbol="ServiceStarting" message="$(string.event_ServiceStarting)" task="ServiceStarting" channel="Operational" template="ServiceStartingArgs"/>
+  <event value="2011" version="1" level="win:Informational" symbol="ServiceStarted" message="$(string.event_ServiceStarted)" task="ServiceStarted" channel="Operational" template="ServiceStartedArgs"/>
+  <event value="2012" version="1" level="win:Informational" symbol="ServiceStopping" message="$(string.event_ServiceStopping)" task="ServiceStopping" channel="Operational" template="ServiceStoppingArgs"/>
+  <event value="2013" version="1" level="win:Informational" symbol="ServiceStopped" message="$(string.event_ServiceStopped)" task="ServiceStopped" channel="Operational" template="ServiceStoppedArgs"/>
+  <event value="2014" version="1" level="win:Informational" symbol="ServiceConfiguration" message="$(string.event_ServiceConfiguration)" task="ServiceConfiguration" channel="Operational" template="ServiceConfigurationArgs"/>
+  <event value="2023" version="1" level="win:Critical" symbol="Critical" message="$(string.event_Critical)" task="Critical" channel="Operational" template="CriticalArgs"/>
+  <event value="2030" version="1" level="win:Informational" symbol="HttpIncomingRequestStart" message="$(string.event_HttpIncomingRequestStart)" task="HttpIncomingRequestStart" channel="Operational" template="HttpIncomingRequestStartArgs"/>
+  <event value="2031" version="1" level="win:Informational" symbol="HttpIncomingRequestEndWithSuccess" message="$(string.event_HttpIncomingRequestEndWithSuccess)" task="HttpIncomingRequestEndWithSuccess" channel="Operational" template="HttpIncomingRequestEndWithSuccessArgs"/>
+  <event value="2032" version="1" level="win:Error" symbol="HttpIncomingRequestEndWithServerFailure" message="$(string.event_HttpIncomingRequestEndWithServerFailure)" task="HttpIncomingRequestEndWithServerFailure" channel="Operational" template="HttpIncomingRequestEndWithServerFailureArgs"/>
+  <event value="2033" version="1" level="win:Error" symbol="HttpIncomingRequestEndWithClientFailure" message="$(string.event_HttpIncomingRequestEndWithClientFailure)" task="HttpIncomingRequestEndWithClientFailure" channel="Operational" template="HttpIncomingRequestEndWithClientFailureArgs"/>
+  <event value="2034" version="1" level="win:Informational" symbol="HttpOutgoingRequestStart" message="$(string.event_HttpOutgoingRequestStart)" task="HttpOutgoingRequestStart" channel="Operational" template="HttpOutgoingRequestStartArgs"/>
+  <event value="2035" version="1" level="win:Informational" symbol="HttpOutgoingRequestEndWithSuccess" message="$(string.event_HttpOutgoingRequestEndWithSuccess)" task="HttpOutgoingRequestEndWithSuccess" channel="Operational" template="HttpOutgoingRequestEndWithSuccessArgs"/>
+  <event value="2036" version="1" level="win:Error" symbol="HttpOutgoingRequestEndWithServerFailure" message="$(string.event_HttpOutgoingRequestEndWithServerFailure)" task="HttpOutgoingRequestEndWithServerFailure" channel="Operational" template="HttpOutgoingRequestEndWithServerFailureArgs"/>
+  <event value="2037" version="1" level="win:Error" symbol="HttpOutgoingRequestEndWithClientFailure" message="$(string.event_HttpOutgoingRequestEndWithClientFailure)" task="HttpOutgoingRequestEndWithClientFailure" channel="Operational" template="HttpOutgoingRequestEndWithClientFailureArgs"/>
+  <event value="2038" version="1" level="win:Informational" symbol="StorageRequestStart" message="$(string.event_StorageRequestStart)" task="StorageRequestStart" channel="Operational" template="StorageRequestStartArgs"/>
+  <event value="2020" version="1" level="win:Verbose" symbol="Debug" message="$(string.event_Debug)" task="Debug" channel="Operational" template="DebugArgs"/>
+  <event value="2063" version="1" level="win:Critical" symbol="DispatcherCritical" message="$(string.event_DispatcherCritical)" task="DispatcherCritical" channel="Operational" template="DispatcherCriticalArgs"/>
+  <event value="2060" version="1" level="win:Verbose" symbol="DispatcherDebug" message="$(string.event_DispatcherDebug)" task="DispatcherDebug" channel="Operational" template="DispatcherDebugArgs"/>
+  <event value="2062" version="1" level="win:Error" symbol="DispatcherError" message="$(string.event_DispatcherError)" task="DispatcherError" channel="Operational" template="DispatcherErrorArgs"/>
+  <event value="2064" version="1" level="win:Informational" symbol="DispatcherOperation" message="$(string.event_DispatcherOperation)" task="DispatcherOperation" channel="Operational" template="DispatcherOperationArgs"/>
+  <event value="2065" version="1" level="win:Informational" symbol="DispatcherQueueDepth" message="$(string.event_DispatcherQueueDepth)" task="DispatcherQueueDepth" channel="Operational" template="DispatcherQueueDepthArgs"/>
+  <event value="2061" version="1" level="win:Warning" symbol="DispatcherWarning" message="$(string.event_DispatcherWarning)" task="DispatcherWarning" channel="Operational" template="DispatcherWarningArgs"/>
+  <event value="2022" version="1" level="win:Error" symbol="Error" message="$(string.event_Error)" task="Error" channel="Operational" template="ErrorArgs"/>
+  <event value="2053" version="1" level="win:Critical" symbol="JobCritical" message="$(string.event_JobCritical)" task="JobCritical" channel="Operational" template="JobCriticalArgs"/>
+  <event value="2050" version="1" level="win:Informational" symbol="JobDebug" message="$(string.event_JobDebug)" task="JobDebug" channel="Operational" template="JobDebugArgs"/>
+  <event value="2056" version="1" level="win:Informational" symbol="JobDefinition" message="$(string.event_JobDefinition)" task="JobDefinition" channel="Operational" template="JobDefinitionArgs"/>
+  <event value="2057" version="1" level="win:Error" symbol="JobDispatchingError" message="$(string.event_JobDispatchingError)" task="JobDispatchingError" channel="Operational" template="JobDispatchingErrorArgs"/>
+  <event value="2058" version="1" level="win:Warning" symbol="JobThrottle" message="$(string.event_JobThrottle)" task="JobThrottle" channel="Operational" template="JobThrottleArgs"/>
+  <event value="2052" version="1" level="win:Error" symbol="JobError" message="$(string.event_JobError)" task="JobError" channel="Operational" template="JobErrorArgs"/>
+  <event value="2055" version="1" level="win:Informational" symbol="JobHistory" message="$(string.event_JobHistory)" task="JobHistory" channel="Operational" template="JobHistoryArgs"/>
+  <event value="2054" version="1" level="win:Informational" symbol="JobOperation" message="$(string.event_JobOperation)" task="JobOperation" channel="Operational" template="JobOperationArgs"/>
+  <event value="2051" version="1" level="win:Warning" symbol="JobWarning" message="$(string.event_JobWarning)" task="JobWarning" channel="Operational" template="JobWarningArgs"/>
+  <event value="2041" version="1" level="win:Error" symbol="StorageRequestEndWithClientFailure" message="$(string.event_StorageRequestEndWithClientFailure)" task="StorageRequestEndWithClientFailure" channel="Operational" template="StorageRequestEndWithClientFailureArgs"/>
+  <event value="2040" version="1" level="win:Error" symbol="StorageRequestEndWithServerFailure" message="$(string.event_StorageRequestEndWithServerFailure)" task="StorageRequestEndWithServerFailure" channel="Operational" template="StorageRequestEndWithServerFailureArgs"/>
+  <event value="2039" version="1" level="win:Informational" symbol="StorageRequestEndWithSuccess" message="$(string.event_StorageRequestEndWithSuccess)" task="StorageRequestEndWithSuccess" channel="Operational" template="StorageRequestEndWithSuccessArgs"/>
+  <event value="2021" version="1" level="win:Warning" symbol="Warning" message="$(string.event_Warning)" task="Warning" channel="Operational" template="WarningArgs"/>
+ </events>
+ <templates>
+  <template tid="ServiceStartingArgs">
+   <data name="serviceName" inType="win:UnicodeString"/>
+   <data name="name" inType="win:UnicodeString"/>
+   <data name="value" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="ServiceStartedArgs">
+   <data name="serviceName" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="name" inType="win:UnicodeString"/>
+   <data name="value" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="ServiceStoppingArgs">
+   <data name="serviceName" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="name" inType="win:UnicodeString"/>
+   <data name="value" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="ServiceStoppedArgs">
+   <data name="serviceName" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="name" inType="win:UnicodeString"/>
+   <data name="value" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="ServiceConfigurationArgs">
+   <data name="serviceName" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="name" inType="win:UnicodeString"/>
+   <data name="value" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="CriticalArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpIncomingRequestStartArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="authorizationSource" inType="win:UnicodeString"/>
+   <data name="authorizationAction" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="userAgent" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientIpAddress" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="failureCause" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpIncomingRequestEndWithSuccessArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="authorizationSource" inType="win:UnicodeString"/>
+   <data name="authorizationAction" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="userAgent" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientIpAddress" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="failureCause" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpIncomingRequestEndWithServerFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="authorizationSource" inType="win:UnicodeString"/>
+   <data name="authorizationAction" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="userAgent" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientIpAddress" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="failureCause" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpIncomingRequestEndWithClientFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="authorizationSource" inType="win:UnicodeString"/>
+   <data name="authorizationAction" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="userAgent" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientIpAddress" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="failureCause" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpOutgoingRequestStartArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpOutgoingRequestEndWithSuccessArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpOutgoingRequestEndWithServerFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="HttpOutgoingRequestEndWithClientFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="httpMethod" inType="win:UnicodeString"/>
+   <data name="hostName" inType="win:UnicodeString"/>
+   <data name="targetUri" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="clientSessionId" inType="win:UnicodeString"/>
+   <data name="clientApplicationId" inType="win:UnicodeString"/>
+   <data name="apiVersion" inType="win:UnicodeString"/>
+   <data name="contentLength" inType="win:Int64"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+   <data name="referer" inType="win:UnicodeString"/>
+  </template>
+  <template tid="StorageRequestStartArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="accountName" inType="win:UnicodeString"/>
+   <data name="resourceType" inType="win:UnicodeString"/>
+   <data name="resourceName" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DebugArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherCriticalArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="queueMessage" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="dequeueCount" inType="win:Int32"/>
+   <data name="insertionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherDebugArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="queueMessage" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="dequeueCount" inType="win:Int32"/>
+   <data name="insertionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherErrorArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="queueMessage" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="dequeueCount" inType="win:Int32"/>
+   <data name="insertionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherOperationArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="queueMessage" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="dequeueCount" inType="win:Int32"/>
+   <data name="insertionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherQueueDepthArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="storageAccount" inType="win:UnicodeString"/>
+   <data name="queue" inType="win:UnicodeString"/>
+   <data name="depth" inType="win:Double"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="DispatcherWarningArgs">
+   <data name="dispatcherName" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="queueMessage" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="dequeueCount" inType="win:Int32"/>
+   <data name="insertionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="ErrorArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobCriticalArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobDebugArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobDefinitionArgs">
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="version" inType="win:UnicodeString"/>
+   <data name="callback" inType="win:UnicodeString"/>
+   <data name="location" inType="win:UnicodeString"/>
+   <data name="locationsAffinity" inType="win:UnicodeString"/>
+   <data name="flags" inType="win:UnicodeString"/>
+   <data name="state" inType="win:UnicodeString"/>
+   <data name="executionState" inType="win:UnicodeString"/>
+   <data name="startTime" inType="win:UnicodeString"/>
+   <data name="endTime" inType="win:UnicodeString"/>
+   <data name="repeatCount" inType="win:Int32"/>
+   <data name="repeatInterval" inType="win:Int64"/>
+   <data name="repeatUnit" inType="win:UnicodeString"/>
+   <data name="repeatSchedule" inType="win:UnicodeString"/>
+   <data name="currentRepeatCount" inType="win:Int32"/>
+   <data name="retryCount" inType="win:Int32"/>
+   <data name="retryInterval" inType="win:Int64"/>
+   <data name="retryUnit" inType="win:UnicodeString"/>
+   <data name="currentRetryCount" inType="win:Int32"/>
+   <data name="currentExecutionCount" inType="win:Int32"/>
+   <data name="timeout" inType="win:UnicodeString"/>
+   <data name="retention" inType="win:UnicodeString"/>
+   <data name="nextExecutionTime" inType="win:UnicodeString"/>
+   <data name="lastExecutionTime" inType="win:UnicodeString"/>
+   <data name="lastExecutionStatus" inType="win:UnicodeString"/>
+   <data name="createdTime" inType="win:UnicodeString"/>
+   <data name="changedTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="totalSucceededCount" inType="win:Int32"/>
+   <data name="totalCompletedCount" inType="win:Int32"/>
+   <data name="totalFailedCount" inType="win:Int32"/>
+   <data name="totalFaultedCount" inType="win:Int32"/>
+   <data name="totalPostponedCount" inType="win:Int32"/>
+  </template>
+  <template tid="JobDispatchingErrorArgs">
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobThrottleArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="callback" inType="win:UnicodeString"/>
+   <data name="throttlingType" inType="win:UnicodeString"/>
+   <data name="throttlingKey" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobErrorArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobHistoryArgs">
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="callback" inType="win:UnicodeString"/>
+   <data name="startTime" inType="win:UnicodeString"/>
+   <data name="endTime" inType="win:UnicodeString"/>
+   <data name="executionTimeInMilliseconds" inType="win:UnicodeString"/>
+   <data name="executionDelayInMilliseconds" inType="win:UnicodeString"/>
+   <data name="executionIntervalInMilliseconds" inType="win:UnicodeString"/>
+   <data name="executionStatus" inType="win:UnicodeString"/>
+   <data name="executionMessage" inType="win:UnicodeString"/>
+   <data name="executionDetails" inType="win:UnicodeString"/>
+   <data name="nextExecutionTime" inType="win:UnicodeString"/>
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobOperationArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="JobWarningArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="jobPartition" inType="win:UnicodeString"/>
+   <data name="jobId" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+  <template tid="StorageRequestEndWithClientFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="accountName" inType="win:UnicodeString"/>
+   <data name="resourceType" inType="win:UnicodeString"/>
+   <data name="resourceName" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+  </template>
+  <template tid="StorageRequestEndWithServerFailureArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="accountName" inType="win:UnicodeString"/>
+   <data name="resourceType" inType="win:UnicodeString"/>
+   <data name="resourceName" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+  </template>
+  <template tid="StorageRequestEndWithSuccessArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="accountName" inType="win:UnicodeString"/>
+   <data name="resourceType" inType="win:UnicodeString"/>
+   <data name="resourceName" inType="win:UnicodeString"/>
+   <data name="clientRequestId" inType="win:UnicodeString"/>
+   <data name="serviceRequestId" inType="win:UnicodeString"/>
+   <data name="durationInMilliseconds" inType="win:Int64"/>
+   <data name="httpStatusCode" inType="win:Int32"/>
+   <data name="exceptionMessage" inType="win:UnicodeString"/>
+   <data name="errorCode" inType="win:UnicodeString"/>
+   <data name="errorMessage" inType="win:UnicodeString"/>
+  </template>
+  <template tid="WarningArgs">
+   <data name="subscriptionId" inType="win:UnicodeString"/>
+   <data name="correlationId" inType="win:UnicodeString"/>
+   <data name="principalOid" inType="win:UnicodeString"/>
+   <data name="principalPuid" inType="win:UnicodeString"/>
+   <data name="tenantId" inType="win:UnicodeString"/>
+   <data name="operationName" inType="win:UnicodeString"/>
+   <data name="message" inType="win:UnicodeString"/>
+   <data name="exception" inType="win:UnicodeString"/>
+  </template>
+ </templates>
+</provider>
+</events>
+</instrumentation>
+<localization>
+ <resources culture="en-US">
+  <stringTable>
+   <string id="event_ActivityStart" value="The new activity started."/>
+   <string id="event_Critical" value="Critical error: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, message=&apos;%7&apos;, exception=&apos;%8&apos;."/>
+   <string id="event_Debug" value="Debug message: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, message=&apos;%7&apos;, exception=&apos;%8&apos;."/>
+   <string id="event_DispatcherCritical" value="Dispatcher critical error: dispatcherName=&apos;%1&apos;, operationName=&apos;%2&apos;, message=&apos;%3&apos;, queueMessage=&apos;%4&apos;, exception=&apos;%5&apos;, errorCode=&apos;%6&apos;, dequeueCount=&apos;%7&apos;, insertionTime=&apos;%8&apos;, subscriptionId=&apos;%9&apos;, correlationId=&apos;%10&apos;, principalOid=&apos;%11&apos;, principalPuid=&apos;%12&apos;, tenantId=&apos;%13&apos;."/>
+   <string id="event_DispatcherDebug" value="Dispatcher debug message: dispatcherName=&apos;%1&apos;, operationName=&apos;%2&apos;, message=&apos;%3&apos;, queueMessage=&apos;%4&apos;, exception=&apos;%5&apos;, errorCode=&apos;%6&apos;, dequeueCount=&apos;%7&apos;, insertionTime=&apos;%8&apos;, subscriptionId=&apos;%9&apos;, correlationId=&apos;%10&apos;, principalOid=&apos;%11&apos;, principalPuid=&apos;%12&apos;, tenantId=&apos;%13&apos;."/>
+   <string id="event_DispatcherError" value="Dispatcher error: dispatcherName=&apos;%1&apos;, operationName=&apos;%2&apos;, message=&apos;%3&apos;, queueMessage=&apos;%4&apos;, exception=&apos;%5&apos;, errorCode=&apos;%6&apos;, dequeueCount=&apos;%7&apos;, insertionTime=&apos;%8&apos;, subscriptionId=&apos;%9&apos;, correlationId=&apos;%10&apos;, principalOid=&apos;%11&apos;, principalPuid=&apos;%12&apos;, tenantId=&apos;%13&apos;."/>
+   <string id="event_DispatcherOperation" value="Dispatcher operation: dispatcherName=&apos;%1&apos;, operationName=&apos;%2&apos;, message=&apos;%3&apos;, queueMessage=&apos;%4&apos;, exception=&apos;%5&apos;, errorCode=&apos;%6&apos;, dequeueCount=&apos;%7&apos;, insertionTime=&apos;%8&apos;, subscriptionId=&apos;%9&apos;, correlationId=&apos;%10&apos;, principalOid=&apos;%11&apos;, principalPuid=&apos;%12&apos;, tenantId=&apos;%13&apos;."/>
+   <string id="event_DispatcherQueueDepth" value="Dispatcher queue depth: dispatcherName=&apos;%1&apos;, storageAccount=&apos;%2&apos;, queue=&apos;%3&apos;, depth=&apos;%4&apos;, subscriptionId=&apos;%5&apos;, correlationId=&apos;%6&apos;, principalOid=&apos;%7&apos;, principalPuid=&apos;%8&apos;, tenantId=&apos;%9&apos;."/>
+   <string id="event_DispatcherWarning" value="Dispatcher warning: dispatcherName=&apos;%1&apos;, operationName=&apos;%2&apos;, message=&apos;%3&apos;, queueMessage=&apos;%4&apos;, exception=&apos;%5&apos;, errorCode=&apos;%6&apos;, dequeueCount=&apos;%7&apos;, insertionTime=&apos;%8&apos;, subscriptionId=&apos;%9&apos;, correlationId=&apos;%10&apos;, principalOid=&apos;%11&apos;, principalPuid=&apos;%12&apos;, tenantId=&apos;%13&apos;."/>
+   <string id="event_Error" value="Error message: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, message=&apos;%7&apos;, exception=&apos;%8&apos;."/>
+   <string id="event_HttpIncomingRequestEndWithClientFailure" value="Incoming HTTP request ends with client failure: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, authorizationSource=&apos;%6&apos;, authorizationAction=&apos;%7&apos;, operationName=&apos;%8&apos;, httpMethod=&apos;%9&apos;, hostName=&apos;%10&apos;, targetUri=&apos;%11&apos;, userAgent=&apos;%12&apos;, clientRequestId=&apos;%13&apos;, clientSessionId=&apos;%14&apos;, clientIpAddress=&apos;%15&apos;, clientApplicationId=&apos;%16&apos;, apiVersion=&apos;%17&apos;, contentLength=&apos;%18&apos;, serviceRequestId=&apos;%19&apos;, durationInMilliseconds=&apos;%20&apos;, httpStatusCode=&apos;%21&apos;, exceptionMessage=&apos;%22&apos;, errorCode=&apos;%23&apos;, failureCause=&apos;%24&apos;, errorMessage=&apos;%25&apos;, referer=&apos;%26&apos;."/>
+   <string id="event_HttpIncomingRequestEndWithServerFailure" value="Incoming HTTP request ends with server failure: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, authorizationSource=&apos;%6&apos;, authorizationAction=&apos;%7&apos;, operationName=&apos;%8&apos;, httpMethod=&apos;%9&apos;, hostName=&apos;%10&apos;, targetUri=&apos;%11&apos;, userAgent=&apos;%12&apos;, clientRequestId=&apos;%13&apos;, clientSessionId=&apos;%14&apos;, clientIpAddress=&apos;%15&apos;, clientApplicationId=&apos;%16&apos;, apiVersion=&apos;%17&apos;, contentLength=&apos;%18&apos;, serviceRequestId=&apos;%19&apos;, durationInMilliseconds=&apos;%20&apos;, httpStatusCode=&apos;%21&apos;, exceptionMessage=&apos;%22&apos;, errorCode=&apos;%23&apos;, failureCause=&apos;%24&apos;, errorMessage=&apos;%25&apos;, referer=&apos;%26&apos;."/>
+   <string id="event_HttpIncomingRequestEndWithSuccess" value="Incoming HTTP request succeeded: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, authorizationSource=&apos;%6&apos;, authorizationAction=&apos;%7&apos;, operationName=&apos;%8&apos;, httpMethod=&apos;%9&apos;, hostName=&apos;%10&apos;, targetUri=&apos;%11&apos;, userAgent=&apos;%12&apos;, clientRequestId=&apos;%13&apos;, clientSessionId=&apos;%14&apos;, clientIpAddress=&apos;%15&apos;, clientApplicationId=&apos;%16&apos;, apiVersion=&apos;%17&apos;, contentLength=&apos;%18&apos;, serviceRequestId=&apos;%19&apos;, durationInMilliseconds=&apos;%20&apos;, httpStatusCode=&apos;%21&apos;, exceptionMessage=&apos;%22&apos;, errorCode=&apos;%23&apos;, failureCause=&apos;%24&apos;, errorMessage=&apos;%25&apos;, referer=&apos;%26&apos;."/>
+   <string id="event_HttpIncomingRequestStart" value="Incoming HTTP request starts: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, authorizationSource=&apos;%6&apos;, authorizationAction=&apos;%7&apos;, operationName=&apos;%8&apos;, httpMethod=&apos;%9&apos;, hostName=&apos;%10&apos;, targetUri=&apos;%11&apos;, userAgent=&apos;%12&apos;, clientRequestId=&apos;%13&apos;, clientSessionId=&apos;%14&apos;, clientIpAddress=&apos;%15&apos;, clientApplicationId=&apos;%16&apos;, apiVersion=&apos;%17&apos;, contentLength=&apos;%18&apos;, serviceRequestId=&apos;%19&apos;, durationInMilliseconds=&apos;%20&apos;, httpStatusCode=&apos;%21&apos;, exceptionMessage=&apos;%22&apos;, errorCode=&apos;%23&apos;, failureCause=&apos;%24&apos;, errorMessage=&apos;%25&apos;, referer=&apos;%26&apos;."/>
+   <string id="event_HttpOutgoingRequestEndWithClientFailure" value="Outgoing HTTP request succeeded: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, httpMethod=&apos;%7&apos;, hostName=&apos;%8&apos;, targetUri=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, clientSessionId=&apos;%11&apos;, clientApplicationId=&apos;%12&apos;, apiVersion=&apos;%13&apos;, contentLength=&apos;%14&apos;, serviceRequestId=&apos;%15&apos;, durationInMilliseconds=&apos;%16&apos;, httpStatusCode=&apos;%17&apos;, exceptionMessage=&apos;%18&apos;, errorCode=&apos;%19&apos;, errorMessage=&apos;%20&apos;, referer=&apos;%21&apos;."/>
+   <string id="event_HttpOutgoingRequestEndWithServerFailure" value="Outgoing HTTP request succeeded: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, httpMethod=&apos;%7&apos;, hostName=&apos;%8&apos;, targetUri=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, clientSessionId=&apos;%11&apos;, clientApplicationId=&apos;%12&apos;, apiVersion=&apos;%13&apos;, contentLength=&apos;%14&apos;, serviceRequestId=&apos;%15&apos;, durationInMilliseconds=&apos;%16&apos;, httpStatusCode=&apos;%17&apos;, exceptionMessage=&apos;%18&apos;, errorCode=&apos;%19&apos;, errorMessage=&apos;%20&apos;, referer=&apos;%21&apos;."/>
+   <string id="event_HttpOutgoingRequestEndWithSuccess" value="Outgoing HTTP request succeeded: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, httpMethod=&apos;%7&apos;, hostName=&apos;%8&apos;, targetUri=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, clientSessionId=&apos;%11&apos;, clientApplicationId=&apos;%12&apos;, apiVersion=&apos;%13&apos;, contentLength=&apos;%14&apos;, serviceRequestId=&apos;%15&apos;, durationInMilliseconds=&apos;%16&apos;, httpStatusCode=&apos;%17&apos;, exceptionMessage=&apos;%18&apos;, errorCode=&apos;%19&apos;, errorMessage=&apos;%20&apos;, referer=&apos;%21&apos;."/>
+   <string id="event_HttpOutgoingRequestStart" value="Outgoing HTTP request starts: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, httpMethod=&apos;%7&apos;, hostName=&apos;%8&apos;, targetUri=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, clientSessionId=&apos;%11&apos;, clientApplicationId=&apos;%12&apos;, apiVersion=&apos;%13&apos;, contentLength=&apos;%14&apos;, serviceRequestId=&apos;%15&apos;, durationInMilliseconds=&apos;%16&apos;, httpStatusCode=&apos;%17&apos;, exceptionMessage=&apos;%18&apos;, errorCode=&apos;%19&apos;, errorMessage=&apos;%20&apos;, referer=&apos;%21&apos;."/>
+   <string id="event_JobCritical" value="Job critical error: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, message=&apos;%9&apos;, exception=&apos;%10&apos;."/>
+   <string id="event_JobDebug" value="Job debug message: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, message=&apos;%9&apos;, exception=&apos;%10&apos;."/>
+   <string id="event_JobDefinition" value="Job definition: jobPartition=&apos;%1&apos;, jobId=&apos;%2&apos;, version=&apos;%3&apos;, callback=&apos;%4&apos;, location=&apos;%5&apos;, locationsAffinity=&apos;%6&apos;, flags=&apos;%7&apos;, state=&apos;%8&apos;, executionState=&apos;%9&apos;, startTime=&apos;%10&apos;, endTime=&apos;%11&apos;, repeatCount=&apos;%12&apos;, repeatInterval=&apos;%13&apos;, repeatUnit=&apos;%14&apos;, repeatSchedule=&apos;%15&apos;, currentRepeatCount=&apos;%16&apos;, retryCount=&apos;%17&apos;, retryInterval=&apos;%18&apos;, retryUnit=&apos;%19&apos;, currentRetryCount=&apos;%20&apos;, currentExecutionCount=&apos;%21&apos;, timeout=&apos;%22&apos;, retention=&apos;%23&apos;, nextExecutionTime=&apos;%24&apos;, lastExecutionTime=&apos;%25&apos;, lastExecutionStatus=&apos;%26&apos;, createdTime=&apos;%27&apos;, changedTime=&apos;%28&apos;, subscriptionId=&apos;%29&apos;, correlationId=&apos;%30&apos;, principalOid=&apos;%31&apos;, principalPuid=&apos;%32&apos;, tenantId=&apos;%33&apos;, totalSucceededCount=&apos;%34&apos;, totalCompletedCount=&apos;%35&apos;, totalFailedCount=&apos;%36&apos;, totalFaultedCount=&apos;%37&apos;, totalPostponedCount=&apos;%38&apos;."/>
+   <string id="event_JobDispatchingError" value="Job dispatching error: operationName=&apos;%1&apos;, jobPartition=&apos;%2&apos;, jobId=&apos;%3&apos;, message=&apos;%4&apos;, exception=&apos;%5&apos;, subscriptionId=&apos;%6&apos;, correlationId=&apos;%7&apos;, principalOid=&apos;%8&apos;, principalPuid=&apos;%9&apos;, tenantId=&apos;%10&apos;."/>
+   <string id="event_JobError" value="Job error: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, message=&apos;%9&apos;, exception=&apos;%10&apos;."/>
+   <string id="event_JobHistory" value="Job history: jobPartition=&apos;%1&apos;, jobId=&apos;%2&apos;, callback=&apos;%3&apos;, startTime=&apos;%4&apos;, endTime=&apos;%5&apos;, executionTimeInMilliseconds=&apos;%6&apos;, executionDelayInMilliseconds=&apos;%7&apos;, executionIntervalInMilliseconds=&apos;%8&apos;, executionStatus=&apos;%9&apos;, executionMessage=&apos;%10&apos;, executionDetails=&apos;%11&apos;, nextExecutionTime=&apos;%12&apos;, subscriptionId=&apos;%13&apos;, correlationId=&apos;%14&apos;, principalOid=&apos;%15&apos;, principalPuid=&apos;%16&apos;, tenantId=&apos;%17&apos;."/>
+   <string id="event_JobOperation" value="Job operation: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, message=&apos;%9&apos;, exception=&apos;%10&apos;."/>
+   <string id="event_JobThrottle" value="Job throttle: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, callback=&apos;%9&apos;, throttlingType=&apos;%10&apos;, throttlingKey=&apos;%11&apos;, message=&apos;%12&apos;."/>
+   <string id="event_JobWarning" value="Job warning: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, jobPartition=&apos;%7&apos;, jobId=&apos;%8&apos;, message=&apos;%9&apos;, exception=&apos;%10&apos;."/>
+   <string id="event_ServiceConfiguration" value="Service configuration: serviceName=&apos;%1&apos;, name=&apos;%2&apos;, value=&apos;%3&apos;, message=&apos;%4&apos;, subscriptionId=&apos;%5&apos;, correlationId=&apos;%6&apos;, principalOid=&apos;%7&apos;, principalPuid=&apos;%8&apos;, tenantId=&apos;%9&apos;."/>
+   <string id="event_ServiceStarted" value="Service started: serviceName=&apos;%1&apos;, version=&apos;%2&apos;, message=&apos;%3&apos;, subscriptionId=&apos;%4&apos;, correlationId=&apos;%5&apos;, principalOid=&apos;%6&apos;, principalPuid=&apos;%7&apos;, tenantId=&apos;%8&apos;."/>
+   <string id="event_ServiceStarting" value="Service starting: serviceName=&apos;%1&apos;, version=&apos;%2&apos;, message=&apos;%3&apos;, subscriptionId=&apos;%4&apos;, correlationId=&apos;%5&apos;, principalOid=&apos;%6&apos;, principalPuid=&apos;%7&apos;, tenantId=&apos;%8&apos;."/>
+   <string id="event_ServiceStopped" value="Service stopped: serviceName=&apos;%1&apos;, version=&apos;%2&apos;, message=&apos;%3&apos;, subscriptionId=&apos;%4&apos;, correlationId=&apos;%5&apos;, principalOid=&apos;%6&apos;, principalPuid=&apos;%7&apos;, tenantId=&apos;%8&apos;."/>
+   <string id="event_ServiceStopping" value="Service stopping: serviceName=&apos;%1&apos;, version=&apos;%2&apos;, message=&apos;%3&apos;, subscriptionId=&apos;%4&apos;, correlationId=&apos;%5&apos;, principalOid=&apos;%6&apos;, principalPuid=&apos;%7&apos;, tenantId=&apos;%8&apos;."/>
+   <string id="event_StorageRequestEndWithClientFailure" value="Storage request ends with client failure: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, accountName=&apos;%7&apos;, resourceType=&apos;%8&apos;, resourceName=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, serviceRequestId=&apos;%11&apos;, durationInMilliseconds=&apos;%12&apos;, httpStatusCode=&apos;%13&apos;, exceptionMessage=&apos;%14&apos;, errorCode=&apos;%15&apos;, errorMessage=&apos;%16&apos;."/>
+   <string id="event_StorageRequestEndWithServerFailure" value="Storage request ends with server failure: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, accountName=&apos;%7&apos;, resourceType=&apos;%8&apos;, resourceName=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, serviceRequestId=&apos;%11&apos;, durationInMilliseconds=&apos;%12&apos;, httpStatusCode=&apos;%13&apos;, exceptionMessage=&apos;%14&apos;, errorCode=&apos;%15&apos;, errorMessage=&apos;%16&apos;."/>
+   <string id="event_StorageRequestEndWithSuccess" value="Storage request succeeded: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, accountName=&apos;%7&apos;, resourceType=&apos;%8&apos;, resourceName=&apos;%9&apos;, clientRequestId=&apos;%10&apos;, serviceRequestId=&apos;%11&apos;, durationInMilliseconds=&apos;%12&apos;, httpStatusCode=&apos;%13&apos;, exceptionMessage=&apos;%14&apos;, errorCode=&apos;%15&apos;, errorMessage=&apos;%16&apos;."/>
+   <string id="event_StorageRequestStart" value="Storage request starts: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, accountName=&apos;%7&apos;, resourceType=&apos;%8&apos;, resourceName=&apos;%9&apos;, clientRequestId=&apos;%10&apos;."/>
+   <string id="event_Warning" value="Warning message: subscriptionId=&apos;%1&apos;, correlationId=&apos;%2&apos;, principalOid=&apos;%3&apos;, principalPuid=&apos;%4&apos;, tenantId=&apos;%5&apos;, operationName=&apos;%6&apos;, message=&apos;%7&apos;, exception=&apos;%8&apos;."/>
+   <string id="keyword_Session0" value="Session0"/>
+   <string id="keyword_Session1" value="Session1"/>
+   <string id="keyword_Session2" value="Session2"/>
+   <string id="keyword_Session3" value="Session3"/>
+   <string id="task_ActivityStart" value="ActivityStart"/>
+   <string id="task_Critical" value="Critical"/>
+   <string id="task_Debug" value="Debug"/>
+   <string id="task_DispatcherCritical" value="DispatcherCritical"/>
+   <string id="task_DispatcherDebug" value="DispatcherDebug"/>
+   <string id="task_DispatcherError" value="DispatcherError"/>
+   <string id="task_DispatcherOperation" value="DispatcherOperation"/>
+   <string id="task_DispatcherQueueDepth" value="DispatcherQueueDepth"/>
+   <string id="task_DispatcherWarning" value="DispatcherWarning"/>
+   <string id="task_Error" value="Error"/>
+   <string id="task_HttpIncomingRequestEndWithClientFailure" value="HttpIncomingRequestEndWithClientFailure"/>
+   <string id="task_HttpIncomingRequestEndWithServerFailure" value="HttpIncomingRequestEndWithServerFailure"/>
+   <string id="task_HttpIncomingRequestEndWithSuccess" value="HttpIncomingRequestEndWithSuccess"/>
+   <string id="task_HttpIncomingRequestStart" value="HttpIncomingRequestStart"/>
+   <string id="task_HttpOutgoingRequestEndWithClientFailure" value="HttpOutgoingRequestEndWithClientFailure"/>
+   <string id="task_HttpOutgoingRequestEndWithServerFailure" value="HttpOutgoingRequestEndWithServerFailure"/>
+   <string id="task_HttpOutgoingRequestEndWithSuccess" value="HttpOutgoingRequestEndWithSuccess"/>
+   <string id="task_HttpOutgoingRequestStart" value="HttpOutgoingRequestStart"/>
+   <string id="task_JobCritical" value="JobCritical"/>
+   <string id="task_JobDebug" value="JobDebug"/>
+   <string id="task_JobDefinition" value="JobDefinition"/>
+   <string id="task_JobDispatchingError" value="JobDispatchingError"/>
+   <string id="task_JobError" value="JobError"/>
+   <string id="task_JobHistory" value="JobHistory"/>
+   <string id="task_JobOperation" value="JobOperation"/>
+   <string id="task_JobThrottle" value="JobThrottle"/>
+   <string id="task_JobWarning" value="JobWarning"/>
+   <string id="task_ServiceConfiguration" value="ServiceConfiguration"/>
+   <string id="task_ServiceStarted" value="ServiceStarted"/>
+   <string id="task_ServiceStarting" value="ServiceStarting"/>
+   <string id="task_ServiceStopped" value="ServiceStopped"/>
+   <string id="task_ServiceStopping" value="ServiceStopping"/>
+   <string id="task_StorageRequestEndWithClientFailure" value="StorageRequestEndWithClientFailure"/>
+   <string id="task_StorageRequestEndWithServerFailure" value="StorageRequestEndWithServerFailure"/>
+   <string id="task_StorageRequestEndWithSuccess" value="StorageRequestEndWithSuccess"/>
+   <string id="task_StorageRequestStart" value="StorageRequestStart"/>
+   <string id="task_Warning" value="Warning"/>
+  </stringTable>
+ </resources>
+</localization>
+</instrumentationManifest>

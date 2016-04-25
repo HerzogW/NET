@@ -1,0 +1,12 @@
+{
+  "displayName": "Cognitive Services APIs",
+  "publisherDisplayName": "Microsoft",
+  "summary": "Microsoft Cognitive Services lets you build apps with powerful algorithms using just a few lines of code.",
+  "longSummary": "Microsoft Cognitive Services lets you build apps with powerful algorithms using just a few lines of code. They work across devices and platforms such as iOS, Android, and Windows, improve constantly, and are easy for any developer to set up.",
+  "description": "Cognitive Services is currently in preview.<p/><b>Cognitive Services</b> is a collection of APIs that enable natural and contextual interaction with tools that augment users' experiences via the power of machine learnt models from Microsoft.<p/>With Cognitive Services you can tap into an ever-growing collection of powerful AI algorithms developed by experts in their fields-APIs including Computer Vision, Emotion, Face, Language Understanding Intelligent Service(LUIS), Speech, Text Analytics, Recommendations, and Web Language Model APIs. They simplify a variety of AI-based tasks, giving you a quick way to extract insights from data.<p/>These APIs integrate into whatever language and platform you prefer. The APIs are constantly improving, learning, and getting smarter, so experiences are always up to date.
+  <p/>By clicking the Create button, you acknowledge that the Microsoft Cognitive Services are in preview. Some of these services are offered under use, privacy, data, security, and other terms of the Microsoft Cognitive Services Preview Terms. Those terms give us permission to use Customer Data to improve Microsoft products and services. Some of the services provide no means for you to access or extract Customer Data and Microsoft has no obligation to delete Customer Data received by those services. Some of the services may not be used in connection with Customer Applications that are used by or targeted to children under the age of fourteen. For details on these and other variations, please refer to the <a href='https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/'>Azure Preview Supplemental Terms</a>.",
+  "linkNameServiceOverview": "More about Microsoft Cognitive Services",
+  "linkNameDocumentation": "Documentation",
+  "linkNamePricing": "Pricing",
+  "linkNameTOU":"Supplemental Terms of Use for Microsoft Azure Previews"
+}

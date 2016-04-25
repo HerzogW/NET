@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            ModulePath="./Create/ViewModels"
+            Area="Resource">
+  <TemplateBlade Name="CreateBlade"
+                 ViewModel="{ViewModel Name=CognitiveServicesCreateBladeViewModel, Module=./Create/ViewModels/CognitiveServicesCreateBladeViewModel}"
+                 Style="Create"
+                 Width="Small"
+                 Template="{Html Source='Templates\\Create.html'}"
+                 ParameterProvider="true">
+      
+    <ActionBar ActionBarKind="Create" />
+    <BladeAction Blade="CognitiveServicesApiType" ParameterCollector="apiTypeCollector" SelectableSource="apiTypeSelector.selectable" />
+    <BladeAction Blade="ApiAccountSpecPicker"
+                 ParameterCollector="accountSpecSelector.collector"
+                 SelectableSource="accountSpecSelector.control.selectable" />
+    <BladeAction Blade="CreationLegalBlade" ParameterCollector="legalCollector" SelectableSource="legalSelector.selectable" />
+  </TemplateBlade>
+
+  <TemplateBlade Name="CreationLegalBlade"
+             ViewModel="{ViewModel Name=CreationLegalBladeViewModel, Module=./Create/ViewModels/CreationLegalBladeViewModel}"
+             Template="{Html Source='Templates\\LegalForm.html'}"
+             ParameterProvider="true">
+    <ActionBar ActionBarKind="Generic" /> 
+  </TemplateBlade>
+
+  <azurefx:PickerV3Blade Name="CognitiveServicesApiType"
+                         ViewModel="{ViewModel Name=CognitiveServicesApiTypeBladeViewModel, Module=./Create/ViewModels/CognitiveServicesApiTypeBladeViewModel}"
+                         PartViewModel="{ViewModel Name=ApiTypePartViewModel, Module=./Create/ViewModels/ApiTypePartViewModel}"
+                         Width="Large"/>
+</Definition>

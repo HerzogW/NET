@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Browse">
+
+    <AssetType Name="ApiAccount"
+                ViewModel="{ViewModel Name=AssetTypeViewModel, Module=../Browse/ViewModels/AssetTypeViewModel}"
+                PartName="ResourcePart"
+                BladeName="ResourceBlade"
+                PluralDisplayName="{Resource AssetTypeNames.Resource.plural, Module=ClientResources}"
+                SingularDisplayName="{Resource AssetTypeNames.Resource.singular, Module=ClientResources}"
+                LowerPluralDisplayName="{Resource AssetTypeNames.Resource.lowerPlural, Module=ClientResources}"
+                LowerSingularDisplayName="{Resource AssetTypeNames.Resource.lowerSingular, Module=ClientResources}"
+                MarketplaceItemId="Microsoft.OxfordPackage"
+                Icon="{Resource Content.SVG.projectOxford2, Module=./../_generated/SvgLogo}">
+        <Browse Type="ResourceType" UseCustomConfig="True" UseSupplementalData="true" Private="true" />
+        <ResourceType ResourceTypeName="Microsoft.ProjectOxford/accounts" />
+    </AssetType>
+
+    <AssetType Name="CognitiveServicesAccount"
+              ViewModel="{ViewModel Name=AssetTypeViewModel, Module=../Browse/ViewModels/AssetTypeViewModel}"
+              PartName="CognitiveServicesResourcePart"
+              BladeName="ResourceBlade"
+                PluralDisplayName="{Resource CognitiveServices.AssetTypeNames.Resource.plural, Module=ClientResources}"
+                SingularDisplayName="{Resource CognitiveServices.AssetTypeNames.Resource.singular, Module=ClientResources}"
+                LowerPluralDisplayName="{Resource CognitiveServices.AssetTypeNames.Resource.lowerPlural, Module=ClientResources}"
+                LowerSingularDisplayName="{Resource CognitiveServices.AssetTypeNames.Resource.lowerSingular, Module=ClientResources}"
+              MarketplaceItemId="Microsoft.CognitiveServices"
+              Icon="{Resource Content.SVG.cognitiveServices2, Module=./../_generated/SvgLogo}">
+        <Browse Type="ResourceType" UseCustomConfig="True" UseSupplementalData="true"/>
+        <ResourceType ResourceTypeName="Microsoft.CognitiveServices/accounts" />    
+    </AssetType>
+
+
+    <Part Name="ResourcePart"
+          ViewModel="{ViewModel Name=ResourcePartViewModel, Module=../Browse/ViewModels/ResourcePartViewModel}"
+          PartKind="Asset"
+          AssetType="ApiAccount"
+          AssetIdProperty="id">
+        <Part.Properties>
+            <Property Name="id"
+                      Source="{DataInput Property=id}" />
+        </Part.Properties>
+
+        <BladeAction Blade="ResourceBlade">
+            <BladeInput Parameter="id" Source="assetId" />
+            <!--<BladeInput Parameter="eventsOptions" Source="assetId" />-->
+        </BladeAction>
+    </Part>
+
+    <Part Name="CognitiveServicesResourcePart"
+          ViewModel="{ViewModel Name=ResourcePartViewModel, Module=../Browse/ViewModels/ResourcePartViewModel}"
+          PartKind="Asset"
+          AssetType="CognitiveServicesAccount"
+          AssetIdProperty="id">
+        <Part.Properties>
+            <Property Name="id"
+                      Source="{DataInput Property=id}" />
+        </Part.Properties>
+
+        <BladeAction Blade="ResourceBlade">
+            <BladeInput Parameter="id" Source="assetId" />
+            <!--<BladeInput Parameter="eventsOptions" Source="assetId" />-->
+        </BladeAction>
+    </Part>
+  
+    <CommandGroup Name="BrowseAccountCommands">
+        <CommandReference Name="SettingsCommand" CommandType="SettingsCommand">
+          <Binding Property="resourceId" Source="{DataInput Property=id}" />
+        </CommandReference>
+        <CommandReference Name="DeleteCommand" CommandType="DeleteCommand">
+          <Binding Property="resourceId" Source="{DataInput Property=id}" />
+        </CommandReference>
+    </CommandGroup>
+</Definition>

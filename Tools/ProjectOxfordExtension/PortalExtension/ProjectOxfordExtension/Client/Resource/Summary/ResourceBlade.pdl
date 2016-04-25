@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Resource">
+
+  <CommandGroup Name="ResourceCommands">
+    <Command Name="SettingsCommand" Export="true" Text="{Resource ResourceBlade.SettingsCommand.resourceKey, Module=ClientResources}" Kind="Blade"
+             ViewModel="{ViewModel Name=SettingsCommandViewModel, Module=./Summary/ViewModels/SettingsCommandViewModel}"
+             AssetType="CognitiveServicesAccount" AssetIdProperty="resourceId">
+      <Property Name="resourceId" Source="{DataInput Property=id}" />
+      <BladeAction Blade="SettingsBlade">
+        <BladeInput Source="{CommandProperty Property=resourceId}" Parameter="id" />
+      </BladeAction>
+    </Command>
+    <CommandReference Name="MoveResourceGroupCommand" CommandType="MoveResourceCommand" Extension="HubsExtension">
+      <Binding Property="resourceId" Source="{Constant unknownResourceIdShouldBeOverriddenInBlade}" />
+    </CommandReference>
+    <Command Name="DeleteCommand" Export="true" Text="{Resource ResourceBlade.DeleteCommand.resourceKey, Module=ClientResources}"
+             ViewModel="{ViewModel Name=DeleteCommandViewModel, Module=./Summary/ViewModels/DeleteCommandViewModel}">
+      <Property Name="resourceId" Source="{DataInput Property=id}" />
+    </Command>
+  </CommandGroup>
+
+  <Blade Name="ResourceBlade" ViewModel="{ViewModel Name=ResourceBladeViewModel, Module=./Summary/ViewModels/ResourceBladeViewModel}"
+         AssetType="CognitiveServicesAccount" AssetIdProperty="id" Style="Action">
+
+    <Blade.Parameters>
+      <Parameter Name="id" Type="Key" />
+      <!--<Parameter Name="eventsOptions" Type="Supplemental" />-->
+    </Blade.Parameters>
+
+    <Blade.Properties>
+      <Property Name="id" Source="{BladeParameter id}"/>
+    </Blade.Properties>
+
+    <CommandGroupReference Name="ResourceCommands">
+      <CommandBindings Command="SettingsCommand">
+        <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
+      </CommandBindings>
+      <CommandBindings Command="MoveResourceGroupCommand">
+        <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
+      </CommandBindings>
+      <CommandBindings Command="DeleteCommand">
+        <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
+      </CommandBindings>
+    </CommandGroupReference>
+
+
+    <PinnedPart PartType="CognitiveServicesResourcePart" />
+
+    <ResourceSummary Name="ResourceSummary"
+                 ViewModel="{ViewModel Name=ResourceSummaryPartViewModel, Module=./Summary/ViewModels/ResourceSummaryPartViewModel}"
+                 ItemCount="10"
+                 ResourceIdSource="{BladeParameter Name=id}"/>
+    <!--Remove it now, so we can get better performance result-->
+    <!--<Lens Name="OperationsLens">
+      <PartReference
+        Name="WebsiteEvents"
+        PartType="EventsSummaryPart"
+        InitialSize="Normal">
+        <Binding Property="id" Source="{BladeParameter Name=id}" />
+      </PartReference>
+      
+      <PartReference Name="PricingTierLauncherPartWide"
+                     PartType="PricingTierLauncherV3"
+                     Extension="HubsExtension"
+                     InitialSize="Wide"
+                     ExtenderViewModel="{ViewModel Name=ApiAccountPricingTierV3LauncherExtender, Module=./Pricing/ViewModels/ApiAccountPricingTierLauncherExtender}" >
+        <PartReference.PropertyBindings>
+          <Binding Property="entityId" Source="{BladeProperty Property=id}" />
+        </PartReference.PropertyBindings>
+      </PartReference>
+      
+      --><!--TODO: Need to figure out why it doesn't work.--><!--
+      --><!--<PartReference Name="PricingTierLauncherPartWide"
+                  PartType="PricingTierPart"
+                  InitialSize="Wide">
+          <Binding Property="id" Source="{BladeProperty Property=id}" />
+      </PartReference>--><!--
+    </Lens>-->
+    
+  </Blade>
+
+  <AdaptedPart Name="EventsSummaryPart"
+              AdapterViewModel="{ViewModel EventsPartAdapterViewModel, Module=./Summary/ViewModels/EventsPartAdapterViewModel}"
+              InitialSize="Normal"
+              AssetType="CognitiveServicesAccount"
+              AssetIdProperty="id">
+    <AdaptedPart.InputDefinitions>
+      <InputDefinition Name="id"
+                       Type="MsPortalFx.ViewModels.ResourceId" />
+    </AdaptedPart.InputDefinitions>
+
+    <PartReference Extension="Microsoft_Azure_Insights"
+                   PartType="EventsSummaryPart"
+                   Name="OxfordEventsSummaryPart">
+      <PartReference.PropertyBindings>
+        <Binding Property="resourceId"
+                 Source="{Adapter apiAccountId}" />
+        <Binding Property="options"
+                 Source="{Adapter eventsOptions}" />
+      </PartReference.PropertyBindings>
+    </PartReference>
+
+    <PartGalleryInfo Title="{Resource ResourceBlade.eventsInThePastWeekLauncherPartTitle, Module=ClientResources}"
+                     Category="{Resource ResourceBlade.lensOperationsTitle, Module=ClientResources}"
+                     Thumbnail="MsPortalFx.Base.Images.Polychromatic.Log()" />
+  </AdaptedPart>
+
+  <AdaptedPart Name="PricingTierPart"
+              AdapterViewModel="{ViewModel PricingTierPartAdapterViewModel, Module=./Summary/ViewModels/PricingTierPartAdapterViewModel}"
+              InitialSize="Wide"
+              AssetType="CognitiveServicesAccount"
+              AssetIdProperty="id">
+    <AdaptedPart.InputDefinitions>
+      <InputDefinition Name="id"
+                       Type="MsPortalFx.ViewModels.ResourceId" />
+    </AdaptedPart.InputDefinitions>
+
+    <PartReference Name="PricingTierLauncherPartWide"
+               PartType="PricingTierLauncherV3"
+               Extension="HubsExtension"
+               InitialSize="Wide"
+               ExtenderViewModel="{ViewModel Name=ApiAccountPricingTierV3LauncherExtender, Module=./Pricing/ViewModels/ApiAccountPricingTierLauncherExtender}" >
+      <PartReference.PropertyBindings>
+        <Binding Property="entityId" Source="{Adapter apiAccountId}" />
+      </PartReference.PropertyBindings>
+    </PartReference>
+
+    <PartGalleryInfo Title="{Resource ResourceBlade.pricingTierPartTitle, Module=ClientResources}"
+                     Category="{Resource ResourceBlade.lensUsageTitle, Module=ClientResources}"
+                     Thumbnail="MsPortalFx.Base.Images.Polychromatic.BillingHub()" />
+  </AdaptedPart>
+  
+</Definition>

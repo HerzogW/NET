@@ -1,0 +1,34 @@
+﻿{
+  "title": "Face API",
+  "subtitle": "Detect, identify, analyze, organize, and tag faces in photos.",
+
+  "quickStartLinks.title": "",
+  "spec.f0.title": "Free",
+  "spec.s0.title": "Standard",
+
+  "spec.promotedFeature.unitDescription1": "Calls per minute",
+  "spec.promotedFeature.unitDescription2": "Calls per month",
+  "spec.promotedFeature.unitDescription3": "Calls per second",
+  "spec.cost.f0.caption.format": "{0} per call (Estimated)",
+  "spec.cost.s0.caption.format": "{0}/1000 calls (Estimated)",
+
+  "feature.sla.displayName": "SLA",
+  "feature.faceDetection.displayName": "Face Detection",
+  "feature.faceVerification.displayName": "Face Verification",
+  "feature.faceIdentification.displayName": "Face Identification",
+  "feature.faceGrouping.displayName": "Face Grouping",
+  "feature.similaFaceSearching.displayName": "Similar Face Searching",
+  "quickStart1.title": "Introduction",
+  "quickStart1.des": "Learn all about Cognitive Services APIs and how you can use them.",
+  "quickStart1.link1.text": "About Cognitive Services",
+  "quickStart1.link2.text": "Face API",
+
+  "quickStart2.title": "Get started",
+  "quickStart2.des": "Get up to speed on how to use Face API.",
+  "quickStart2.link1.text": "API Documentation",
+  "quickStart2.link2.text": "Developer Code of Conduct",
+
+  "quickStart3.title": "Get free tools",
+  "quickStart3.des": "Use the SDK to build apps with Face API.",
+  "quickStart3.link1.text": "API SDK"
+}

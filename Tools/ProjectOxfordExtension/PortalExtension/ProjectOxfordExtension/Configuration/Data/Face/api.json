@@ -1,0 +1,17 @@
+﻿{
+	  "item": "Face",
+	  "title": "ms-resource:title",
+	  "subtitle": "ms-resource:subtitle",
+	  "iconData": "ms-icon:face.svg",
+	  "categories": [
+		"CognitiveServices"
+	  ],
+	  "skuQuota": [
+		{
+			"code": "F0",
+			"name": "Free",
+			"quota": 1
+		}
+	  ],
+	  "showLegalTerm": true
+}

@@ -1,0 +1,38 @@
+{
+  "quickStarts": [
+    {
+      "title": "ms-resource:quickStart1.title",
+      "description": "ms-resource:quickStart1.des",
+      "icon": "BaseImages.Info",
+      "links": [
+        {
+          "text": "ms-resource:quickStart1.link1.text",
+          "uri": "http://go.microsoft.com/fwlink/?LinkId=759709"
+        },
+        {
+          "text": "ms-resource:quickStart1.link2.text",
+          "uri": "http://go.microsoft.com/fwlink/?LinkId=759710"
+        }
+      ]
+    },
+    {
+      "title": "ms-resource:quickStart2.title",
+      "description": "ms-resource:quickStart2.des",
+      "icon": "BaseImages.Publish",
+      "links": [
+        {
+          "text": "ms-resource:quickStart2.link1.text",
+          "uri": "http://go.microsoft.com/fwlink/?LinkId=759328"
+        },
+        {
+          "text": "ms-resource:quickStart2.link2.text",
+          "uri": "http://go.microsoft.com/fwlink/?LinkID=759348"
+        },
+        {
+          "text": "ms-resource:quickStart2.link3.text",
+          "uri": "http://go.microsoft.com/fwlink/?LinkId=759344"
+        }
+      ]
+    }
+  ]
+}

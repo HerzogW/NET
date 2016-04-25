@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Resource">
+
+  <azurefx:SettingListV2Blade Name="SettingsBlade"
+                         Parameter="id"
+                         ViewModel="{ViewModel SettingsBladeViewModel, Module=./Settings/ViewModels/SettingsBladeViewModel}"
+                         PartViewModel="{ViewModel SettingsPartViewModel, Module=./Settings/ViewModels/SettingsPartViewModel}" />
+
+  <Blade Name="BlankBlade"
+   ViewModel="{ViewModel Name=BlankBladeBladeViewModel, Module=./Settings/ViewModels/SettingsBladeViewModel}">
+    <Blade.Parameters>
+      <Parameter Name="id" Type="Supplemental"/>
+    </Blade.Parameters>
+    <Blade.Properties>
+      <Property Name="id" Source="{BladeParameter id}"/>
+    </Blade.Properties>
+  </Blade>
+</Definition>

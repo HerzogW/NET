@@ -1,0 +1,6 @@
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\bin\Debug\Microsoft.Portal.Extensions.AzurePortalExtension.DataModels.dll
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\bin\Debug\Microsoft.Portal.Extensions.AzurePortalExtension.DataModels.pdb
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\bin\Debug\Microsoft.Portal.TypeMetadata.dll
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\obj\Debug\AzurePortalExtension.DataModels.csprojResolveAssemblyReference.cache
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\obj\Debug\Microsoft.Portal.Extensions.AzurePortalExtension.DataModels.dll
+D:\MyCodeSource\Net\Tools\AzurePortalExtension\AzurePortalExtension\AzurePortalExtension.DataModels\obj\Debug\Microsoft.Portal.Extensions.AzurePortalExtension.DataModels.pdb

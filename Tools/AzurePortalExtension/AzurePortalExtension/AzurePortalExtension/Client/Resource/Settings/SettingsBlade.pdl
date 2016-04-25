@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Resource">
+  <azurefx:SettingListBlade Name="SettingsBlade"
+                         Parameter="id"
+                         ViewModel="{ViewModel SettingsBladeViewModel, Module=./Settings/ViewModels/SettingsBladeViewModel}"
+                         PartViewModel="{ViewModel SettingsPartViewModel, Module=./Settings/ViewModels/SettingsPartViewModel}"/>
+</Definition>

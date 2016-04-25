@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Resource">
+  
+ <Blade Name="KeySettingBlade" Locked="True" Width="Small" Style="BasicWithCommands"
+         ViewModel="{ViewModel Name=KeySettingsBladeViewModel, Module=./KeyManagement/ViewModels/KeySettingsBladeViewModel}">
+    <Blade.Parameters>
+      <Parameter Name="id" Type="Supplemental"/>
+    </Blade.Parameters>
+    <Blade.Properties>
+      <Property Name="id" Source="{BladeParameter id}"/>
+    </Blade.Properties>
+    <Blade.Commands>
+      <Command Name="GeneratePrimaryCommand" Text="{Resource KeyManagementBlade.RegenerateKeysCommand.regeneratePrimary, Module=ClientResources}"
+               ViewModel="{ViewModel Name=GeneratePrimaryCommandViewModel, Module=./KeyManagement/ViewModels/GeneratePrimaryCommandViewModel}">
+        <Property Name="resourceId" Source="{DataInput Property=id}" />
+      </Command>
+      <Command Name="GenerateSecondaryCommand" Text="{Resource KeyManagementBlade.RegenerateKeysCommand.regenerateSecondary, Module=ClientResources}"
+           ViewModel="{ViewModel Name=GenerateSecondaryCommandViewModel, Module=./KeyManagement/ViewModels/GenerateSecondaryCommandViewModel}">
+        <Property Name="resourceId" Source="{DataInput Property=id}" />
+      </Command>
+    </Blade.Commands>
+    <Blade.Items>
+      <Lens Name="OxfordKeysLens">
+        <Part Name="KeysPropertiesPart"
+         ViewModel="{ViewModel Name=KeysPropertiesPartViewModel, Module=./KeyManagement/ViewModels/KeysPropertiesPartViewModel}"
+         PartKind="Properties"
+         InitialSize="FullWidthFitHeight">
+          <Part.Properties>
+            <Property Name="resourceId" Source="{BladeParameter Name=id}" />
+          </Part.Properties>
+        </Part>
+      </Lens>
+    </Blade.Items>
+  </Blade>
+</Definition>

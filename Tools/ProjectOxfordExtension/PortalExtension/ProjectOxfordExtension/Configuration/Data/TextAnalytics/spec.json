@@ -1,0 +1,234 @@
+{
+  "specType": "Microsoft.ProjectOxford/textanalyticsApi",
+  "specs": [
+    {
+      "id": "F0",
+      "colorScheme": "mediumBlue",
+      "title": "ms-resource:spec.f0.title",
+      "specCode": "F0",
+      "promotedFeatures": [
+        {
+          "value": "5K",
+          "unitDescription": "ms-resource:spec.promotedFeature.unitDescription2"
+        }
+      ],
+      "features": [
+        {
+          "id": "SentimentAnalysis"
+        },
+        {
+          "id": "KeyPhraseExtraction"
+        },
+        {
+          "id": "TopicDetection"
+        },
+        {
+          "id": "LanguageDetection"
+        }
+      ],
+      "cost": {
+        "amount": 0.0,
+        "currencyCode": "USD",
+        "caption": "ms-resource:spec.cost.f0.caption.format"
+      }
+    },
+    {
+      "id": "S1",
+      "colorScheme": "mediumBlue",
+      "title": "ms-resource:spec.s1.title",
+      "specCode": "S1",
+      "promotedFeatures": [
+        {
+          "value": "100K",
+          "unitDescription": "ms-resource:spec.promotedFeature.unitDescription2"
+        }
+      ],
+      "features": [
+        {
+          "id": "SentimentAnalysis"
+        },
+        {
+          "id": "KeyPhraseExtraction"
+        },
+        {
+          "id": "TopicDetection"
+        },
+        {
+          "id": "LanguageDetection"
+        }
+      ],
+      "cost": {
+        "amount": 150.0,
+        "currencyCode": "USD",
+        "caption": "ms-resource:spec.cost.s1.caption.format"
+      }
+    },
+    {
+      "id": "S2",
+      "colorScheme": "mediumBlue",
+      "title": "ms-resource:spec.s2.title",
+      "specCode": "S2",
+      "promotedFeatures": [
+        {
+          "value": "500K",
+          "unitDescription": "ms-resource:spec.promotedFeature.unitDescription2"
+        }
+      ],
+      "features": [
+        {
+          "id": "SentimentAnalysis"
+        },
+        {
+          "id": "KeyPhraseExtraction"
+        },
+        {
+          "id": "TopicDetection"
+        },
+        {
+          "id": "LanguageDetection"
+        }
+      ],
+      "cost": {
+        "amount": 500.0,
+        "currencyCode": "USD",
+        "caption": "ms-resource:spec.cost.s2.caption.format"
+      }
+    },
+    {
+      "id": "S3",
+      "colorScheme": "mediumBlue",
+      "title": "ms-resource:spec.s3.title",
+      "specCode": "S3",
+      "promotedFeatures": [
+        {
+          "value": "2.5M",
+          "unitDescription": "ms-resource:spec.promotedFeature.unitDescription2"
+        }
+      ],
+      "features": [
+        {
+          "id": "SentimentAnalysis"
+        },
+        {
+          "id": "KeyPhraseExtraction"
+        },
+        {
+          "id": "TopicDetection"
+        },
+        {
+          "id": "LanguageDetection"
+        }
+      ],
+      "cost": {
+        "amount": 1250.0,
+        "currencyCode": "USD",
+        "caption": "ms-resource:spec.cost.s3.caption.format"
+      }
+    },
+    {
+      "id": "S4",
+      "colorScheme": "mediumBlue",
+      "title": "ms-resource:spec.s4.title",
+      "specCode": "S4",
+      "promotedFeatures": [
+        {
+          "value": "10M",
+          "unitDescription": "ms-resource:spec.promotedFeature.unitDescription2"
+        }
+      ],
+      "features": [
+        {
+          "id": "SentimentAnalysis"
+        },
+        {
+          "id": "KeyPhraseExtraction"
+        },
+        {
+          "id": "TopicDetection"
+        },
+        {
+          "id": "LanguageDetection"
+        }
+      ],
+      "cost": {
+        "amount": 2500.0,
+        "currencyCode": "USD",
+        "caption": "ms-resource:spec.cost.s4.caption.format"
+      }
+    }
+  ],
+  "features": [
+    {
+      "id": "SentimentAnalysis",
+      "displayName": "ms-resource:feature.sentimentanalysis.displayName",
+      "iconSvgData": "ms-icon:spec.feature.sentimentanalysis.svg"
+    },
+    {
+      "id": "KeyPhraseExtraction",
+      "displayName": "ms-resource:feature.keyphraseextraction.displayName",
+      "iconSvgData": "ms-icon:spec.feature.keyphraseextraction.svg"
+    },
+    {
+      "id": "TopicDetection",
+      "displayName": "ms-resource:feature.topicdetection.displayName",
+      "iconSvgData": "ms-icon:spec.feature.topicdetection.svg"
+    },
+    {
+      "id": "LanguageDetection",
+      "displayName": "ms-resource:feature.languagedetection.displayName",
+      "iconSvgData": "ms-icon:spec.feature.languagedetection.svg"
+    }
+  ],
+  "resourceMap": {
+    "default": [
+      {
+        "id": "F0",
+        "firstParty": [
+          {
+            "resourceId": "y8fx4nayicqgm8d3xzfrjj9pr74m7k1immax4nayrti71j3x5pdwtc7y4imyqeyy6a",
+            "quantity": 1.0
+          }
+        ]
+      },
+      {
+        "id": "S1",
+        "firstParty": [
+          {
+            "resourceId": "y8fx4naypeswds3wpuorxj1zaosy993e39ax4nayrti71j3x5pdwtc7y4imyqeyy6a",
+            "quantity": 1.0
+          }
+        ]
+      },
+      {
+        "id": "S2",
+        "firstParty": [
+          {
+            "resourceId": "y8fx4nayydnmdcj7rtrwjeqt5p5fd8i1ixax4nayrti71j3x5pdwtc7y4imyqeyy6a",
+            "quantity": 1.0
+          }
+        ]
+      },
+      {
+        "id": "S3",
+        "firstParty": [
+          {
+            "resourceId": "y8fx4nayof5tquob8wmw7dgjmtnh5181o5ax4nayrti71j3x5pdwtc7y4imyqeyy6a",
+            "quantity": 1.0
+          }
+        ]
+      },
+      {
+        "id": "S4",
+        "firstParty": [
+          {
+            "resourceId": "y8fx4nayedtcht5izkrw8fcp8sacr5jyf5ax4nayrti71j3x5pdwtc7y4imyqeyy6a",
+            "quantity": 1.0
+          }
+        ]
+      }
+    ]
+  },
+  "specsToAllowZeroCost": [
+    "F0"
+  ]
+}

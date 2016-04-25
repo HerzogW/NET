@@ -1,0 +1,58 @@
+﻿{
+    "$schema": "https://gallery.azure.com/schemas/2014-09-01/manifest.json#",
+    "name": "CognitiveServices",
+    "publisher": "Microsoft",
+    "version": "0.1.4-preview",
+    "displayName": "ms-resource:displayName",
+    "publisherDisplayName": "ms-resource:publisherDisplayName",
+    "publisherLegalName": "ms-resource:publisherDisplayName",
+    "summary": "ms-resource:summary",
+    "description": "ms-resource:description",
+    "longSummary": "ms-resource:longSummary",
+    "longDescription": "ms-resource:description",
+    "properties": [ ],
+    "artifacts": [
+        {
+            "name": "CreateResource",
+            "type": "Template",
+            "path": "DeploymentTemplates\\CreateResource.json",
+            "isDefault": true
+        }
+    ],
+    "links": [
+        {
+            "id": "0",
+            "displayName": "ms-resource:linkNameServiceOverview",
+            "uri": "http://go.microsoft.com/fwlink/?LinkID=761227"
+        },
+        {
+            "id": "1",
+            "displayName": "ms-resource:linkNameDocumentation",
+            "uri": "http://go.microsoft.com/fwlink/?LinkID=761228"
+        },
+        {
+            "id": "2",
+            "displayName": "ms-resource:linkNamePricing",
+            "uri": "http://go.microsoft.com/fwlink/?LinkID=761229"
+        },
+        {
+            "id": "3",
+            "displayName": "ms-resource:linkNameTOU",
+            "uri": "https://azure.microsoft.com/en-us/support/legal/preview-supplemental-terms/"
+        }
+    ],
+    "icons": {
+        "Small": "Icons\\Small.png",
+        "Medium": "Icons\\Medium.png",
+        "Large": "Icons\\Large.png",
+        "Wide": "Icons\\Wide.png",
+        "Hero": "Icons\\Hero.png"
+    },
+    "screenshots": [ ],
+    "categories": [ "bigData", "intelligence" ],
+    "uiDefinition": {
+        "path": "UIDefinition.json"
+    },
+    "filters": [
+    ]
+}

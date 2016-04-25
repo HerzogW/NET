@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            Area="Resource"
+            ModulePath="./Pricing" >
+
+  <azurefx:SpecPickerBladeV3 Name="ApiAccountSpecPicker"
+                         BladeViewModel="{ViewModel Name=ApiAccountSpecPickerBladeViewModel, Module=./Pricing/ViewModels/ApiAccountSpecPickerBladeViewModel}"
+                         PartExtenderViewModel="{ViewModel Name=ApiAccountSpecPickerExtender, Module=./Pricing/ViewModels/ApiAccountSpecPickerExtender}"/>
+</Definition>

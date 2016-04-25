@@ -1,0 +1,1474 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Azure.ResourceProvider.TestUtilities</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.EventsUtilities">
+            <summary>
+            Notification Test Utilities
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.EventsUtilities.AssertAreEqual(Microsoft.Azure.ResourceProvider.Contracts.EventData,Microsoft.Azure.ResourceProvider.Contracts.EventData)">
+            <summary>
+            Compares the events.
+            </summary>
+            <param name="expected">The expected.</param>
+            <param name="actual">The actual.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.EventsUtilities.AssertAreEqual(System.Collections.Generic.IEnumerable{Microsoft.Azure.ResourceProvider.Contracts.EventData},System.Collections.Generic.IEnumerable{Microsoft.Azure.ResourceProvider.Contracts.EventData})">
+            <summary>
+            Asserts the events.
+            </summary>
+            <param name="expectedEvents">The expected events.</param>
+            <param name="actualEvents">The actual events.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.EventsUtilities.CreateEventData(System.Int32,System.String,System.Boolean)">
+            <summary>Creates the event.</summary>
+            <param name="i">The i.</param>
+            <param name="subscriptionId">The subscription Id.</param>
+            <param name="populateOptionalFields">The populate Optional Fields.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.ExceptionUtilities">
+            <summary>
+            Common utilities for testing
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ExceptionUtilities.AssertExceptionAsync(System.Func{System.Threading.Tasks.Task},System.Type)">
+            <summary>
+            Tests the asynchronous exception.
+            </summary>
+            <param name="action">The function.</param>
+            <param name="expectedException">The expected exception type.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ExceptionUtilities.AssertException(System.Action,System.Type)">
+            <summary>
+            Asserts the exception.
+            </summary>
+            <param name="action">The function to test.</param>
+            <param name="expectedException">The expected exception.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions">
+            <summary>
+            This class contains helper methods for HTTP Client. These helper methods should *only*
+            be used from test code since they are blocking and do not handle references correctly.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.SendSync(System.Net.Http.HttpClient,System.Net.Http.HttpRequestMessage,System.Uri,System.String)">
+            <summary>
+            Sends the HTTP request synchronously.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestMessage">The request message.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.PutSync(System.Net.Http.HttpClient,System.Uri,System.String,System.Uri,System.String)">
+            <summary>
+            Puts the resource.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="body">Optional. The body.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.PutSync``1(System.Net.Http.HttpClient,System.Uri,``0,System.Uri,System.String)">
+            <summary>
+            Puts the resource.
+            </summary>
+            <typeparam name="T">The type of the content to Put.</typeparam>
+            <param name="httpClient">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="body">Optional. The body.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.PostSync(System.Net.Http.HttpClient,System.Uri,System.String,System.Uri,System.String)">
+            <summary>
+            Posts the resource.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="body">Optional. The body.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.PutSyncWithoutCharset(System.Net.Http.HttpClient,System.Uri,System.String,System.Uri,System.String)">
+            <summary>
+            Sends a PUT request to the server with the provided JSON body synchronously
+            - without content type charset set to null
+            </summary>
+            <param name="client">The client to use for the request.</param>
+            <param name="requestUri">The URI for the request.</param>
+            <param name="body">The JSON body for the put request.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+            <returns>
+            The http response message for the request.
+            </returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.PatchSync(System.Net.Http.HttpClient,System.Uri,System.String,System.Uri,System.String)">
+            <summary>
+            Patches the resource.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="body">The body.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.DeleteSync(System.Net.Http.HttpClient,System.Uri,System.Uri,System.String)">
+            <summary>
+            Deletes the resource.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.GetSync(System.Net.Http.HttpClient,System.Uri,System.Uri,System.String)">
+            <summary>
+            Gets the resource.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="requestUri">The request URI.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">Optional. The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.ReadContent``1(System.Net.Http.HttpResponseMessage)">
+            <summary>
+            Synchronously reads the JSON content from the http response message.
+            </summary>
+            <typeparam name="T">The type of object contained in the JSON.</typeparam>
+            <param name="message">The response message to be read.</param>
+            <returns>An object of type T instantiated from the response message's body.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.AddHeaders(System.Net.Http.HttpClient,System.Uri,System.String)">
+            <summary>
+            Adds the required headers.
+            </summary>
+            <param name="client">The client.</param>
+            <param name="referrerUri">The referrer URI.</param>
+            <param name="acceptLanguage">The accept language.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.HttpClientExtensions.ClearNonAuthorizationHeaders(System.Net.Http.HttpClient)">
+            <summary>
+            Clears the headers.
+            </summary>
+            <param name="client">The client.</param>
+            <remarks>
+            We preserve headers that typically need to be preserved across requests in a test.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore">
+            <summary>
+            Represents an in-memory configuration store.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.#ctor(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore"/> class.
+            </summary>
+            <param name="initialState">The initial state.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.GetConfiguration(System.String)">
+            <summary>
+            Gets the configuration.
+            </summary>
+            <param name="settingKey">The setting key.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.SetConfiguration(System.String,System.String)">
+            <summary>
+            Sets the configuration.
+            </summary>
+            <param name="settingKey">The setting key.</param>
+            <param name="settingValue">The setting value.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.GetConfiguration">
+            <summary>
+            Gets the configuration.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.SetConfiguration(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Sets the configuration.
+            </summary>
+            <param name="settings">The settings.</param>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MemoryConfigurationStore.State">
+            <summary>
+            Gets or sets the state.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.StorageRequestStartDelegate">
+            <summary>
+            The storage request start delegate.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.StorageRequestEndWithSuccess">
+            <summary>
+            The storage request ends with success delegate
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.StorageRequestEndWithServerFailure">
+            <summary>
+            The storage request ends with server failure
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.Warning">
+            <summary>
+            Warning information.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.Error">
+            <summary>
+            Error information.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource">
+            <summary>
+            The mock storage client event source.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ActivityStart">
+            <summary>
+            Activity start trace.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ServiceStarting(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Services the starting.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <param name="version">The version.</param>
+            <param name="message">The message.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ServiceStarted(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Services the started.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <param name="version">The version.</param>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <param name="message">The message.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ServiceStopping(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Services the stopping.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <param name="version">The version.</param>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <param name="message">The message.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ServiceStopped(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Services the stopped.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <param name="version">The version.</param>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <param name="message">The message.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.ServiceConfiguration(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Services the configuration.
+            </summary>
+            <param name="serviceName">Name of the service.</param>
+            <param name="version">The version.</param>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+            <param name="message">The message.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.Critical(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Critical trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpIncomingRequestStart(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the incoming request start.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="authorizationSource">The authorization source.</param>
+            <param name="authorizationAction">The authorization action.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="userAgent">The user agent.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientIpAddress">The client ip address.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="failureCause">The failure cause.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpIncomingRequestEndWithSuccess(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the incoming request end with success.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="authorizationSource">The authorization source.</param>
+            <param name="authorizationAction">The authorization action.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="userAgent">The user agent.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientIpAddress">The client ip address.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="failureCause">The failure cause.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpIncomingRequestEndWithServerFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the incoming request end with server failure.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="authorizationSource">The authorization source.</param>
+            <param name="authorizationAction">The authorization action.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="userAgent">The user agent.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientIpAddress">The client ip address.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="failureCause">The failure cause.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpIncomingRequestEndWithClientFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the incoming request end with client failure.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="authorizationSource">The authorization source.</param>
+            <param name="authorizationAction">The authorization action.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="userAgent">The user agent.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientIpAddress">The client ip address.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="failureCause">The failure cause.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpOutgoingRequestStart(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the outgoing request start.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpOutgoingRequestEndWithSuccess(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the outgoing request end with success.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpOutgoingRequestEndWithServerFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the outgoing request end with server failure.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.HttpOutgoingRequestEndWithClientFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.String,System.Int64,System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            HTTPs the outgoing request end with client failure.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="httpMethod">The HTTP method.</param>
+            <param name="hostName">Name of the host.</param>
+            <param name="targetUri">The target URI.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="clientSessionId">The client session identifier.</param>
+            <param name="clientApplicationId">The client application identifier.</param>
+            <param name="apiVersion">The API version.</param>
+            <param name="contentLength">Length of the content.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+            <param name="referer">The referrer.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.StorageRequestStart(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Storages the request start.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.Debug(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Debugs trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherCritical(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="queueMessage">The queue message.</param>
+            <param name="exception">The exception.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="dequeueCount">The de-queue count.</param>
+            <param name="insertionTime">The insertion time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherDebug(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="queueMessage">The queue message.</param>
+            <param name="exception">The exception.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="dequeueCount">The de-queue count.</param>
+            <param name="insertionTime">The insertion time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherError(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="queueMessage">The queue message.</param>
+            <param name="exception">The exception.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="dequeueCount">The de-queue count.</param>
+            <param name="insertionTime">The insertion time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherOperation(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="queueMessage">The queue message.</param>
+            <param name="exception">The exception.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="dequeueCount">The de-queue count.</param>
+            <param name="insertionTime">The insertion time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherQueueDepth(System.String,System.String,System.String,System.Double,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="storageAccount">The storage account.</param>
+            <param name="queue">The queue.</param>
+            <param name="depth">The depth.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.DispatcherWarning(System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Dispatcher trace.
+            </summary>
+            <param name="dispatcherName">Name of the dispatcher.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="queueMessage">The queue message.</param>
+            <param name="exception">The exception.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="dequeueCount">The de-queue count.</param>
+            <param name="insertionTime">The insertion time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.Error(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Error trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobCritical(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobDebug(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobDefinition(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.Int64,System.String,System.String,System.Int32,System.Int32,System.Int64,System.String,System.Int32,System.Int32,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="version">The version.</param>
+            <param name="callback">The callback.</param>
+            <param name="location">The location.</param>
+            <param name="locationsAffinity">The locations affinity.</param>
+            <param name="flags">The flags.</param>
+            <param name="state">The state.</param>
+            <param name="executionState">State of the execution.</param>
+            <param name="startTime">The start time.</param>
+            <param name="endTime">The end time.</param>
+            <param name="repeatCount">The repeat count.</param>
+            <param name="repeatInterval">The repeat interval.</param>
+            <param name="repeatUnit">The repeat unit.</param>
+            <param name="repeatSchedule">The repeat schedule.</param>
+            <param name="currentRepeatCount">The current repeat count.</param>
+            <param name="retryCount">The retry count.</param>
+            <param name="retryInterval">The retry interval.</param>
+            <param name="retryUnit">The retry unit.</param>
+            <param name="currentRetryCount">The current retry count.</param>
+            <param name="currentExecutionCount">The current execution count.</param>
+            <param name="timeout">The timeout.</param>
+            <param name="retention">The retention.</param>
+            <param name="nextExecutionTime">The next execution time.</param>
+            <param name="lastExecutionTime">The last execution time.</param>
+            <param name="lastExecutionStatus">The last execution status.</param>
+            <param name="createdTime">The created time.</param>
+            <param name="changedTime">The changed time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="totalSucceededCount">The total succeeded count.</param>
+            <param name="totalCompletedCount">The total completed count.</param>
+            <param name="totalFailedCount">The total failed count.</param>
+            <param name="totalFaultedCount">The total faulted count.</param>
+            <param name="totalPostponedCount">The total postponed count.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobDispatchingError(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobThrottle(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Jobs the throttle.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="callback">The callback.</param>
+            <param name="throttlingType">Type of the throttling.</param>
+            <param name="throttlingKey">The throttling key.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobError(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobHistory(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="callback">The callback.</param>
+            <param name="startTime">The start time.</param>
+            <param name="endTime">The end time.</param>
+            <param name="executionTimeInMilliseconds">The execution time in milliseconds.</param>
+            <param name="executionDelayInMilliseconds">The execution delay in milliseconds.</param>
+            <param name="executionIntervalInMilliseconds">The execution interval in milliseconds.</param>
+            <param name="executionStatus">The execution status.</param>
+            <param name="executionMessage">The execution message.</param>
+            <param name="executionDetails">The execution details.</param>
+            <param name="nextExecutionTime">The next execution time.</param>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobOperation(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.JobWarning(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Job trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="jobPartition">The job partition.</param>
+            <param name="jobId">The job identifier.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.StorageRequestEndWithClientFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Storage trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.StorageRequestEndWithServerFailure(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Storage trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.StorageRequestEndWithSuccess(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Int64,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            Storage trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="accountName">Name of the account.</param>
+            <param name="resourceType">Type of the resource.</param>
+            <param name="resourceName">Name of the resource.</param>
+            <param name="clientRequestId">The client request identifier.</param>
+            <param name="serviceRequestId">The service request identifier.</param>
+            <param name="durationInMilliseconds">The duration in milliseconds.</param>
+            <param name="httpStatusCode">The HTTP status code.</param>
+            <param name="exceptionMessage">The exception message.</param>
+            <param name="errorCode">The error code.</param>
+            <param name="errorMessage">The error message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.Warning(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            Warning trace.
+            </summary>
+            <param name="subscriptionId">The subscription identifier.</param>
+            <param name="correlationId">The correlation identifier.</param>
+            <param name="principalOid">The principal OID.</param>
+            <param name="principalPuid">The principal PUID.</param>
+            <param name="tenantId">The tenant identifier.</param>
+            <param name="operationName">Name of the operation.</param>
+            <param name="message">The message.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.OnStorageRequestStart">
+            <summary>
+            Gets or sets the on storage request start.
+            </summary>
+            <value>
+            The on storage request start.
+            </value>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.OnStorageRequestEndWithSuccess">
+            <summary>
+            Gets or sets the on database query completed.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.OnStorageRequestEndWithServerFailure">
+            <summary>
+            Gets or sets the on database procedure started.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.OnWarning">
+            <summary>
+            Gets or sets the on warning.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.Mock.MockCommonEventSource.OnError">
+            <summary>
+            Gets or sets the on error.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.ResourceDefinitionValidator">
+            <summary>
+            Extensions methods for ResourceDefinition class
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.ResourceDefinitionValidator.ValidateResponseIsEquivalentToResource(Microsoft.Azure.ResourceProvider.Contracts.ResourceManagement.ResourceDefinition,System.Net.Http.HttpResponseMessage,System.Boolean,Microsoft.Azure.ResourceProvider.ResourceManagement.ProvisioningState)">
+            <summary>
+            Validates the resource is equivalent to response.
+            </summary>
+            <param name="originalResourceDefinition">The original resource definition.</param>
+            <param name="httpResponseMessage">The HTTP response message.</param>
+            <param name="checkForETag">if set to <c>true</c> [check for e tag].</param>
+            <param name="expectedProvisioningState">Expected state of the provisioning.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.ResourceDefinitionValidator.ValidateResourceCollectionsAreEquivalent(System.Collections.Generic.IReadOnlyList{Microsoft.Azure.ResourceProvider.Contracts.ResourceManagement.ResourceDefinition},System.Collections.Generic.IReadOnlyList{Microsoft.Azure.ResourceProvider.Contracts.ResourceManagement.ResourceDefinition},System.Boolean,Microsoft.Azure.ResourceProvider.ResourceManagement.ProvisioningState)">
+            <summary>
+            Validates the resource collections are equivalent.
+            </summary>
+            <param name="originalResourceDefinitions">The original resource definitions.</param>
+            <param name="responseResourceDefinitions">The response resource definitions.</param>
+            <param name="checkForETag">if set to <c>true</c> [check for e tag].</param>
+            <param name="expectedProvisioningState">Expected state of the provisioning.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Extensions.ResourceDefinitionValidator.ValidateResourcesAreEquivalent(Microsoft.Azure.ResourceProvider.Contracts.ResourceManagement.ResourceDefinition,Microsoft.Azure.ResourceProvider.Contracts.ResourceManagement.ResourceDefinition,System.Boolean,Microsoft.Azure.ResourceProvider.ResourceManagement.ProvisioningState)">
+            <summary>
+            Validates the resources are equivalent.
+            </summary>
+            <param name="originalResourceDefinition">The original resource definition.</param>
+            <param name="responseResourceDefinition">The response resource definition.</param>
+            <param name="checkForETag">if set to <c>true</c> [check for e tag].</param>
+            <param name="expectedProvisioningState">Expected state of the provisioning.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost">
+            <summary>
+            The service test host server.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.Timeout">
+            <summary>
+            The default timeout.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.syncLock">
+            <summary>
+            The synchronize lock.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.httpServer">
+            <summary>
+            The self hosted http server that is part of the test host.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.httpConfiguration">
+            <summary>
+            The HTTP configuration.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.#ctor(System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost"/> class.
+            </summary>
+            <param name="baseAddressUri">The base address URI.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.Start">
+            <summary>
+            Starts the test service host at the specified gateway address.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.Stop">
+            <summary>
+            Stops the test service host.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.Dispose">
+            <summary>
+            Dispose disposable fields
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources.
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.ResourceProviderTestHost.HttpConfiguration">
+            <summary>
+            Gets the HTTP configuration.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities">
+            <summary>
+            Security utilities.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.RegExPattern">
+            <summary>
+            Password pattern.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.ValidChars">
+            <summary>
+            The character set used to generate the password: Uppercase, lowercase, digits, and symbols.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.resourceNameSurrogates">
+            <summary>
+            The cached surrogate characters used for random resource name generation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.FindEncryptionCertificate(System.String,System.Int32,System.Func{System.Security.Cryptography.X509Certificates.X509Certificate2,System.Boolean})">
+            <summary>
+            Finds an encryption certificate for testing with encrypted data.
+            Looks for a certificate which has an accessible private key of a minimum size (in bits)
+            that can construct an instance of the <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider"/> class.
+            </summary>
+            <param name="errorMessage">The error message.</param>
+            <param name="minimumKeySizeInBits">Minimum size of the key, in bits (default value is 1024).</param>
+            <param name="predicate">An optional predicate the chosen certificate must satisfy.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.NewRandomString(System.Int32,System.String,System.String)">
+            <summary>
+            Generates a new random password.
+            </summary>
+            <param name="length">The length of the password.</param>
+            <param name="regexPattern">The regular expression pattern to which the generated password must conform.</param>
+            <param name="validChars">The collection of valid characters.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.NewRandomResourceIdentifier(System.Int32)">
+            <summary>
+            Generates a new random resource identifier with some random number of international characters.
+            </summary>
+            <param name="length">The number of characters in the identifier. Note, that if surrogates are included, they will be counted as several chars.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.InitializeNewEndpointCredentialsConfiguration(System.String,System.String)">
+            <summary>
+            Initializes a new endpoint credentials configuration with random basic authentication passwords.
+            </summary>
+            <param name="defaultUserName">Default name of the user. If null, uses a unique username for each endpoint.</param>
+            <param name="defaultPassword">The default password. If null, uses a random password for each endpoint.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.InitializeBasicAuthenticationEndpointCredentials(System.String,System.String)">
+            <summary>
+            Initializes the basic authentication endpoint credentials.
+            </summary>
+            <param name="username">The username.</param>
+            <param name="password">The password.</param>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.SecurityUtilities.ResourceNameSurrogates">
+            <summary>
+            Gets surrogate characters used for random resource name generation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities">
+            <summary>
+            Storage Test Utilities
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.GetConnectionString(System.String,System.String)">
+            <summary>
+            Gets a connection string.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <returns>connection string</returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.ExecuteDatabaseScripts(System.String,System.String)">
+            <summary>
+            Executes database scripts to create a database.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.CreateConnection(System.String,System.String)">
+            <summary>
+            Creates a SQL connection
+            </summary>
+            <param name="server">SQL server</param>
+            <param name="database">SQL database</param>
+            <returns>Opened connection that need to be closed/disposed by the caller</returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.GetServerDataPath(System.String)">
+            <summary>
+            Retrieves path to where data files are stored by SQL server
+            </summary>
+            <param name="server">SQL server</param>
+            <returns>Path to where data files are stored by SQL server</returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DropLogin(System.String,System.String)">
+            <summary>
+            Drops the login.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="login">The login.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DropUser(System.String,System.String)">
+            <summary>
+            Drops the user.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="user">The user.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DropDatabase(System.String,System.String)">
+            <summary>
+            Drops a database.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DisconnectDatabaseConnection(System.String,System.String)">
+            <summary>
+            Disconnects database connections.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.CreateDatabase(System.String,System.String)">
+            <summary>
+            Creates a new database.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DeployDatabase(Microsoft.Azure.ResourceProvider.Setup.Database.DatabaseSchema,System.String)">
+            <summary>
+            Installs a database unless DISABLE_DB_DEPLOYMENT environment variable is set. 
+            There is no specific format of the value and any non-empty string will disable the deployment procedure.
+            Usage: 
+            Open View -> Other Windows -> Package Manager Console
+            To skip DB deployment type: [Environment]::SetEnvironmentVariable("DISABLE_DB_DEPLOYMENT", "PS1") 
+            To enable back DB deployment type: [Environment]::SetEnvironmentVariable("DISABLE_DB_DEPLOYMENT", "") 
+            </summary>
+            <param name="schema">Schema to install</param>
+            <param name="connectionString">database connection string</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.CreateTable(System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Creates a table in a database.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="tableName">Name of the table.</param>
+            <param name="columns">The SQL syntax for the table columns.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DeleteAllRows(System.String,System.String,System.String[])">
+            <summary>
+            Delete all rows in tables.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="tableNames">The table names.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.DeleteAllRowsWithoutConstraintCheck(System.String,System.String,System.String[])">
+            <summary>
+            Delete all rows in tables. Disable the constraint check before delete and enable it later.
+            This can be used for the tables with FK constraints. 
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="tableNames">The table names.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.ExecuteReader(System.String,System.String,System.String,System.Action{System.Data.IDataReader})">
+            <summary>
+            Executes a query with data reader result.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="query">The query.</param>
+            <param name="lineVerifier">Line verifier, will be called for every line in the result.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.ExecuteNonQuery(System.String,System.String,System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Executes a query with no output.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="query">The query.</param>
+            <param name="parameters">Optional query parameters</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.StorageUtilities.ExecuteProcedure(System.String,System.String,System.String,System.Data.SqlClient.SqlParameter[])">
+            <summary>
+            Executes a query with no output.
+            </summary>
+            <param name="server">The server.</param>
+            <param name="database">The database.</param>
+            <param name="procedureName">Name of the procedure.</param>
+            <param name="parameters">The parameters.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext">
+            <summary>
+            Creates a subscription context in which resources can be created.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.httpClient">
+            <summary>
+            The HTTP client.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.providerNamespace">
+            <summary>
+            The provider namespace
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.baseEndpointUri">
+            <summary>
+            The base endpoint URI.
+            </summary>
+        </member>
+        <member name="F:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.baseReferrerEndpointUri">
+            <summary>
+            The base referrer endpoint URI.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.#ctor(System.Net.Http.HttpClient,System.String,System.Uri,System.Uri,Microsoft.Azure.ResourceProvider.Contracts.ServiceQuotaGroup[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext"/> class.
+            </summary>
+            <param name="httpClient">The client.</param>
+            <param name="providerNamespace">The provider namespace.</param>
+            <param name="baseEndpointUri">The subscription endpoint URI.</param>
+            <param name="baseReferrerEndpointUri">The base referrer endpoint URI.</param>
+            <param name="serviceQuotaGroups">The service quota groups for this subscription.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.Dispose">
+            <summary>
+            Cleanup resources.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.Dispose(System.Boolean)">
+            <summary>
+            Cleanup resources.
+            </summary>
+            <param name="disposing">True - If managed resources are to be disposed.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.ProvisionSubscription(Microsoft.Azure.ResourceProvider.Contracts.ResourceProviderSubscriptionState,Microsoft.Azure.ResourceProvider.Contracts.ServiceQuotaGroup[],System.Net.HttpStatusCode)">
+            <summary>
+            Create or update the subscription.
+            </summary>
+            <param name="subscriptionState">The subscription state.</param>
+            <param name="serviceQuotaGroups">The service quota groups for this subscription.</param>
+            <param name="expectedStatusCode">The expected HTTP status code.</param>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.SubscriptionId">
+            <summary>
+            Gets or sets the subscription Id.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.SubscriptionContext.SubscriptionState">
+            <summary>
+            Gets or sets the subscription state.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable">
+            <summary>
+            Test environment variable.
+            Usage:
+            Open View -> Other Windows -> Package Manager Console
+            To set variable type: [Environment]::SetEnvironmentVariable("DISABLE_DB_DEPLOYMENT", "PS1") 
+            To erase variable type: [Environment]::SetEnvironmentVariable("DISABLE_DB_DEPLOYMENT", "") 
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable"/> class.
+            </summary>
+            <param name="name">The name.</param>
+            <exception cref="T:System.ArgumentException">name;The variable name must be a non-empty string.</exception>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable.Name">
+            <summary>
+            Gets an environment variable name.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable.Value">
+            <summary>
+            Gets the value.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Azure.ResourceProvider.TestUtilities.TestEnvironmentVariable.IsSet">
+            <summary>
+            Gets a value indicating whether this variable is set.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.UsageUtilities">
+            <summary>
+            Usage test utilities
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.UsageUtilities.AssertAreEqual(Microsoft.Azure.ResourceProvider.Contracts.UsageRecord,Microsoft.Azure.ResourceProvider.Contracts.UsageRecord)">
+            <summary>
+            Compares the usage records.
+            </summary>
+            <param name="expected">The expected.</param>
+            <param name="actual">The actual.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.UsageUtilities.CreateUsageRecord(System.Double,System.String,System.Boolean)">
+            <summary>
+            Creates the usage record.
+            </summary>
+            <param name="quantity">The quantity.</param>
+            <param name="subscriptionId">The subscription Id.</param>
+            <param name="populateOptionalFields">The populate Optional Fields.</param>
+            <returns>A usage record.</returns>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.UsageUtilities.AssertAreEqual(System.Collections.Generic.IEnumerable{Microsoft.Azure.ResourceProvider.Contracts.UsageRecord},System.Collections.Generic.IEnumerable{Microsoft.Azure.ResourceProvider.Contracts.UsageRecord})">
+            <summary>
+            Asserts the usage records. The order is irrelevant.
+            </summary>
+            <param name="expectedRecords">The expected records.</param>
+            <param name="actualRecords">The actual records.</param>
+        </member>
+        <member name="T:Microsoft.Azure.ResourceProvider.TestUtilities.Wait">
+            <summary>
+            The wait helper for unit testing.
+            </summary>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Wait.Until(System.TimeSpan,System.TimeSpan,System.Func{System.Boolean},System.String)">
+            <summary>
+            Waits for the specified probing test.
+            </summary>
+            <param name="probingInterval">The probing interval.</param>
+            <param name="maximumWaitTime">The maximum wait time.</param>
+            <param name="probe">The probe function to test.</param>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:Microsoft.Azure.ResourceProvider.TestUtilities.Wait.Until(System.TimeSpan,System.TimeSpan,System.Func{System.Threading.Tasks.Task{System.Boolean}},System.String)">
+            <summary>
+            Waits for the specified probing test.
+            </summary>
+            <param name="probingInterval">The probing interval.</param>
+            <param name="maximumWaitTime">The maximum wait time.</param>
+            <param name="probe">The probe function to test.</param>
+            <param name="message">The message.</param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,16 @@
+{
+    "$schema": "https://gallery.azure.com/schemas/2015-02-12/UIDefinition.json#",
+    "createDefinition": {
+        "createBlade": {
+            "name": "CreateBlade",
+            "extension": "Microsoft_Azure_ProjectOxford"
+        },
+        "startboardPart": {
+            "name": "CognitiveServicesResourcePart",
+            "extension": "Microsoft_Azure_ProjectOxford"
+        },
+        "startboardPartKeyId": "id"
+    },
+    "options": {
+    }
+}

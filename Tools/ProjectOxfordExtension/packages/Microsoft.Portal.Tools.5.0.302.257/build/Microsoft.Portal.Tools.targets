@@ -1,0 +1,665 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PortalDefinitionTargetFolder Condition="'$(PortalDefinitionTargetFolder)' == ''">Client</PortalDefinitionTargetFolder>
+    <EmbeddedTypeScriptResourcePrefixReplace Condition="'$(EmbeddedTypeScriptResourcePrefixReplace)' == ''">Client\</EmbeddedTypeScriptResourcePrefixReplace>
+    <EmbeddedTypeScriptResourcePrefix Condition="'$(EmbeddedTypeScriptResourcePrefix)' == ''">Content\Scripts\</EmbeddedTypeScriptResourcePrefix>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildThisFileDirectory)</VSToolsPath>
+    <TscToolPath Condition="'$(TscToolPath)' == ''">$(MSBuildThisFileDirectory)\TypeScript</TscToolPath>
+    <PortalSdkInstallPath Condition="'$(PortalSdkInstallPath)' == ''">$(MSBuildThisFileDirectory)</PortalSdkInstallPath>
+    <!-- Ensure when building in VS that targets using this run after BuildOnlySettings to ensuring BuildingProject is true and generateinterfaces runs -->
+    <VsBuildAfterTargets Condition="'$(BuildingInsideVisualStudio)' == 'true'">BuildOnlySettings</VsBuildAfterTargets>
+    <GeneratePortalDefinitionAsFunction Condition="'$(GeneratePortalDefinitionAsFunction)' == ''">false</GeneratePortalDefinitionAsFunction>
+  </PropertyGroup>
+  <ItemGroup>
+    <GenerateInterfacesExcludeAssemblies
+        Condition="'@(GenerateInterfacesExcludeAssemblies)' == ''"
+        Include="Microsoft.Portal.HubsExtension;Microsoft.Portal.TypeMetadata" />
+  </ItemGroup>
+
+  <!-- ### CompilePdl ### -->
+  <!-- Compiles PDL into ExtensionDefinition.ts and Manifest.ts -->
+  <UsingTask TaskName="Microsoft.Portal.Pdc.Core.Pdc"
+             AssemblyFile="$(PortalSdkInstallPath)\pdc.core.dll" />
+
+  <ItemGroup>
+    <HTMLTemplate Include="**\*.html" />
+    <CSSTemplate Include="**\*.css" />
+  </ItemGroup>
+
+  <Target Name="CompilePdl"
+          BeforeTargets="PreComputeCompileTypeScript"
+          AfterTargets="$(VsBuildAfterTargets)"
+          Inputs="@(PortalDefinition);@(ExtensionReference);@(HTMLTemplate);@(CSSTemplate)"
+          Outputs="$(PortalDefinitionTargetFolder)\_generated\ExtensionDefinition.ts;$(PortalDefinitionTargetFolder)\_generated\ViewModelFactories.ts;$(PortalDefinitionTargetFolder)\_generated\Manifest.ts"
+          Condition="'$(BuildingProject)' != 'false' and '@(PortalDefinition)' != ''">
+    <Message Text="Compiling Portal Definition files. Using task from $(PortalSdkInstallPath)\pdc.core.dll" />
+    <Pdc
+      Sources="@(PortalDefinition)"
+      ExtensionReferences="@(ExtensionReference)"
+      TargetFolder="$(PortalDefinitionTargetFolder)"
+      ExtensionVersion="$(ExtensionVersion)"
+      ExtensionDescription="$(ExtensionDescription)"
+      EmitTypeReferencesReferences="$(EmitTypeReferencesReferences)"
+      GenerateDefinitionAsFunction="$(GeneratePortalDefinitionAsFunction)"
+      StaticEnvironmentConfigPath="$(StaticEnvironmentConfigPath)" />
+
+    <ItemGroup>
+      <TypeScriptCompile Include="$(PortalDefinitionTargetFolder)\_generated\ExtensionDefinition.ts;$(PortalDefinitionTargetFolder)\_generated\ViewModelFactories.ts;$(PortalDefinitionTargetFolder)\_generated\Manifest.ts">
+        <TsLintLevel>Minimal</TsLintLevel>
+      </TypeScriptCompile>
+    </ItemGroup>
+  </Target>
+
+  <!-- CleanPdl -->
+  <PropertyGroup>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      CleanPdl;
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanPdl"
+          Inputs="@(PortalDefinition);@(ExtensionReference)"
+          Outputs="$(PortalDefinitionTargetFolder)\_generated\some_file_that_should_never_exist.extension">
+    <Message Text="Cleaning Portal Definition files" />
+    <Pdc
+      Sources="@(PortalDefinition)"
+      ExtensionReferences="@(ExtensionReference)"
+      TargetFolder="$(PortalDefinitionTargetFolder)"
+      Action="Clean" />
+  </Target>
+
+  <!-- ### GenerateInterfaces ###-->
+  <!-- Generates typescript versions of interfaces defined in .net assemblies -->
+  <UsingTask TaskName="Microsoft.Portal.Pdc.Core.GenerateInterfaces"
+             AssemblyFile="$(PortalSdkInstallPath)\pdc.core.dll" />
+
+  <!-- ### GenerateTypeMetadataScript ###-->
+  <!-- Generates TypeMetadata.ts needed at runtime by serverless extensions -->
+  <UsingTask TaskName="Microsoft.Portal.Pdc.Core.GenerateTypeMetadataScript"
+             AssemblyFile="$(PortalSdkInstallPath)\pdc.core.dll" />
+
+  <PropertyGroup>
+    <OutputDefinitionsDir>$(PortalDefinitionTargetFolder)\_generated\</OutputDefinitionsDir>
+    <CamelCasePropertyNames Condition="'$(CamelCasePropertyNames)' == ''">true</CamelCasePropertyNames>
+    <_LastGenerateInterfacesSuccessDirectory>$(MSBuildProjectDirectory)\$(OutputDefinitionsDir)</_LastGenerateInterfacesSuccessDirectory>
+    <_LastGenerateInterfacesSuccessFile>$(_LastGenerateInterfacesSuccessDirectory)_lastgeneration.succeeded</_LastGenerateInterfacesSuccessFile>
+  </PropertyGroup>
+
+  <Target Name="_GetReferencedAssemblies">
+    <MSBuild Projects="@(ProjectReference)" Targets="GetTargetPath">
+      <Output TaskParameter="TargetOutputs" ItemName="_ReferencedAssemblies" />
+    </MSBuild>
+    <ItemGroup>
+      <_CartesianProduct Include="@(_ReferencedAssemblies)">
+        <ExcludeFilename>%(GenerateInterfacesExcludeAssemblies.Identity)</ExcludeFilename>
+      </_CartesianProduct>
+      <_ReferencedAssembliesToExclude Include="@(_CartesianProduct)" Condition="'%(_CartesianProduct.Filename)' == '%(_CartesianProduct.ExcludeFilename)'" />
+      <_FilteredReferencedAssemblies Include="@(_ReferencedAssemblies)" Exclude="@(_ReferencedAssembliesToExclude)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateInterfaces"
+          BeforeTargets="CompilePdl"
+          AfterTargets="$(VsBuildAfterTargets)"
+          Inputs="@(_FilteredReferencedAssemblies)"
+          Outputs="$(_LastGenerateInterfacesSuccessFile)"
+          DependsOnTargets="_GetReferencedAssemblies"
+          Condition="'$(BuildingProject)' != 'false'">
+
+    <Message Text="Generating data model interfaces from (filtered) project references: @(_FilteredReferencedAssemblies)" />
+    <GenerateInterfaces
+      AssemblyPaths="@(_FilteredReferencedAssemblies)"
+      OutputDefinitionsDir="$(OutputDefinitionsDir)"
+      CamelCasePropertyNames="$(CamelCasePropertyNames)" />
+
+    <Message Text="Generating type metadata module from (filtered) project references: @(_FilteredReferencedAssemblies)"
+             Condition="'$(EmitMetadataModule)' == 'true'" />
+    <GenerateTypeMetadataScript
+      AssemblyPaths="@(_FilteredReferencedAssemblies)"
+      OutputDefinitionsDir="$(OutputDefinitionsDir)"
+      Condition="'$(EmitMetadataModule)' == 'true'" />
+
+    <ItemGroup>
+      <_Lines Include="# Auto-generated file to keep track of incremental builds" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(_LastGenerateInterfacesSuccessFile)"
+                      Lines="@(_Lines)"
+                      Overwrite="True"
+                      Encoding="UTF-8"
+                      Condition="Exists('$(_LastGenerateInterfacesSuccessDirectory)')" />
+  </Target>
+
+  <!-- CleanInterfaces -->
+  <!-- NOTE: The CleanInterfaces needs to be BEFORE the ClientDependsOn or clean will fail. -->
+  <PropertyGroup>
+    <CleanDependsOn>
+      CleanInterfaces;
+      $(CleanDependsOn);
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanInterfaces"
+          Inputs="@(ProjectReference)"
+          Outputs="$(PortalDefinitionTargetFolder)\_generated\some_file_that_should_never_exist.extension"
+          DependsOnTargets="_GetReferencedAssemblies">
+
+    <Message Text="Cleaning data model interfaces" />
+    <GenerateInterfaces
+      AssemblyPaths="@(_FilteredReferencedAssemblies)"
+      OutputDefinitionsDir="$(OutputDefinitionsDir)"
+      CamelCasePropertyNames="$(CamelCasePropertyNames)"
+      Action="Clean" />
+    <Delete Files="$(MSBuildProjectDirectory)\$(OutputDefinitionsDir)_lastgeneration.succeeded"
+            Condition="Exists('$(MSBuildProjectDirectory)\$(OutputDefinitionsDir)_lastgeneration.succeeded')" />
+  </Target>
+
+  <!-- ### Generate Resources ### -->
+  <!-- Generates typescript resources from resx files -->
+
+  <!-- Ensures that if this file changes it forces a TypeScript rebuild -->
+  <PropertyGroup>
+    <TypeScriptAllProjects>$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)</TypeScriptAllProjects>
+  </PropertyGroup>
+
+  <Target Name="PrepareGenerateTypeScriptImageResources"
+          Inputs="@(TypeScriptGeneratedImageResource)"
+          Outputs="@(TypeScriptGeneratedImageResource->'%(Identity)-no-match-always-run')"
+          BeforeTargets="PreComputeCompileTypeScript">
+
+    <ItemGroup>
+      <_InputFolderPath Include="%(TypeScriptGeneratedImageResource.InputFilesFolder)" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_OutputFilePathArg>/OutputFilePath=%(TypeScriptGeneratedImageResource.FullPath)</_OutputFilePathArg>
+      <_InputFolderPathArg>/InputFolderPath=%(_InputFolderPath.FullPath)</_InputFolderPathArg>
+      <_InputFolderPathArg>$(_InputFolderPathArg.Trim('\'))</_InputFolderPathArg>
+      <_NamespaceArg>/Namespace=%(TypeScriptGeneratedImageResource.Namespace)</_NamespaceArg>
+      <GenerateTypeScriptImageResourcesExecArgs>"$(_OutputFilePathArg)" "$(_InputFolderPathArg)" "$(_NamespaceArg)"</GenerateTypeScriptImageResourcesExecArgs>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <!-- In case file is listed in the project, don't include it twice -->
+      <TypeScriptCompile Remove="%(TypeScriptGeneratedImageResource.Identity)" />
+      <TypeScriptCompile Include="%(TypeScriptGeneratedImageResource.Identity)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateTypeScriptImageResources"
+          Inputs="@(TypeScriptGeneratedImageResource)"
+          Outputs="%(TypeScriptGeneratedImageResource.Identity)"
+          BeforeTargets="CompileTypeScript"
+          DependsOnTargets="PrepareGenerateTypeScriptImageResources">
+
+    <Exec Command='"$(PortalSdkInstallPath)\GenerateResourcesRunner.exe" $(GenerateTypeScriptImageResourcesExecArgs)' />
+  </Target>
+
+  <!-- Filter for only the items with TypeScriptOutputFile -->
+  <Target Name="GetTypeScriptResxResources">
+    <ItemGroup>
+      <TypeScriptResxResource Include="@(EmbeddedResource)"
+                              Condition="'%(EmbeddedResource.TypeScriptOutputFile)' != ''" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PrepareGenerateTypeScriptResxResources"
+          Inputs="%(TypeScriptResxResource.Identity)"
+          Outputs="@(TypeScriptResxResource->'%(TypeScriptOutputFile)-no-match-always-run')"
+          BeforeTargets="PreComputeCompileTypeScript"
+          DependsOnTargets="GetTypeScriptResxResources">
+
+    <PropertyGroup>
+      <_OutputFilePathArg>/OutputFilePath=%(TypeScriptResxResource.TypeScriptOutputFile)</_OutputFilePathArg>
+      <_ResourceNamespaceArg>/ResourceNamespace=%(TypeScriptResxResource.TypeScriptNamespace)</_ResourceNamespaceArg>
+      <_InputResxFilePathArg>/InputResxFilePath=%(TypeScriptResxResource.FullPath)</_InputResxFilePathArg>
+      <_NamespaceArg>/Namespace=%(TypeScriptResxResource.TypeScriptNamespace)</_NamespaceArg>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <TypeScriptResxResource>
+        <OutputFilePathArg>/OutputFilePath=%(TypeScriptOutputFile)</OutputFilePathArg>
+        <ResourceNamespaceArg>/ResourceNamespace=%(TypeScriptNamespace)</ResourceNamespaceArg>
+        <InputResxFilePathArg>/InputResxFilePath=%(FullPath)</InputResxFilePathArg>
+        <NamespaceArg>/Namespace=%(TypeScriptNamespace)</NamespaceArg>
+      </TypeScriptResxResource>
+      <TypeScriptResxResource>
+        <ExecArgs>"%(OutputFilePathArg)" "%(ResourceNamespaceArg)" "%(InputResxFilePathArg)" "%(NamespaceArg)"</ExecArgs>
+      </TypeScriptResxResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <!-- In case file is listed in the project, don't include it twice -->
+      <TypeScriptCompile Remove="%(TypeScriptResxResource.TypeScriptOutputFile)" />
+      <TypeScriptCompile Include="%(TypeScriptResxResource.TypeScriptOutputFile)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateTypeScriptResxResources"
+          Inputs="%(TypeScriptResxResource.Identity)"
+          Outputs="%(TypeScriptResxResource.TypeScriptOutputFile)"
+          BeforeTargets="CompileTypeScript"
+          DependsOnTargets="PrepareGenerateTypeScriptResxResources">
+
+    <Exec Command='"$(PortalSdkInstallPath)\GenerateResourcesRunner.exe" %(TypeScriptResxResource.ExecArgs)' />
+  </Target>
+
+  <!-- Appending to FileWrites item group when compiling would be preferred to a custom clean target, but that only works when the files are known to be present in the output or intermediate directories. -->
+  <PropertyGroup>
+    <CleanDependsOn>
+      CleanGeneratedTypeScriptResources;
+      $(CleanDependsOn)
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanGeneratedTypeScriptResources">
+    <!-- Specify the items and CoreClean takes care of the actual deletion -->
+    <ItemGroup>
+      <Clean Include="%(TypeScriptGeneratedImageResource.FullPath)" />
+      <_CleanTypeScriptOutputFileFullPaths Include="%(EmbeddedResource.TypeScriptOutputFile)" />
+      <Clean Include="%(_CleanTypeScriptOutputFileFullPaths.FullPath)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Generate resources files from ResJson embedded resources -->
+  <UsingTask TaskName="Microsoft.Portal.Framework.GenerateResourcesFromResJson"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Target Name="GetResJsonResources"
+          BeforeTargets="CompileTypeScript">
+    <ItemGroup>
+      <ResJsonResource Include="@(EmbeddedResource)"
+                       Condition="'%(EmbeddedResource.Extension)' == '.resjson'" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateResourcesFromResJson"
+          BeforeTargets="CompileTypeScript" 
+          AfterTargets="GetResJsonResources"
+          Condition="'@(ResJsonResource)'!=''">
+    <GenerateResourcesFromResJson 
+        EmbeddedResources="%(ResJsonResource.Identity)" 
+        OutputDirectory="$(BaseIntermediateOutputPath)\ResJsonResources\%(ResJsonResource.RelativeDir)" />
+    <ItemGroup>
+      <GeneratedResources Include="$(BaseIntermediateOutputPath)\ResJsonResources\**\*.resources"/>
+      <EmbeddedResource Include="@(GeneratedResources)">
+          <!-- Necessary to preserve the original namespace for the embedded resources -->
+          <LogicalName>$(RootNamespace).$([System.String]::new('%(GeneratedResources.RecursiveDir)').Replace('\', '.'))%(GeneratedResources.Filename)%(GeneratedResources.Extension)</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+  
+  <!-- ### GenerateTypeScriptSvgFiles ### -->
+  <!-- Generates typescript resources from svg files -->
+  <!-- Ensures that if this file changes it forces a TypeScript rebuild -->
+  <PropertyGroup>
+    <TypeScriptAllProjects>$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)</TypeScriptAllProjects>
+  </PropertyGroup>
+
+  <UsingTask TaskName="ProcessSvgTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Target Name="PrepareGenerateTypeScriptSvgFiles">
+    <ItemGroup>
+      <TypeScriptCompile Include="%(SvgTypeScriptCompile.Identity)">
+        <TsLintLevel>Minimal</TsLintLevel>
+      </TypeScriptCompile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateTypeScriptSvgFiles"
+          Inputs="@(Svg)"
+          Outputs="%(SvgTypeScriptCompile.Identity)"
+          BeforeTargets="PreComputeCompileTypeScript"
+          DependsOnTargets="PrepareGenerateTypeScriptSvgFiles"
+          Condition="'@(Svg)' != ''">
+
+    <Message Text="Generating '%(SvgTypeScriptCompile.Identity)' from: @(Svg)" />
+    <ProcessSvgTask
+      Namespace="%(SvgTypeScriptCompile.Namespace)"
+      Amd="%(SvgTypeScriptCompile.IsAmd)"
+      SvgFiles="@(Svg)"
+      OutputLocation="%(SvgTypeScriptCompile.Identity)" />
+  </Target>
+
+  <!-- CleanGenerateTypeScriptSvgFiles -->
+  <!-- Appending to FileWrites item group when compiling would be preferred to a custom clean target, but that only works when the files are known to be present in the output or intermediate directories. -->
+  <PropertyGroup>
+    <CleanDependsOn>
+      CleanGenerateTypeScriptSvgFiles;
+      $(CleanDependsOn)
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanGenerateTypeScriptSvgFiles">
+    <!-- Specify the items and CoreClean takes care of the actual deletion -->
+    <ItemGroup>
+      <Clean Include="%(SvgTypeScriptCompile.FullPath)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- ### GenerateTypeScriptSvgLogoFiles ### -->
+  <!-- Generates typescript resources from svg logo files -->
+  <!-- Ensures that if this file changes it forces a TypeScript rebuild -->
+  <PropertyGroup>
+    <TypeScriptAllProjects>$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)</TypeScriptAllProjects>
+  </PropertyGroup>
+
+  <UsingTask TaskName="ProcessSvgLogoTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Target Name="PrepareGenerateTypeScriptSvgLogoFiles">
+    <ItemGroup>
+      <TypeScriptCompile Include="%(SvgLogoTypeScriptCompile.Identity)">
+        <TsLintLevel>Minimal</TsLintLevel>
+      </TypeScriptCompile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="GenerateTypeScriptSvgLogoFiles"
+          Inputs="@(SvgLogo)"
+          Outputs="%(SvgLogoTypeScriptCompile.Identity)"
+          BeforeTargets="PreComputeCompileTypeScript"
+          DependsOnTargets="PrepareGenerateTypeScriptSvgLogoFiles"
+          Condition="'@(SvgLogo)' != ''">
+
+    <Message Text="Generating '%(SvgLogoTypeScriptCompile.Identity)' from: @(SvgLogo)" />
+    <ProcessSvgLogoTask
+      Namespace="%(SvgLogoTypeScriptCompile.Namespace)"
+      Amd="%(SvgLogoTypeScriptCompile.IsAmd)"
+      SvgFiles="@(SvgLogo)"
+      OutputLocation="%(SvgLogoTypeScriptCompile.Identity)" />
+  </Target>
+
+  <!-- CleanGenerateTypeScriptSvgLogoFiles -->
+  <!-- Appending to FileWrites item group when compiling would be preferred to a custom clean target, but that only works when the files are known to be present in the output or intermediate directories. -->
+  <PropertyGroup>
+    <CleanDependsOn>
+      CleanGenerateTypeScriptSvgLogoFiles;
+      $(CleanDependsOn)
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanGenerateTypeScriptSvgLogoFiles">
+    <!-- Specify the items and CoreClean takes care of the actual deletion -->
+    <ItemGroup>
+      <Clean Include="%(SvgLogoTypeScriptCompile.FullPath)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- ### EmbedTypeScriptOutput ### -->
+  <!-- Embeds type script output javascript as resources into the assembly -->
+  <!-- Ensures that if this file changes it forces a TypeScript rebuild -->
+  <PropertyGroup>
+    <TypeScriptAllProjects>$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)</TypeScriptAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <EmbedTypeScriptAsResource Condition="'$(EmbedTypeScriptAsResource)' == ''">true</EmbedTypeScriptAsResource>
+  </PropertyGroup>
+
+  <Target Name="EmbedTypeScriptOutput"
+          DependsOnTargets="CompileTypeScript"
+          AfterTargets="ResolveAssemblyReferences"
+          Condition="'$(EmbedTypeScriptAsResource)' == 'true'">
+
+    <!-- Cannot put @(GeneratedJavaScript) condition on target because its value is not set until after CompileTypeScript target has run -->
+    <Message Text="Embedding TypeScript output into resources for project $(MSBuildProjectDirectory)"
+             Condition="'@(GeneratedJavaScript)' != ''" />
+
+    <ItemGroup>
+      <_TypeScriptAsResources
+        Include="$([System.String]::new('%(GeneratedJavaScript.Identity)').Replace('$(MSBuildProjectDirectory)', '').TrimStart('\'))"
+        Condition="'%(GeneratedJavaScript.Identity)' != ''" />
+
+      <EmbeddedResource Remove="%(_TypeScriptAsResources.Identity)" />
+      <EmbeddedResource Include="%(_TypeScriptAsResources.FullPath)"
+                        Condition="Exists('%(_TypeScriptAsResources.FullPath)')">
+        <Link Condition="'$(EmbeddedTypeScriptResourcePrefix)' == ''">%(_TypeScriptAsResources.RelativeDir)%(_TypeScriptAsResources.Filename)%(_TypeScriptAsResources.Extension)</Link>
+        <Link Condition="'$(EmbeddedTypeScriptResourcePrefix)' != ''">$(EmbeddedTypeScriptResourcePrefix)%(_TypeScriptAsResources.Filename)%(_TypeScriptAsResources.Extension)</Link>
+        <Link Condition="'$(EmbeddedTypeScriptResourcePrefix)' != '' and '$(EmbeddedTypeScriptResourcePrefixReplace)' != ''">$([System.String]::new('%(_TypeScriptAsResources.RelativeDir)%(_TypeScriptAsResources.Filename)%(_TypeScriptAsResources.Extension)').Replace('$(EmbeddedTypeScriptResourcePrefixReplace)', '$(EmbeddedTypeScriptResourcePrefix)'))</Link>
+        <LogicalName Condition="'$(EmbeddedTypeScriptResourcePrefix)' != ''">$(RootNamespace).%(EmbeddedResource.Link)</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <!-- ### ProcessClientResources ### -->
+  <!-- Creates d.ts files from resx files -->
+  <!-- SDK TypeScript Compilation -->
+  <PropertyGroup>
+    <TypeScriptSourceFolder Condition="$(TypeScriptSourceFolder) == ''">Client\</TypeScriptSourceFolder>
+  </PropertyGroup>
+
+  <!-- Process Client Resources-->
+  <UsingTask TaskName="ProcessClientResourcesToExternalModuleTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+  <UsingTask TaskName="ProcessClientResourcesToStaticContentTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Target
+    Name="ProcessClientResources"
+    BeforeTargets="ResolveAssemblyReferences;CompileTypeScript">
+    <ProcessClientResourcesToExternalModuleTask
+      BaseDirectory="$(TypeScriptSourceFolder)"
+      EmbeddedResources="@(EmbeddedResource)"
+      RootNamespace="$(RootNamespace)"
+      OutputDirectory="$(OutDir)">
+      <Output TaskParameter="OutputMetadataFile"
+              PropertyName="_ClientResourcesMetadataOutputFilename" />
+      <Output TaskParameter="OutputDeclarationFiles"
+              ItemName="TypeScriptCompile" />
+    </ProcessClientResourcesToExternalModuleTask>
+
+    <ProcessClientResourcesToStaticContentTask
+      Condition="$(StaticClientResourcesConfigPath) != ''"
+      EmbeddedResources="@(EmbeddedResource)"
+      ResourceConfigFilePath="$(StaticClientResourcesConfigPath)">
+      <Output TaskParameter="OutputFiles"
+              ItemName="ClientStaticResources" />
+    </ProcessClientResourcesToStaticContentTask>
+
+    <ItemGroup>
+      <EmbeddedResource Include="$(OutDir)$(_ClientResourcesMetadataOutputFilename)">
+        <Link>$(_ClientResourcesMetadataOutputFilename)</Link>
+      </EmbeddedResource>
+      <Content Include="@(ClientStaticResources)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Generate Embedded Content Metadata-->
+
+  <Target Name="AddLogicalNameForEmbeddedContent"
+          BeforeTargets="ResolveAssemblyReferences"
+          DependsOnTargets="EmbedTypeScriptOutput">
+    <ItemGroup>
+      <EmbeddedResource>
+        <_PossibleContentName Condition="%(EmbeddedResource.Link) != ''">%(EmbeddedResource.Link)</_PossibleContentName>
+        <_PossibleContentName Condition="%(EmbeddedResource.Link) == ''">%(EmbeddedResource.Identity)</_PossibleContentName>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Condition="$([System.String]::new(%(EmbeddedResource._PossibleContentName)).StartsWith('Content\'))">
+        <LogicalName Condition="%(EmbeddedResource.LogicalName) == ''">$(RootNamespace).%(EmbeddedResource._PossibleContentName)</LogicalName>
+        <!--
+        Set DependentUpon if it isn't already set with the same filename as the item. If we do not do this, msbuild
+        (AssignCulture task) tries to determine the culture of the embedded resource from its suffix (for example strings.en.js)
+        and put it in a satellite assembly. the below line bypasses that behavior. In the case of content, we want to treat all
+        embedded resources as neutral culture.
+        -->
+        <DependentUpon Condition="%(EmbeddedResource.DependentUpon) == '' AND %(EmbeddedResource.Extension) != '.resx'">%(Identity)</DependentUpon>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <UsingTask TaskName="GenerateEmbeddedContentMetadataTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <PropertyGroup>
+    <_SourceRoot Condition="'$(_SourceRoot)' == ''">$(_NTTREE)</_SourceRoot>
+    <_SourceRoot Condition="'$(_SourceRoot)' == ''">$(ProjectDir)</_SourceRoot>
+
+    <!--The values below may not correctly set in a CoreXT environment-->
+    <_SourceRoot Condition="'$(_SourceRoot)' == ''">$(SDXROOT)</_SourceRoot>
+    <_SourceRoot Condition="'$(_SourceRoot)' == ''">$(EnlistmentRoot)</_SourceRoot>
+  </PropertyGroup>
+
+  <Target Name="GenerateEmbeddedResourceMetadata"
+          AfterTargets="AddLogicalNameForEmbeddedContent">
+    <GenerateEmbeddedContentMetadataTask EmbeddedResources="@(EmbeddedResource)"
+                                         RootNamespace="$(RootNamespace)"
+                                         SourceRoot="$(_SourceRoot)"
+                                         OutputDirectory="$(OutDir)">
+      <Output TaskParameter="OutputFilename"
+              PropertyName="_GenerateEmbeddedResourceMetadataOutputFilename" />
+    </GenerateEmbeddedContentMetadataTask>
+    <ItemGroup>
+      <EmbeddedResource Include="$(OutDir)$(_GenerateEmbeddedResourceMetadataOutputFilename)">
+        <Link>$(_GenerateEmbeddedResourceMetadataOutputFilename)</Link>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
+
+  <!-- Static site deployment artifacts generation -->
+  <PropertyGroup Condition="$(StaticSiteDistDir) != ''">
+    <StaticSiteUnoptimizedDir>$(StaticSiteDistDir)\unoptimized</StaticSiteUnoptimizedDir>
+    <StaticSiteOptimizedDir>$(StaticSiteDistDir)\optimized</StaticSiteOptimizedDir>
+    <StaticSiteDistributeFiles>
+      .\**\*.js;
+      .\**\*.png;
+      .\**\*.gif;
+      .\**\*.jpg;
+      .\**\*.jpeg;
+      .\index.html
+    </StaticSiteDistributeFiles>
+  </PropertyGroup>
+
+  <Target Name="BuildStaticSiteDistUnoptimized"
+          AfterTargets="CompileTypeScript"
+          Condition="$(StaticSiteUnoptimizedDir) != ''">
+    <!-- Copy static files to unoptimized dir -->
+    <ItemGroup>
+      <StaticFiles Include="$(StaticSiteDistributeFiles)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(StaticFiles)"
+          DestinationFolder="$(StaticSiteUnoptimizedDir)\%(RecursiveDir)"
+          SkipUnchangedFiles="true" />
+
+    <!-- Also prepare 'DistFilesByArea' parameter for the bundling step -->
+    <ItemGroup>
+      <!-- Consider an area to be any top-level directory that doesn't begin with an underscore -->
+      <_TopLevelDirs Include="$([System.IO.Directory]::GetDirectories(&quot;$(StaticSiteUnoptimizedDir)&quot;))" />
+      <_AreaDirs Include="@(_TopLevelDirs)"
+                 Condition="!$([System.String]::new('%(_TopLevelDirs.Filename)').StartsWith('_'))" />
+    </ItemGroup>
+    <CreateItem Include="@(_AreaDirs->'%(Identity)\**')" AdditionalMetadata="AreaName=%(_AreaDirs.Filename)">
+      <Output TaskParameter="Include" ItemName="DistFilesByArea" />
+    </CreateItem>
+    <CreateItem Include="$(StaticSiteUnoptimizedDir)\**" Exclude="@(DistFilesByArea)" AdditionalMetadata="AreaName=_root">
+      <Output TaskParameter="Include" ItemName="DistFilesByArea" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="BuildStaticSiteDistOptimized"
+          Condition="$(StaticSiteOptimizedDir) != ''"
+          AfterTargets="BuildStaticSiteDistUnoptimized"
+          DependsOnTargets="SetBundleConfig">
+    <CallTarget Targets="SetBundleConfig" />
+    <BundleAmdModulesTask SourceRoot="$(StaticSiteUnoptimizedDir)" DestinationRoot="$(StaticSiteOptimizedDir)" ItemsWithBundleName="@(ItemsToBundle)" Minify="true">
+      <Output TaskParameter="FilesIncludedInBundles" ItemName="FilesIncludedInBundles" />
+      <Output TaskParameter="BundlesConfigOutputFile" PropertyName="BundlesConfigOutputFile" />
+    </BundleAmdModulesTask>
+    <!-- Next copy all the other (nonbundled) files -->
+    <ItemGroup>
+      <NonBundledFiles Include="$(StaticSiteUnoptimizedDir)\**" Exclude="@(FilesIncludedInBundles)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NonBundledFiles)" DestinationFolder="$(StaticSiteOptimizedDir)\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <!-- Now bundle remaining (non-AMD) JavaScript files and minify everything -->
+    <BundleScriptTagsTask HtmlFile="$(StaticSiteOptimizedDir)\index.html" PrefixScripts="$(BundlesConfigOutputFile)" Minify="true" />
+  </Target>
+
+  <!-- ### BundleAmdModules ### -->
+  <UsingTask TaskName="Microsoft.Portal.Framework.BundleAmdModulesTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <!-- CleanStaticSite -->
+  <PropertyGroup>
+    <CleanDependsOn Condition="$(StaticSiteDistDir) != ''">
+      $(CleanDependsOn);
+      CleanStaticSite;
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <Target Name="CleanStaticSite">
+    <MSBuild Projects="@(ProjectReference)" Targets="CleanStaticSiteDir" Properties="Dir=$(ProjectDir)$(StaticSiteUnoptimizedDir)" Condition="Exists('$(ProjectDir)$(StaticSiteUnoptimizedDir)')" />
+    <MSBuild Projects="@(ProjectReference)" Targets="CleanStaticSiteDir" Properties="Dir=$(ProjectDir)$(StaticSiteOptimizedDir)" Condition="Exists('$(ProjectDir)$(StaticSiteOptimizedDir)')" />
+  </Target>
+
+  <Target Name="CleanStaticSiteDir">
+    <ItemGroup>
+      <DeleteFiles Include="$(Dir)\**\*"/>
+      <DeleteDirs Include="$([System.IO.Directory]::GetDirectories('$(Dir)', '*', System.IO.SearchOption.AllDirectories))" Exclude="$(Dir)"/>
+    </ItemGroup>
+    <Delete Files="@(DeleteFiles)" />
+    <RemoveDir Directories="@(DeleteDirs)" />
+  </Target>
+
+  <!-- ### BundleScriptTags ### -->
+  <UsingTask TaskName="Microsoft.Portal.Framework.BundleScriptTagsTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Import Project="$(VsToolsPath)\Typescript\Microsoft.TypeScript.targets" Condition="Exists('$(VsToolsPath)\Typescript\Microsoft.TypeScript.targets')" />
+
+  <!-- ### ConcatenateTextFiles ### -->
+  <UsingTask
+      TaskName="ConcatenateTextFiles"
+      TaskFactory="CodeTaskFactory"
+      AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+      <ParameterGroup>
+        <InputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+        <OutputFile ParameterType="System.String" Required="true" />
+        <Separator Required="true" />
+      </ParameterGroup>
+      <Task>
+          <Using Namespace="System.IO" />
+          <Code Type="Fragment" Language="cs">
+              <![CDATA[
+                  Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
+                  File.WriteAllText(OutputFile, string.Empty);
+                  foreach (var inputItem in InputFiles) {
+                      var contents = File.ReadAllText(inputItem.ItemSpec);
+                      File.AppendAllText(OutputFile, contents + Separator);
+                  }
+              ]]>
+          </Code>
+      </Task>
+  </UsingTask>
+
+  <!-- ### GenerateAmbientExternalModuleDeclaration ### -->
+  <UsingTask TaskName="GenerateAmbientExternalModuleDeclarationTask"
+             AssemblyFile="$(PortalSdkInstallPath)\Microsoft.Portal.Build.dll" />
+
+  <Target Name="PrepareAmbientTypeScriptModuleDeclarationGeneration">
+    <PropertyGroup>
+      <TypeScriptSourceFolder Condition="$(TypeScriptSourceFolder) == ''">$(EmbeddedTypeScriptResourcePrefixReplace)</TypeScriptSourceFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <_AmbientTypeScriptModuleInputFile Include="@(TypeScriptCompile)"
+                                         Condition="@(TypeScriptCompile) != '' and !$([System.String]::new(%(Filename)).ToLowerInvariant().Contains('\definition\'))">
+      </_AmbientTypeScriptModuleInputFile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="AmbientTypeScriptModuleDeclarationGeneration"
+          Condition="$(TypeScriptGeneratesDeclarations) == 'true' AND $(TypeScriptOutFile) == ''"
+          DependsOnTargets="PrepareAmbientTypeScriptModuleDeclarationGeneration"
+          AfterTargets="CompileTypeScript">
+    <GenerateAmbientExternalModuleDeclarationTask InputFiles="@(_AmbientTypeScriptModuleInputFile->'%(Identity)')"
+                                                  ExplicitAmbientModules="@(AmbientTypeScriptModule)"
+                                                  SkipProcessingReferences="$(AmbientTypeScriptModuleSkipProcessingReferences)"
+                                                  BaseDirectory="$(TypeScriptSourceFolder)"
+                                                  DefinitionsDirectory="$(TypeScriptSourceFolder)\Definitions"
+                                                  OutputDirectory="$(OutDir)" />
+  </Target>
+</Project>
