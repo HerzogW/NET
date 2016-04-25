@@ -432,7 +432,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc44f8046030234d7aa7ff7964a6d828a4",
+        "htmlTemplate": "pdc7bf29e1b7864473898e5cb9c6bcb705c",
         "parameterProvider": true,
         "details": [
           {
@@ -464,7 +464,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc33df86b944da43eea730f4e24db1f67b",
+        "htmlTemplate": "pdcc995572b90b24957aaa6e0c22e4f005f",
         "parameterProvider": true,
         "partSize": 0
       }
@@ -483,7 +483,7 @@ module ExtensionDefinition {
                 "partKind": 0,
                 "inputs": [],
                 "bindings": [],
-                "htmlTemplate": "pdc31a3ef811d6d424f8137f448ffe51dec",
+                "htmlTemplate": "pdcb322a03a8d7540d88285088055bbbb6a",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -849,7 +849,7 @@ module ExtensionDefinition {
                     ]
                   }
                 ],
-                "htmlTemplate": "pdc0151373ac5e641ee93b119e9cb7f6850",
+                "htmlTemplate": "pdcd94b33020bb945eabca26f5dd208e321",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -936,7 +936,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc44f8046030234d7aa7ff7964a6d828a4",
+        "htmlTemplate": "pdc7bf29e1b7864473898e5cb9c6bcb705c",
         "parameterProvider": true,
         "details": [
           {
@@ -967,7 +967,7 @@ module ExtensionDefinition {
                 "partKind": 0,
                 "inputs": [],
                 "bindings": [],
-                "htmlTemplate": "pdc31a3ef811d6d424f8137f448ffe51dec",
+                "htmlTemplate": "pdcb322a03a8d7540d88285088055bbbb6a",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -1180,19 +1180,19 @@ module ExtensionDefinition {
     }
   ],
   "htmlTemplates": {
-    "pdc44f8046030234d7aa7ff7964a6d828a4": {
+    "pdc7bf29e1b7864473898e5cb9c6bcb705c": {
       "file": "Create.html",
       "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgContent\"></div> <div data-bind=\"formElement: svgLogoContent\"></div> <!--<div data-bind=\"formElement: nameTextBox\"></div>\r\n    <div data-bind=\"formElement: apiTypeSelector\"></div>\r\n    <div data-bind=\"formElement: accountSpecSelector.control\"></div>\r\n    <div data-bind=\"formElement: subscriptionDropDown.control\"></div>\r\n    <div data-bind=\"formElement: resourceGroupDropDown.control\"></div>\r\n    <div data-bind=\"formElement: locationDropDown.control\"></div>\r\n    <div data-bind=\"formElement: legalSelector, visible: showLegalTerms\"></div>--> </div>"
     },
-    "pdc33df86b944da43eea730f4e24db1f67b": {
+    "pdcc995572b90b24957aaa6e0c22e4f005f": {
       "file": "LegalForm.html",
       "content": "<div class=\"msportalfx-form\" data-bind=\"html: legalTermHtml\"> </div> "
     },
-    "pdc31a3ef811d6d424f8137f448ffe51dec": {
+    "pdcb322a03a8d7540d88285088055bbbb6a": {
       "file": "Client/Resource/Create/CognitiveServicesCreate.pdl",
       "content": "<div data-bind=\"pcPickerV3: $root\"></div>"
     },
-    "pdc0151373ac5e641ee93b119e9cb7f6850": {
+    "pdcd94b33020bb945eabca26f5dd208e321": {
       "file": "Client/Resource/Settings/SettingsBlade.pdl",
       "content": "<div data-bind=\"pcGrid: settingList\"></div>"
     }

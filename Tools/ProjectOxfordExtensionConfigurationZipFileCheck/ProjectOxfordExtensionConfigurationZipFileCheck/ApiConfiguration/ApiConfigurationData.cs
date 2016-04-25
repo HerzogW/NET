@@ -63,7 +63,20 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// </value>
         public JObject ApiItem { get; set; }
 
-        public List<string> listError = new List<string>();
+        /// <summary>
+        /// The icons
+        /// </summary>
+        public Dictionary<string, string> Icons = new Dictionary<string, string>();
+
+        /// <summary>
+        /// The resources
+        /// </summary>
+        public Dictionary<string, Dictionary<string, string>> Resources = new Dictionary<string, Dictionary<string, string>>();
+
+        /// <summary>
+        /// The list error
+        /// </summary>
+        public List<ErrorEntity> listError = new List<ErrorEntity>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiConfigurationData"/> class.
@@ -85,9 +98,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             {
                 LocaleId = localeId,
                 ApiTypeName = data.ApiTypeName,
-                Spec = ReplaceJObject(ResourceToken, data.Spec, resources, defaultResources),
-                ApiItem = ReplaceJObject(ResourceToken, data.ApiItem, resources, defaultResources),
-                QuickStart = ReplaceJObject(ResourceToken, data.QuickStart, resources, defaultResources)
+                Spec = ReplaceJObject(ResourceToken, data.Spec, resources, defaultResources, localeId),
+                ApiItem = ReplaceJObject(ResourceToken, data.ApiItem, resources, defaultResources, localeId),
+                QuickStart = ReplaceJObject(ResourceToken, data.QuickStart, resources, defaultResources, localeId)
             };
         }
 
@@ -105,36 +118,13 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         }
 
         /// <summary>
-        /// Finds the resource.
-        /// </summary>
-        /// <param name="key">The original.</param>
-        /// <param name="resources">The resources.</param>
-        /// <returns>The resource string.</returns>
-        private FindResourceResult FindResource(string key, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null)
-        {
-            if (resources.ContainsKey(key))
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceStr = resources[key] };
-            }
-            else if (defaultResources != null && defaultResources.ContainsKey(key))
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceStr = defaultResources[key] };
-            }
-            else
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.Error, resourceStr = string.Format("{0} not found", key) };
-                //throw new KeyNotFoundException(string.Format("{0} not found", key));
-            }
-        }
-
-        /// <summary>
         /// Replaces the json.
         /// </summary>
         /// <param name="tokenFlag">The token flag.</param>
         /// <param name="original">The original spec.</param>
         /// <param name="resources">The resources.</param>
         /// <returns>The replaced Json.</returns>
-        private JObject ReplaceJObject(string tokenFlag, JObject original, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null)
+        private JObject ReplaceJObject(string tokenFlag, JObject original, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null, string localeId = "")
         {
             var result = JObject.FromObject(original);
             var reader = original.CreateReader();
@@ -150,17 +140,44 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         findResourceResult = FindResource(value.Split(':')[1], resources, defaultResources);
                         if (findResourceResult.status == FindResourceResultStatus.Ok)
                         {
-                            result.SelectToken(reader.Path).Replace(findResourceResult.resourceStr);
+                            result.SelectToken(reader.Path).Replace(findResourceResult.resourceInfo);
                         }
                         else
                         {
-                            listError.Add(findResourceResult.resourceStr);
+                            listError.Add(new ErrorEntity()
+                            {
+                                errorType = ErrorType.LostResource,
+                                jsonFileName = string.Format("{0}/resources.resjson", localeId),
+                                resourceName = findResourceResult.resourceInfo,
+                            });
                         }
                     }
                 }
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Finds the resource.
+        /// </summary>
+        /// <param name="key">The original.</param>
+        /// <param name="resources">The resources.</param>
+        /// <returns>The resource string.</returns>
+        private FindResourceResult FindResource(string key, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null)
+        {
+            if (resources.ContainsKey(key))
+            {
+                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceInfo = resources[key] };
+            }
+            else if (defaultResources != null && defaultResources.ContainsKey(key))
+            {
+                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceInfo = defaultResources[key] };
+            }
+            else
+            {
+                return new FindResourceResult { status = FindResourceResultStatus.NotFound, resourceInfo = key };
+            }
         }
     }
 }

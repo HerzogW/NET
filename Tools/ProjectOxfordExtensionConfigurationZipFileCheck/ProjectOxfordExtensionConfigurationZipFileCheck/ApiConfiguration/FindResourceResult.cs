@@ -10,12 +10,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     {
         public FindResourceResultStatus status { get; set; }
 
-        public string resourceStr { get; set; }
+        public string resourceInfo { get; set; }
     }
 
     public enum FindResourceResultStatus
     {
         Ok,
-        Error
+        NotFound
     }
 }

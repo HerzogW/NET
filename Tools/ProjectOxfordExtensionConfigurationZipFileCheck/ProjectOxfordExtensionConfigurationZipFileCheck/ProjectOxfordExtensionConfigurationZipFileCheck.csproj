@@ -79,9 +79,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiConfigurationData.cs" />
-    <Compile Include="ApiConfigurationManager.cs" />
-    <Compile Include="FindResourceResult.cs" />
+    <Compile Include="ApiConfiguration\ApiConfigurationData.cs" />
+    <Compile Include="ApiConfiguration\ApiConfigurationManager.cs" />
+    <Compile Include="Error\ErrorEntity.cs" />
+    <Compile Include="Error\ErrorType.cs" />
+    <Compile Include="ApiConfiguration\FindResourceResult.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

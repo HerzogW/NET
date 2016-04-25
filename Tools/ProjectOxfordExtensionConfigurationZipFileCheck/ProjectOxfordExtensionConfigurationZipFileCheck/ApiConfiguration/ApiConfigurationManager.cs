@@ -60,14 +60,19 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private const string IconFileExtension = ".svg";
 
         /// <summary>
-        /// The Api configurations: Dictionary[apiName, Dictionary[localeId, ApiConfigurationData]]
-        /// </summary>
-        private volatile Dictionary<string, Dictionary<string, ApiConfigurationData>> apiConfigurations;
-
-        /// <summary>
         /// The configuration container
         /// </summary>
         private CloudBlobContainer configContainer;
+
+        /// <summary>
+        /// The list error
+        /// </summary>
+        public List<ErrorEntity> listError = new List<ErrorEntity>();
+
+        /// <summary>
+        /// The cache data
+        /// </summary>
+        public List<ApiConfigurationData> CacheData = new List<ApiConfigurationData>();
 
         public ApiConfigurationManager()
         { }
@@ -85,39 +90,17 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         }
 
         /// <summary>
-        /// Gets the apis configuration.
-        /// </summary>
-        /// <value>
-        /// The Api configuration.
-        /// </value>
-        public Dictionary<string, Dictionary<string, ApiConfigurationData>> DataCache
-        {
-            get
-            {
-                return apiConfigurations;
-            }
-        }
-
-        /// <summary>
         /// Fetches all.
         /// </summary>
         /// <exception cref="System.InvalidOperationException"></exception>
-        public List<string> LoadDataToCache()
+        public void LoadDataToCache()
         {
-            List<string> listError = new List<string>();
-
             var blobs = configContainer.ListBlobs();
 
             foreach (var apiZip in blobs.OfType<CloudBlockBlob>())
             {
-                List<string> errors = DeserializeApiConfig(apiZip);
-
-                foreach (string errorMessage in errors)
-                {
-                    listError.Add(errorMessage);
-                }
+                DeserializeApiConfig(apiZip);
             }
-            return listError;
         }
 
         /// <summary>
@@ -155,17 +138,15 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// </summary>
         /// <param name="apiZipBlob">The API directory.</param>
         /// <returns></returns>
-        private List<String> DeserializeApiConfig(CloudBlockBlob apiZipBlob)
+        private void DeserializeApiConfig(CloudBlockBlob apiZipBlob)
         {
-            List<string> listError = new List<string>();
+            List<ErrorEntity> listError = new List<ErrorEntity>();
             var requestOption = new BlobRequestOptions() { RetryPolicy = new ExponentialRetry() };
 
             using (var blobStream = apiZipBlob.OpenRead(null, requestOption))
             {
-                listError = VeriliadteStream(blobStream, apiZipBlob.Name);
+                VeriliadteStream(blobStream, apiZipBlob.Name);
             }
-
-            return listError;
         }
 
         /// <summary>
@@ -173,24 +154,35 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// </summary>
         /// <param name="stream">The stream.</param>
         /// <param name="fileName">Name of the file.</param>
-        public List<string> VeriliadteStream(Stream stream, string fileName = null)
+        public void VeriliadteStream(Stream stream, string fileName = null)
         {
-            List<String> listError = new List<String>();
-            string errorMessage = "";
+            ErrorEntity errorEntity = new ErrorEntity();
+            errorEntity.zipFileName = fileName;
             using (var zip = new ZipArchive(stream))
             {
                 try
                 {
-                    errorMessage = string.Format("【File】{0} not found", ApiItemFileName);
+                    errorEntity.jsonFileName = ApiItemFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
                     var apiItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == ApiItemFileName));
-                    var apiItem = JObject.Parse(apiItemJson);
+                    errorEntity.errorType = ErrorType.CanNotDeserialize;
                     var originalApiConfig = JsonConvert.DeserializeObject<ApiConfigurationData>(apiItemJson);
-                    errorMessage = string.Format("【File】{0} not found", SpecFileName);
-                    originalApiConfig.Spec = JObject.Parse(ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName)));
-                    errorMessage = string.Format("【File】{0} not found", QuickStartsFileName);
-                    originalApiConfig.QuickStart = JObject.Parse(ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName)));
+
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    var apiItem = JObject.Parse(apiItemJson);
                     originalApiConfig.ApiItem = apiItem;
-                    errorMessage = "";
+
+                    errorEntity.jsonFileName = SpecFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
+                    var specItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName));
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    originalApiConfig.Spec = JObject.Parse(specItemJson);
+
+                    errorEntity.jsonFileName = QuickStartsFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
+                    var quickStartItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName));
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    originalApiConfig.QuickStart = JObject.Parse(quickStartItemJson);
 
                     var icons = new Dictionary<string, string>();
 
@@ -209,17 +201,30 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         }
                     }
 
+                    originalApiConfig.Icons = icons;
+                    originalApiConfig.Resources = localizableStrings;
 
+                    var tempApiConfig = new ApiConfigurationData();
+                    tempApiConfig.LocaleId = originalApiConfig.LocaleId;
+                    tempApiConfig.ApiTypeName = originalApiConfig.ApiTypeName;
+                    tempApiConfig.ApiItem = originalApiConfig.ApiItem;
+                    tempApiConfig.Spec = originalApiConfig.Spec;
+                    tempApiConfig.QuickStart = originalApiConfig.QuickStart;
+
+                    tempApiConfig.Icons = originalApiConfig.Icons;
+                    tempApiConfig.Resources = originalApiConfig.Resources;
+
+
+                    CacheData.Add(tempApiConfig);
 
                     ApiConfigurationData apiConfigurationData = new ApiConfigurationData();
-                    // repair icons
+
                     apiConfigurationData.ReplaceIcons(originalApiConfig, icons);
 
                     var localizedConfigs = new Dictionary<string, ApiConfigurationData>();
 
                     if (localizableStrings.Count != 0)
                     {
-                        // catch up all locales resources.
                         foreach (var localeString in localizableStrings)
                         {
                             localizedConfigs.Add(localeString.Key, apiConfigurationData.GetLocalized(originalApiConfig, localeString.Key, localeString.Value, localizableStrings[DefaultLanguage]));
@@ -227,27 +232,24 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     }
                     else
                     {
-                        listError.Add(string.Format("Zip file {0}:    【File】{1} is not found.", fileName, ResourceFileName));
+                        listError.Add(new ErrorEntity()
+                        {
+                            zipFileName = fileName,
+                            errorType = ErrorType.LostResource,
+                            resourceName = ResourceFileName
+                        });
                     }
 
-                    foreach (string errorMessage2 in apiConfigurationData.listError)
+                    foreach (ErrorEntity errorInfo in apiConfigurationData.listError)
                     {
-                        listError.Add(string.Format("Zip file {0}:    【Resource】{1} is not found.", fileName, errorMessage2));
+                        errorInfo.zipFileName = fileName;
+                        listError.Add(errorInfo);
                     }
-
-                    return listError;
                 }
                 catch (Exception ex)
                 {
-                    if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        listError.Add(string.Format("Zip file {0}:    {1}", fileName, errorMessage));
-                    }
-                    else
-                    {
-                        listError.Add(string.Format("Zip file {0}:    {1}", fileName, ex.Message));
-                    }
-                    return listError;
+                    errorEntity.errorMessage = ex.Message;
+                    listError.Add(errorEntity);
                 }
             }
         }
