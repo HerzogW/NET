@@ -63,9 +63,10 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             List<ErrorEntity> listError = apiConfigurationManager.listError;
             if (listError.Count > 0)
             {
+                int i = 1;
                 foreach (ErrorEntity errorEntity in listError)
                 {
-                    this.textErrorMessage.Text += errorEntity.GetErrorInfo() + "\r\n";
+                    this.textErrorMessage.Text += (i++) + "、" + errorEntity.GetErrorInfo() + "\r\n";
                 }
             }
             else
@@ -93,9 +94,10 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
             if (listError.Count > 0)
             {
+                int i = 1;
                 foreach (ErrorEntity errorMessage in listError)
                 {
-                    this.textFileContent.Text += errorMessage.GetErrorInfo() + "\n";
+                    this.textFileContent.Text += (i++) + "、" + errorMessage.GetErrorInfo() + "\n";
                 }
             }
             else
@@ -105,12 +107,18 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
         }
 
+        /// <summary>
+        /// Loads the file tree.
+        /// </summary>
+        /// <param name="cacheData">The cache data.</param>
         private void LoadFileTree(List<ApiConfigurationData> cacheData)
         {
             if (cacheData.Count == 0)
             {
                 return;
             }
+
+            this.root.Nodes.Clear();
 
             foreach (var apiCongigurationData in cacheData)
             {
@@ -177,6 +185,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
         }
 
+        /// <summary>
+        /// Handles the DoubleClick event of the root control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void root_DoubleClick(object sender, EventArgs e)
         {
             if (this.root.SelectedNode != null)
@@ -228,6 +241,40 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Handles the Click event of the btnUpLoadData control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void btnUpLoadData_Click(object sender, EventArgs e)
+        {
+            this.textFileContent.Text = string.Empty;
+
+            string storageAccount = this.textAccount.Text;
+            string storageAccountKey = this.textAccountKey.Text;
+            string container = this.textBlobContainer.Text;
+
+            if (string.IsNullOrWhiteSpace(storageAccount))
+            {
+                this.textFileContent.Text = "Please input the Storage Account.";
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(storageAccountKey))
+            {
+                this.textFileContent.Text = "Please input the Storage Account Key.";
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(container))
+            {
+                this.textFileContent.Text = "Please input the Blob container.";
+                return;
+            }
+
+
+
+
         }
     }
 }

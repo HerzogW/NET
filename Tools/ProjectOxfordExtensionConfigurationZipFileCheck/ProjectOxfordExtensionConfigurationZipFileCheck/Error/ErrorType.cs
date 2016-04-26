@@ -8,6 +8,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
     public enum ErrorType
     {
+        None,
         Common,
         NotFound,
         CanNotConvertToJson,

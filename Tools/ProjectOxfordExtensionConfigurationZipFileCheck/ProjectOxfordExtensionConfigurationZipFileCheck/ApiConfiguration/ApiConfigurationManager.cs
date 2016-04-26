@@ -74,8 +74,13 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// </summary>
         public List<ApiConfigurationData> CacheData = new List<ApiConfigurationData>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ApiConfigurationManager"/> class.
+        /// </summary>
         public ApiConfigurationManager()
-        { }
+        {
+
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiConfigurationManager" /> class.
@@ -145,7 +150,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
             using (var blobStream = apiZipBlob.OpenRead(null, requestOption))
             {
-                VeriliadteStream(blobStream, apiZipBlob.Name);
+                VeriliadteStream(blobStream, apiZipBlob.Name, true);
             }
         }
 
@@ -153,11 +158,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// Veriliadtes the stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <param name="fileName">Name of the file.</param>
-        public void VeriliadteStream(Stream stream, string fileName = null)
+        /// <param name="zipFileName">Name of the zip file.</param>
+        /// <param name="cacheData">if set to <c>true</c> [cache data].</param>
+        public void VeriliadteStream(Stream stream, string zipFileName = null, bool cacheData = false)
         {
             ErrorEntity errorEntity = new ErrorEntity();
-            errorEntity.zipFileName = fileName;
+            errorEntity.zipFileName = zipFileName;
             using (var zip = new ZipArchive(stream))
             {
                 try
@@ -184,6 +190,8 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     errorEntity.errorType = ErrorType.CanNotConvertToJson;
                     originalApiConfig.QuickStart = JObject.Parse(quickStartItemJson);
 
+                    errorEntity.errorType = ErrorType.None;
+
                     var icons = new Dictionary<string, string>();
 
                     var localizableStrings = new Dictionary<string, Dictionary<string, string>>();
@@ -197,25 +205,31 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
                         if (zipEntry.Name == ResourceFileName)
                         {
-                            localizableStrings.Add(GetLocalizationDirectoryName(zipEntry), JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));
+                            string localizationDirectoryName = GetLocalizationDirectoryName(zipEntry);
+                            errorEntity.jsonFileName = string.Format("{0}/{1}", localizationDirectoryName, ResourceFileName);
+                            errorEntity.errorType = ErrorType.CanNotConvertToJson;
+
+                            localizableStrings.Add(localizationDirectoryName, JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));
                         }
                     }
 
                     originalApiConfig.Icons = icons;
                     originalApiConfig.Resources = localizableStrings;
 
-                    var tempApiConfig = new ApiConfigurationData();
-                    tempApiConfig.LocaleId = originalApiConfig.LocaleId;
-                    tempApiConfig.ApiTypeName = originalApiConfig.ApiTypeName;
-                    tempApiConfig.ApiItem = originalApiConfig.ApiItem;
-                    tempApiConfig.Spec = originalApiConfig.Spec;
-                    tempApiConfig.QuickStart = originalApiConfig.QuickStart;
+                    if (cacheData)
+                    {
+                        var tempApiConfig = new ApiConfigurationData();
+                        tempApiConfig.LocaleId = originalApiConfig.LocaleId;
+                        tempApiConfig.ApiTypeName = originalApiConfig.ApiTypeName;
+                        tempApiConfig.ApiItem = originalApiConfig.ApiItem;
+                        tempApiConfig.Spec = originalApiConfig.Spec;
+                        tempApiConfig.QuickStart = originalApiConfig.QuickStart;
 
-                    tempApiConfig.Icons = originalApiConfig.Icons;
-                    tempApiConfig.Resources = originalApiConfig.Resources;
+                        tempApiConfig.Icons = originalApiConfig.Icons;
+                        tempApiConfig.Resources = originalApiConfig.Resources;
 
-
-                    CacheData.Add(tempApiConfig);
+                        CacheData.Add(tempApiConfig);
+                    }
 
                     ApiConfigurationData apiConfigurationData = new ApiConfigurationData();
 
@@ -234,7 +248,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     {
                         listError.Add(new ErrorEntity()
                         {
-                            zipFileName = fileName,
+                            zipFileName = zipFileName,
                             errorType = ErrorType.LostResource,
                             resourceName = ResourceFileName
                         });
@@ -242,14 +256,17 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
                     foreach (ErrorEntity errorInfo in apiConfigurationData.listError)
                     {
-                        errorInfo.zipFileName = fileName;
+                        errorInfo.zipFileName = zipFileName;
                         listError.Add(errorInfo);
                     }
                 }
                 catch (Exception ex)
                 {
-                    errorEntity.errorMessage = ex.Message;
-                    listError.Add(errorEntity);
+                    if (errorEntity.errorType != ErrorType.None)
+                    {
+                        errorEntity.errorMessage = ex.Message;
+                        listError.Add(errorEntity);
+                    }
                 }
             }
         }
