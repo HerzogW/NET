@@ -6,10 +6,9 @@
   <TemplateBlade Name="CreateBlade"
                  ViewModel="{ViewModel Name=CognitiveServicesCreateBladeViewModel, Module=./Create/ViewModels/CognitiveServicesCreateBladeViewModel}"
                  Style="Create"
-                 Width="Large"
+                 Width="Small"
                  Template="{Html Source='Templates\\Create.html'}"
-                 
-                 >
+                 ParameterProvider="true">
       
     <ActionBar ActionBarKind="Create" />
     <BladeAction Blade="CognitiveServicesApiType" ParameterCollector="apiTypeCollector" SelectableSource="apiTypeSelector.selectable" />

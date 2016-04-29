@@ -61,7 +61,7 @@ define(["require", "exports", "./../_generated/SvgLogo", "ClientResources"], fun
             "blades": [
                 {
                     "name": "CreateBlade",
-                    "width": 3
+                    "width": 0
                 },
                 {
                     "name": "CreationLegalBlade"

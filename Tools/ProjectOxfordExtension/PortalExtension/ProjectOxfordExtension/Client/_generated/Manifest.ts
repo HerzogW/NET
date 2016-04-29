@@ -64,7 +64,7 @@ module ExtensionDefinition {
   "blades": [
     {
       "name": "CreateBlade",
-      "width": 3
+      "width": 0
     },
     {
       "name": "CreationLegalBlade"

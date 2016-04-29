@@ -240,15 +240,16 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                         "name": "CreateBlade",
                         "viewModelName": "Resource$CognitiveServicesCreateBladeViewModel",
                         "lenses": [],
-                        "width": 3,
+                        "width": 0,
                         "style": 3,
                         "actionBar": {
                             "name": "",
-                            "actionBarKind": 6,
+                            "actionBarKind": 1,
                             "bindings": []
                         },
                         "templateBlade": {
-                            "htmlTemplate": "pdc9ac0f058a7cf4263a9b33a0035d4b583",
+                            "htmlTemplate": "pdc278740673c0a43fdbf9639bc7e6b1a07",
+                            "parameterProvider": true,
                             "details": [
                                 {
                                     "selectablePath": "content.apiTypeSelector.selectable",
@@ -279,7 +280,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                             "bindings": []
                         },
                         "templateBlade": {
-                            "htmlTemplate": "pdc1c85ecf9741842c291510f6c87a5b0eb",
+                            "htmlTemplate": "pdc9f14d4c3221a4e4085fb7d0283172703",
                             "parameterProvider": true,
                             "partSize": 0
                         }
@@ -298,7 +299,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             "partKind": 0,
                                             "inputs": [],
                                             "bindings": [],
-                                            "htmlTemplate": "pdc3cd24d3f6f634ac2b4af71fd3bff651a",
+                                            "htmlTemplate": "pdc1d22085b30fb4f57a46120ce6f949171",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -845,7 +846,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                                     ]
                                                 }
                                             ],
-                                            "htmlTemplate": "pdca9597a349c304e56844001cb16d85769",
+                                            "htmlTemplate": "pdcb5cd57f3c4ad4e499ccbab6f9a0f6314",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -926,8 +927,26 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                         "lenses": [],
                         "width": 2,
                         "style": 2,
+                        "actionBar": {
+                            "name": "",
+                            "actionBarKind": 0,
+                            "bindings": []
+                        },
                         "templateBlade": {
-                            "htmlTemplate": "pdc9ac0f058a7cf4263a9b33a0035d4b583",
+                            "htmlTemplate": "pdc278740673c0a43fdbf9639bc7e6b1a07",
+                            "parameterProvider": true,
+                            "details": [
+                                {
+                                    "selectablePath": "content.apiTypeSelector.selectable",
+                                    "blade": "ProjectOxfordApiType",
+                                    "parameterCollector": "content.apiTypeCollector"
+                                },
+                                {
+                                    "selectablePath": "content.accountSpecSelector.control.selectable",
+                                    "blade": "ApiAccountSpecPicker",
+                                    "parameterCollector": "content.accountSpecSelector.collector"
+                                }
+                            ],
                             "partSize": 0
                         }
                     },
@@ -945,7 +964,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             "partKind": 0,
                                             "inputs": [],
                                             "bindings": [],
-                                            "htmlTemplate": "pdc3cd24d3f6f634ac2b4af71fd3bff651a",
+                                            "htmlTemplate": "pdc1d22085b30fb4f57a46120ce6f949171",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -1158,19 +1177,19 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                     }
                 ],
                 "htmlTemplates": {
-                    "pdc9ac0f058a7cf4263a9b33a0035d4b583": {
+                    "pdc278740673c0a43fdbf9639bc7e6b1a07": {
                         "file": "Create.html",
                         "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgContent\"></div> <div data-bind=\"formElement: svgLogoContent\"></div> <!--<div data-bind=\"formElement: nameTextBox\"></div>\r\n    <div data-bind=\"formElement: apiTypeSelector\"></div>\r\n    <div data-bind=\"formElement: accountSpecSelector.control\"></div>\r\n    <div data-bind=\"formElement: subscriptionDropDown.control\"></div>\r\n    <div data-bind=\"formElement: resourceGroupDropDown.control\"></div>\r\n    <div data-bind=\"formElement: locationDropDown.control\"></div>\r\n    <div data-bind=\"formElement: legalSelector, visible: showLegalTerms\"></div>--> </div>"
                     },
-                    "pdc1c85ecf9741842c291510f6c87a5b0eb": {
+                    "pdc9f14d4c3221a4e4085fb7d0283172703": {
                         "file": "LegalForm.html",
                         "content": "<div class=\"msportalfx-form\" data-bind=\"html: legalTermHtml\"> </div> "
                     },
-                    "pdc3cd24d3f6f634ac2b4af71fd3bff651a": {
+                    "pdc1d22085b30fb4f57a46120ce6f949171": {
                         "file": "Client/Resource/Create/CognitiveServicesCreate.pdl",
                         "content": "<div data-bind=\"pcPickerV3: $root\"></div>"
                     },
-                    "pdca9597a349c304e56844001cb16d85769": {
+                    "pdcb5cd57f3c4ad4e499ccbab6f9a0f6314": {
                         "file": "Client/Resource/Settings/SettingsBlade.pdl",
                         "content": "<div data-bind=\"pcGrid: settingList\"></div>"
                     }

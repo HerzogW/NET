@@ -8,14 +8,14 @@
                  Style="Info"
                  Width="Large"
                  Template="{Html Source='Templates\\Create.html'}"
- 
+                 ParameterProvider="true"
                   Export="True">
 
-    <!--<ActionBar ActionBarKind="None" />-->
-<!--<BladeAction Blade="ProjectOxfordApiType" ParameterCollector="apiTypeCollector" SelectableSource="apiTypeSelector.selectable" />-->
-<!--<BladeAction Blade="ApiAccountSpecPicker"
-             ParameterCollector="accountSpecSelector.collector"
-             SelectableSource="accountSpecSelector.control.selectable" />-->
+    <ActionBar ActionBarKind="None" />
+    <BladeAction Blade="ProjectOxfordApiType" ParameterCollector="apiTypeCollector" SelectableSource="apiTypeSelector.selectable" />
+    <BladeAction Blade="ApiAccountSpecPicker"
+                 ParameterCollector="accountSpecSelector.collector"
+                 SelectableSource="accountSpecSelector.control.selectable" />
   </TemplateBlade>
 
   <azurefx:PickerV3Blade Name="ProjectOxfordApiType"
