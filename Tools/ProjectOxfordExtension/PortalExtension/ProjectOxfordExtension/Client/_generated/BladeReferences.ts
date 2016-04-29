@@ -8,6 +8,21 @@
 
 export = BladeDefinitions;
 module BladeDefinitions {
+    export class CreateBladeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
+        public constructor() {
+            super("CreateBlade", undefined);
+        }
+    }
+    export class CreationLegalBladeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
+        public constructor() {
+            super("CreationLegalBlade", undefined);
+        }
+    }
+    export class CognitiveServicesApiTypeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
+        public constructor() {
+            super("CognitiveServicesApiType", undefined);
+        }
+    }
     export interface PropertiesBladeInputs {
         id: any;
     }
@@ -27,21 +42,6 @@ module BladeDefinitions {
     export class KeySettingBladeReference extends MsPortalFx.Composition.PdlBladeReference<KeySettingBladeInputs> {
         public constructor(inputs: KeySettingBladeInputs) {
             super("KeySettingBlade", inputs);
-        }
-    }
-    export class CreateBladeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
-        public constructor() {
-            super("CreateBlade", undefined);
-        }
-    }
-    export class CreationLegalBladeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
-        public constructor() {
-            super("CreationLegalBlade", undefined);
-        }
-    }
-    export class CognitiveServicesApiTypeReference extends MsPortalFx.Composition.PdlBladeReference<void> {
-        public constructor() {
-            super("CognitiveServicesApiType", undefined);
         }
     }
     export interface ResourceBladeInputs {

@@ -269,6 +269,9 @@
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsPartViewModel.ts" />
     <Content Include="Client\Resource\Create\Templates\Create.html" />
+    <PortalDefinition Include="Client\Resource\Create\CognitiveServicesCreate.pdl">
+      <SubType>Designer</SubType>
+    </PortalDefinition>
     <PortalDefinition Include="Client\Resource\Properties\Properties.pdl" />
     <Content Include="Client\Resource\Create\Templates\LegalForm.html" />
     <Content Include="Client\Resource\Settings\Templates\DiagnosticsInfoBox.html" />
@@ -296,9 +299,6 @@
     <Content Include="GalleryPackages\CognitiveServicesCreate\DeploymentTemplates\CreateResource.json" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Manifest.json" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\UIDefinition.json" />
-    <PortalDefinition Include="Client\Resource\Create\CognitiveServicesCreate.pdl">
-      <SubType>Designer</SubType>
-    </PortalDefinition>
     <Content Include="Global.asax" />
     <TypeScriptCompile Include="Client\Program.ts">
       <TsLintLevel>Minimal</TsLintLevel>
@@ -433,7 +433,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties GalleryPackages_2CognitiveServicesCreate_2UIDefinition_1json__JSONSchema="" GalleryPackages_2CognitiveServicesCreate_2Manifest_1json__JSONSchema="" />
+      <UserProperties GalleryPackages_2CognitiveServicesCreate_2Manifest_1json__JSONSchema="" GalleryPackages_2CognitiveServicesCreate_2UIDefinition_1json__JSONSchema="" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Azure.Gallery.AzureGalleryUtility.5.1.0.19\build\Microsoft.Azure.Gallery.AzureGalleryUtility.targets" Condition="Exists('..\..\packages\Microsoft.Azure.Gallery.AzureGalleryUtility.5.1.0.19\build\Microsoft.Azure.Gallery.AzureGalleryUtility.targets')" />

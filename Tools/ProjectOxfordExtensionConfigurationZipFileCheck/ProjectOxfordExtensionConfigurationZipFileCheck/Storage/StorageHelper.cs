@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using System.Web;
 
 
-namespace ProjectOxfordExtensionConfigurationZipFileCheck.Storage
+namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
     /// <summary>
     /// 
@@ -134,6 +134,68 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck.Storage
             request.Headers.Add("Authorization", auth);
 
             return (HttpWebResponse)request.GetResponse();
+        }
+
+
+        /// <summary>
+        /// Creates the BLOB container.
+        /// </summary>
+        /// <param name="storageAccountKey">The storage account key.</param>
+        /// <param name="storageAccount">The storage account.</param>
+        /// <param name="container">The container.</param>
+        /// <returns></returns>
+        public static bool CreateBlobContainer(
+            string storageAccountKey,
+            string storageAccount,
+            string container)
+        {
+            DateTime dt = DateTime.UtcNow;
+            string stringToSign = string.Format("PUT\n"
+                + "\n" // content encoding
+                + "\n" // content language
+                + "\n" // content length
+                + "\n" // content md5
+                + "\n" // content type
+                + "\n" // date
+                + "\n" // if modified since
+                + "\n" // if match
+                + "\n" // if none match
+                + "\n" // if unmodified since
+                + "\n" // range
+                + "x-ms-date:" + dt.ToString("R") + "\nx-ms-version:2012-02-12\n" // headers
+                + "/{0}/{1}\nrestype:container", storageAccount, container);
+
+            string auth = CreateAuthorizationHeader(
+                stringToSign,
+                storageAccountKey,
+                storageAccount);
+
+            string method = "PUT";
+            string urlPath = string.Format(
+                "https://{0}.blob.core.windows.net/{1}?restype=container",
+                storageAccount,
+                container);
+
+            Uri uri = new Uri(urlPath);
+            
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            request.Method = method;
+            request.ContentLength = 0;
+            request.Headers.Add("x-ms-date", dt.ToString("R"));
+            request.Headers.Add("x-ms-version", "2015-04-05");
+            request.Headers.Add("Authorization", auth);
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            {
+                if (response.StatusCode == HttpStatusCode.Created || response.StatusCode == HttpStatusCode.Conflict)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }            
         }
 
         /// <summary>

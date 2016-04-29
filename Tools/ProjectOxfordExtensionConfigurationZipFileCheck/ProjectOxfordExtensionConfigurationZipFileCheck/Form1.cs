@@ -254,7 +254,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
             string storageAccount = this.textAccount.Text;
             string storageAccountKey = this.textAccountKey.Text;
-            string container = this.textBlobContainer.Text;
+            string container = this.textBlobContainer.Text.ToLower();//Blob container name can only include lower-case characters.
 
             if (string.IsNullOrWhiteSpace(storageAccount))
             {
@@ -271,8 +271,17 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 this.textFileContent.Text = "Please input the Blob container.";
                 return;
             }
+            StorageHelper.GetContainerList<string>(storageAccountKey, storageAccount, container);
 
+            bool existBlobContainer = StorageHelper.CreateBlobContainer(storageAccountKey, storageAccount, container);
+            if (!existBlobContainer)
+            {
+                this.textFileContent.Text = "Failed to create the specified container or the specified container has been disabled by the administrator.";
+            }
+            else
+            {
 
+            }
 
 
         }

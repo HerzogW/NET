@@ -21,10 +21,6 @@ import Quickstartpartviewmodel = require ("../Resource/QuickStart/ViewModels/Qui
 import Quickstartbladeviewmodel = require ("../Resource/QuickStart/ViewModels/QuickStartBladeViewModel");
 import Resourcesummarypartviewmodel = require ("../Resource/Summary/ViewModels/ResourceSummaryPartViewModel");
 import Resourcebladeviewmodel = require ("../Resource/Summary/ViewModels/ResourceBladeViewModel");
-import Apitypepartviewmodel = require ("../Resource/Create/ViewModels/ApiTypePartViewModel");
-import Cognitiveservicesapitypebladeviewmodel = require ("../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel");
-import Creationlegalbladeviewmodel = require ("../Resource/Create/ViewModels/CreationLegalBladeViewModel");
-import Cognitiveservicescreatebladeviewmodel = require ("../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel");
 import Generatesecondarycommandviewmodel = require ("../Resource/KeyManagement/ViewModels/GenerateSecondaryCommandViewModel");
 import Generateprimarycommandviewmodel = require ("../Resource/KeyManagement/ViewModels/GeneratePrimaryCommandViewModel");
 import Keyspropertiespartviewmodel = require ("../Resource/KeyManagement/ViewModels/KeysPropertiesPartViewModel");
@@ -33,6 +29,10 @@ import Apiaccountspecpickerextender = require ("../Resource/Pricing/ViewModels/A
 import Apiaccountspecpickerbladeviewmodel = require ("../Resource/Pricing/ViewModels/ApiAccountSpecPickerBladeViewModel");
 import Propertiespartviewmodel = require ("../Resource/Properties/ViewModels/PropertiesPartViewModel");
 import Propertiesbladeviewmodel = require ("../Resource/Properties/ViewModels/PropertiesBladeViewModel");
+import Apitypepartviewmodel = require ("../Resource/Create/ViewModels/ApiTypePartViewModel");
+import Cognitiveservicesapitypebladeviewmodel = require ("../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel");
+import Creationlegalbladeviewmodel = require ("../Resource/Create/ViewModels/CreationLegalBladeViewModel");
+import Cognitiveservicescreatebladeviewmodel = require ("../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel");
 import Resourcepartviewmodel = require ("../Browse/ViewModels/ResourcePartViewModel");
 import Browse = require ("./../Browse/BrowseArea");
 import Resource = require ("./../Resource/ResourceArea");
@@ -53,6 +53,30 @@ module ViewModelFactories {
         }
     }
     export class ResourceViewModelFactoriesBase extends FxImpl.Extension.ViewModelAreaFactoriesBase<Resource.DataContext> implements ExtensionDefinition.ResourceViewModelFactories,ExtensionDefinition.ResourceDataContextContainer {
+        public CognitiveServicesCreateBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract> {
+            return this.loadViewModelAsync<typeof Cognitiveservicescreatebladeviewmodel, ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract>(
+            "../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel",
+            (providerModule) => new providerModule.CognitiveServicesCreateBladeViewModel(container, initialState, this.dataContext),
+            require);
+        }
+        public CreationLegalBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract> {
+            return this.loadViewModelAsync<typeof Creationlegalbladeviewmodel, ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract>(
+            "../Resource/Create/ViewModels/CreationLegalBladeViewModel",
+            (providerModule) => new providerModule.CreationLegalBladeViewModel(container, initialState, this.dataContext),
+            require);
+        }
+        public CognitiveServicesApiTypeBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract> {
+            return this.loadViewModelAsync<typeof Cognitiveservicesapitypebladeviewmodel, ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract>(
+            "../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel",
+            (providerModule) => new providerModule.CognitiveServicesApiTypeBladeViewModel(container, initialState, this.dataContext),
+            require);
+        }
+        public ApiTypePartViewModel(container: MsPortalFx.ViewModels.PartContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ApiTypePartViewModel$Contract> {
+            return this.loadViewModelAsync<typeof Apitypepartviewmodel, ExtensionDefinition.Resource$ApiTypePartViewModel$Contract>(
+            "../Resource/Create/ViewModels/ApiTypePartViewModel",
+            (providerModule) => new providerModule.ApiTypePartViewModel(container, initialState, this.dataContext),
+            require);
+        }
         public PropertiesBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$PropertiesBladeViewModel$Contract> {
             return this.loadViewModelAsync<typeof Propertiesbladeviewmodel, ExtensionDefinition.Resource$PropertiesBladeViewModel$Contract>(
             "../Resource/Properties/ViewModels/PropertiesBladeViewModel",
@@ -99,30 +123,6 @@ module ViewModelFactories {
             return this.loadViewModelAsync<typeof Generatesecondarycommandviewmodel, ExtensionDefinition.Resource$GenerateSecondaryCommandViewModel$Contract>(
             "../Resource/KeyManagement/ViewModels/GenerateSecondaryCommandViewModel",
             (providerModule) => new providerModule.GenerateSecondaryCommandViewModel(container, initialState, this.dataContext),
-            require);
-        }
-        public CognitiveServicesCreateBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract> {
-            return this.loadViewModelAsync<typeof Cognitiveservicescreatebladeviewmodel, ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract>(
-            "../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel",
-            (providerModule) => new providerModule.CognitiveServicesCreateBladeViewModel(container, initialState, this.dataContext),
-            require);
-        }
-        public CreationLegalBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract> {
-            return this.loadViewModelAsync<typeof Creationlegalbladeviewmodel, ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract>(
-            "../Resource/Create/ViewModels/CreationLegalBladeViewModel",
-            (providerModule) => new providerModule.CreationLegalBladeViewModel(container, initialState, this.dataContext),
-            require);
-        }
-        public CognitiveServicesApiTypeBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract> {
-            return this.loadViewModelAsync<typeof Cognitiveservicesapitypebladeviewmodel, ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract>(
-            "../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel",
-            (providerModule) => new providerModule.CognitiveServicesApiTypeBladeViewModel(container, initialState, this.dataContext),
-            require);
-        }
-        public ApiTypePartViewModel(container: MsPortalFx.ViewModels.PartContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ApiTypePartViewModel$Contract> {
-            return this.loadViewModelAsync<typeof Apitypepartviewmodel, ExtensionDefinition.Resource$ApiTypePartViewModel$Contract>(
-            "../Resource/Create/ViewModels/ApiTypePartViewModel",
-            (providerModule) => new providerModule.ApiTypePartViewModel(container, initialState, this.dataContext),
             require);
         }
         public ResourceBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ResourceBladeViewModel$Contract> {
@@ -230,6 +230,18 @@ module ViewModelFactories {
             this._ResourceViewModelFactories = this._ResourceViewModelFactories || new ResourceViewModelFactoriesBase();
             return this._ResourceViewModelFactories;
         }
+        public Resource$CognitiveServicesCreateBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract> {
+            return this.Resource().CognitiveServicesCreateBladeViewModel(container, initialState);
+        }
+        public Resource$CreationLegalBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract> {
+            return this.Resource().CreationLegalBladeViewModel(container, initialState);
+        }
+        public Resource$CognitiveServicesApiTypeBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract> {
+            return this.Resource().CognitiveServicesApiTypeBladeViewModel(container, initialState);
+        }
+        public Resource$ApiTypePartViewModel(container: MsPortalFx.ViewModels.PartContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ApiTypePartViewModel$Contract> {
+            return this.Resource().ApiTypePartViewModel(container, initialState);
+        }
         public Resource$PropertiesBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$PropertiesBladeViewModel$Contract> {
             return this.Resource().PropertiesBladeViewModel(container, initialState);
         }
@@ -253,18 +265,6 @@ module ViewModelFactories {
         }
         public Resource$GenerateSecondaryCommandViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$GenerateSecondaryCommandViewModel$Contract> {
             return this.Resource().GenerateSecondaryCommandViewModel(container, initialState);
-        }
-        public Resource$CognitiveServicesCreateBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesCreateBladeViewModel$Contract> {
-            return this.Resource().CognitiveServicesCreateBladeViewModel(container, initialState);
-        }
-        public Resource$CreationLegalBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CreationLegalBladeViewModel$Contract> {
-            return this.Resource().CreationLegalBladeViewModel(container, initialState);
-        }
-        public Resource$CognitiveServicesApiTypeBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$CognitiveServicesApiTypeBladeViewModel$Contract> {
-            return this.Resource().CognitiveServicesApiTypeBladeViewModel(container, initialState);
-        }
-        public Resource$ApiTypePartViewModel(container: MsPortalFx.ViewModels.PartContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ApiTypePartViewModel$Contract> {
-            return this.Resource().ApiTypePartViewModel(container, initialState);
         }
         public Resource$ResourceBladeViewModel(container: MsPortalFx.ViewModels.ContainerContract, initialState?: any): MsPortalFx.Base.PromiseV<ExtensionDefinition.Resource$ResourceBladeViewModel$Contract> {
             return this.Resource().ResourceBladeViewModel(container, initialState);

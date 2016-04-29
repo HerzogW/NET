@@ -34,6 +34,22 @@ define(["require", "exports"], function (require, exports) {
             function ResourceViewModelFactoriesBase() {
                 _super.apply(this, arguments);
             }
+            ResourceViewModelFactoriesBase.prototype.CognitiveServicesCreateBladeViewModel = function (container, initialState) {
+                var _this = this;
+                return this.loadViewModelAsync("../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel", function (providerModule) { return new providerModule.CognitiveServicesCreateBladeViewModel(container, initialState, _this.dataContext); }, require);
+            };
+            ResourceViewModelFactoriesBase.prototype.CreationLegalBladeViewModel = function (container, initialState) {
+                var _this = this;
+                return this.loadViewModelAsync("../Resource/Create/ViewModels/CreationLegalBladeViewModel", function (providerModule) { return new providerModule.CreationLegalBladeViewModel(container, initialState, _this.dataContext); }, require);
+            };
+            ResourceViewModelFactoriesBase.prototype.CognitiveServicesApiTypeBladeViewModel = function (container, initialState) {
+                var _this = this;
+                return this.loadViewModelAsync("../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel", function (providerModule) { return new providerModule.CognitiveServicesApiTypeBladeViewModel(container, initialState, _this.dataContext); }, require);
+            };
+            ResourceViewModelFactoriesBase.prototype.ApiTypePartViewModel = function (container, initialState) {
+                var _this = this;
+                return this.loadViewModelAsync("../Resource/Create/ViewModels/ApiTypePartViewModel", function (providerModule) { return new providerModule.ApiTypePartViewModel(container, initialState, _this.dataContext); }, require);
+            };
             ResourceViewModelFactoriesBase.prototype.PropertiesBladeViewModel = function (container, initialState) {
                 var _this = this;
                 return this.loadViewModelAsync("../Resource/Properties/ViewModels/PropertiesBladeViewModel", function (providerModule) { return new providerModule.PropertiesBladeViewModel(container, initialState, _this.dataContext); }, require);
@@ -65,22 +81,6 @@ define(["require", "exports"], function (require, exports) {
             ResourceViewModelFactoriesBase.prototype.GenerateSecondaryCommandViewModel = function (container, initialState) {
                 var _this = this;
                 return this.loadViewModelAsync("../Resource/KeyManagement/ViewModels/GenerateSecondaryCommandViewModel", function (providerModule) { return new providerModule.GenerateSecondaryCommandViewModel(container, initialState, _this.dataContext); }, require);
-            };
-            ResourceViewModelFactoriesBase.prototype.CognitiveServicesCreateBladeViewModel = function (container, initialState) {
-                var _this = this;
-                return this.loadViewModelAsync("../Resource/Create/ViewModels/CognitiveServicesCreateBladeViewModel", function (providerModule) { return new providerModule.CognitiveServicesCreateBladeViewModel(container, initialState, _this.dataContext); }, require);
-            };
-            ResourceViewModelFactoriesBase.prototype.CreationLegalBladeViewModel = function (container, initialState) {
-                var _this = this;
-                return this.loadViewModelAsync("../Resource/Create/ViewModels/CreationLegalBladeViewModel", function (providerModule) { return new providerModule.CreationLegalBladeViewModel(container, initialState, _this.dataContext); }, require);
-            };
-            ResourceViewModelFactoriesBase.prototype.CognitiveServicesApiTypeBladeViewModel = function (container, initialState) {
-                var _this = this;
-                return this.loadViewModelAsync("../Resource/Create/ViewModels/CognitiveServicesApiTypeBladeViewModel", function (providerModule) { return new providerModule.CognitiveServicesApiTypeBladeViewModel(container, initialState, _this.dataContext); }, require);
-            };
-            ResourceViewModelFactoriesBase.prototype.ApiTypePartViewModel = function (container, initialState) {
-                var _this = this;
-                return this.loadViewModelAsync("../Resource/Create/ViewModels/ApiTypePartViewModel", function (providerModule) { return new providerModule.ApiTypePartViewModel(container, initialState, _this.dataContext); }, require);
             };
             ResourceViewModelFactoriesBase.prototype.ResourceBladeViewModel = function (container, initialState) {
                 var _this = this;
@@ -161,6 +161,18 @@ define(["require", "exports"], function (require, exports) {
                 this._ResourceViewModelFactories = this._ResourceViewModelFactories || new ResourceViewModelFactoriesBase();
                 return this._ResourceViewModelFactories;
             };
+            ViewModelFactoriesBase.prototype.Resource$CognitiveServicesCreateBladeViewModel = function (container, initialState) {
+                return this.Resource().CognitiveServicesCreateBladeViewModel(container, initialState);
+            };
+            ViewModelFactoriesBase.prototype.Resource$CreationLegalBladeViewModel = function (container, initialState) {
+                return this.Resource().CreationLegalBladeViewModel(container, initialState);
+            };
+            ViewModelFactoriesBase.prototype.Resource$CognitiveServicesApiTypeBladeViewModel = function (container, initialState) {
+                return this.Resource().CognitiveServicesApiTypeBladeViewModel(container, initialState);
+            };
+            ViewModelFactoriesBase.prototype.Resource$ApiTypePartViewModel = function (container, initialState) {
+                return this.Resource().ApiTypePartViewModel(container, initialState);
+            };
             ViewModelFactoriesBase.prototype.Resource$PropertiesBladeViewModel = function (container, initialState) {
                 return this.Resource().PropertiesBladeViewModel(container, initialState);
             };
@@ -184,18 +196,6 @@ define(["require", "exports"], function (require, exports) {
             };
             ViewModelFactoriesBase.prototype.Resource$GenerateSecondaryCommandViewModel = function (container, initialState) {
                 return this.Resource().GenerateSecondaryCommandViewModel(container, initialState);
-            };
-            ViewModelFactoriesBase.prototype.Resource$CognitiveServicesCreateBladeViewModel = function (container, initialState) {
-                return this.Resource().CognitiveServicesCreateBladeViewModel(container, initialState);
-            };
-            ViewModelFactoriesBase.prototype.Resource$CreationLegalBladeViewModel = function (container, initialState) {
-                return this.Resource().CreationLegalBladeViewModel(container, initialState);
-            };
-            ViewModelFactoriesBase.prototype.Resource$CognitiveServicesApiTypeBladeViewModel = function (container, initialState) {
-                return this.Resource().CognitiveServicesApiTypeBladeViewModel(container, initialState);
-            };
-            ViewModelFactoriesBase.prototype.Resource$ApiTypePartViewModel = function (container, initialState) {
-                return this.Resource().ApiTypePartViewModel(container, initialState);
             };
             ViewModelFactoriesBase.prototype.Resource$ResourceBladeViewModel = function (container, initialState) {
                 return this.Resource().ResourceBladeViewModel(container, initialState);

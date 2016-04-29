@@ -609,10 +609,10 @@
     <value>Cognitive Services is a collection of APIs that enable natural and contextual interaction with tools that augment users' experiences via the power of machine learnt models from Microsoft.</value>
   </data>
   <data name="CognitiveServices_CreateBlade_Subtitle" xml:space="preserve">
-    <value>Cognitive Services account</value>
+    <value>Get content of compiled Svg picture</value>
   </data>
   <data name="CognitiveServices_CreateBlade_Title" xml:space="preserve">
-    <value>Create</value>
+    <value>GetSvgContent</value>
   </data>
   <data name="CognitiveServices_AssetTypeNames_Resource_plural" xml:space="preserve">
     <value>Cognitive Services accounts</value>

@@ -63,6 +63,17 @@ module ExtensionDefinition {
   "startBoardParts": [],
   "blades": [
     {
+      "name": "CreateBlade",
+      "width": 3
+    },
+    {
+      "name": "CreationLegalBlade"
+    },
+    {
+      "name": "CognitiveServicesApiType",
+      "width": 2
+    },
+    {
       "name": "PropertiesBlade",
       "width": 0
     },
@@ -76,17 +87,6 @@ module ExtensionDefinition {
     {
       "name": "KeySettingBlade",
       "width": 0
-    },
-    {
-      "name": "CreateBlade",
-      "width": 0
-    },
-    {
-      "name": "CreationLegalBlade"
-    },
-    {
-      "name": "CognitiveServicesApiType",
-      "width": 2
     },
     {
       "name": "ResourceBlade"

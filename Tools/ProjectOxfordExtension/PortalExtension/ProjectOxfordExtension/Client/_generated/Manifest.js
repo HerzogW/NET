@@ -60,6 +60,17 @@ define(["require", "exports", "./../_generated/SvgLogo", "ClientResources"], fun
             "startBoardParts": [],
             "blades": [
                 {
+                    "name": "CreateBlade",
+                    "width": 3
+                },
+                {
+                    "name": "CreationLegalBlade"
+                },
+                {
+                    "name": "CognitiveServicesApiType",
+                    "width": 2
+                },
+                {
                     "name": "PropertiesBlade",
                     "width": 0
                 },
@@ -73,17 +84,6 @@ define(["require", "exports", "./../_generated/SvgLogo", "ClientResources"], fun
                 {
                     "name": "KeySettingBlade",
                     "width": 0
-                },
-                {
-                    "name": "CreateBlade",
-                    "width": 0
-                },
-                {
-                    "name": "CreationLegalBlade"
-                },
-                {
-                    "name": "CognitiveServicesApiType",
-                    "width": 2
                 },
                 {
                     "name": "ResourceBlade"

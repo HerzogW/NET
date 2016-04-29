@@ -237,6 +237,125 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                 ],
                 "blades": [
                     {
+                        "name": "CreateBlade",
+                        "viewModelName": "Resource$CognitiveServicesCreateBladeViewModel",
+                        "lenses": [],
+                        "width": 3,
+                        "style": 3,
+                        "actionBar": {
+                            "name": "",
+                            "actionBarKind": 6,
+                            "bindings": []
+                        },
+                        "templateBlade": {
+                            "htmlTemplate": "pdc9ac0f058a7cf4263a9b33a0035d4b583",
+                            "details": [
+                                {
+                                    "selectablePath": "content.apiTypeSelector.selectable",
+                                    "blade": "CognitiveServicesApiType",
+                                    "parameterCollector": "content.apiTypeCollector"
+                                },
+                                {
+                                    "selectablePath": "content.accountSpecSelector.control.selectable",
+                                    "blade": "ApiAccountSpecPicker",
+                                    "parameterCollector": "content.accountSpecSelector.collector"
+                                },
+                                {
+                                    "selectablePath": "content.legalSelector.selectable",
+                                    "blade": "CreationLegalBlade",
+                                    "parameterCollector": "content.legalCollector"
+                                }
+                            ],
+                            "partSize": 0
+                        }
+                    },
+                    {
+                        "name": "CreationLegalBlade",
+                        "viewModelName": "Resource$CreationLegalBladeViewModel",
+                        "lenses": [],
+                        "actionBar": {
+                            "name": "",
+                            "actionBarKind": 6,
+                            "bindings": []
+                        },
+                        "templateBlade": {
+                            "htmlTemplate": "pdc1c85ecf9741842c291510f6c87a5b0eb",
+                            "parameterProvider": true,
+                            "partSize": 0
+                        }
+                    },
+                    {
+                        "name": "CognitiveServicesApiType",
+                        "viewModelName": "Resource$CognitiveServicesApiTypeBladeViewModel",
+                        "lenses": [
+                            {
+                                "name": "CognitiveServicesApiType_lens1",
+                                "partInstances": [
+                                    {
+                                        "name": "PickerPart",
+                                        "inline": {
+                                            "viewModel": "Resource$ApiTypePartViewModel",
+                                            "partKind": 0,
+                                            "inputs": [],
+                                            "bindings": [],
+                                            "htmlTemplate": "pdc3cd24d3f6f634ac2b4af71fd3bff651a",
+                                            "details": [
+                                                {
+                                                    "invocationInputArguments": [
+                                                        {
+                                                            "valuesFrom": [
+                                                                {
+                                                                    "referenceType": 0,
+                                                                    "property": "content.addNewGrid.selectableData"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "parameterCollector": "content.addNewItemCollector"
+                                                }
+                                            ],
+                                            "initialSize": 8,
+                                            "supportedSizes": [
+                                                8
+                                            ]
+                                        },
+                                        "parameterProvider": true
+                                    }
+                                ]
+                            }
+                        ],
+                        "width": 2,
+                        "locked": true,
+                        "pinnable": false,
+                        "style": 2,
+                        "actionBar": {
+                            "name": "",
+                            "actionBarKind": 2,
+                            "bindings": [
+                                {
+                                    "property": "showSelectButton",
+                                    "valuesFrom": [
+                                        {
+                                            "referenceType": 0,
+                                            "property": "content.showSelectButton",
+                                            "part": "PickerPart"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "property": "triggerSelectAction",
+                                    "valuesFrom": [
+                                        {
+                                            "referenceType": 0,
+                                            "property": "content.triggerSelectAction",
+                                            "part": "PickerPart"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "PropertiesBlade",
                         "inputs": [
                             "id"
@@ -416,126 +535,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                         "width": 0,
                         "locked": true,
                         "style": 8
-                    },
-                    {
-                        "name": "CreateBlade",
-                        "viewModelName": "Resource$CognitiveServicesCreateBladeViewModel",
-                        "lenses": [],
-                        "width": 0,
-                        "style": 3,
-                        "actionBar": {
-                            "name": "",
-                            "actionBarKind": 1,
-                            "bindings": []
-                        },
-                        "templateBlade": {
-                            "htmlTemplate": "pdc7bf29e1b7864473898e5cb9c6bcb705c",
-                            "parameterProvider": true,
-                            "details": [
-                                {
-                                    "selectablePath": "content.apiTypeSelector.selectable",
-                                    "blade": "CognitiveServicesApiType",
-                                    "parameterCollector": "content.apiTypeCollector"
-                                },
-                                {
-                                    "selectablePath": "content.accountSpecSelector.control.selectable",
-                                    "blade": "ApiAccountSpecPicker",
-                                    "parameterCollector": "content.accountSpecSelector.collector"
-                                },
-                                {
-                                    "selectablePath": "content.legalSelector.selectable",
-                                    "blade": "CreationLegalBlade",
-                                    "parameterCollector": "content.legalCollector"
-                                }
-                            ],
-                            "partSize": 0
-                        }
-                    },
-                    {
-                        "name": "CreationLegalBlade",
-                        "viewModelName": "Resource$CreationLegalBladeViewModel",
-                        "lenses": [],
-                        "actionBar": {
-                            "name": "",
-                            "actionBarKind": 6,
-                            "bindings": []
-                        },
-                        "templateBlade": {
-                            "htmlTemplate": "pdcc995572b90b24957aaa6e0c22e4f005f",
-                            "parameterProvider": true,
-                            "partSize": 0
-                        }
-                    },
-                    {
-                        "name": "CognitiveServicesApiType",
-                        "viewModelName": "Resource$CognitiveServicesApiTypeBladeViewModel",
-                        "lenses": [
-                            {
-                                "name": "CognitiveServicesApiType_lens1",
-                                "partInstances": [
-                                    {
-                                        "name": "PickerPart",
-                                        "inline": {
-                                            "viewModel": "Resource$ApiTypePartViewModel",
-                                            "partKind": 0,
-                                            "inputs": [],
-                                            "bindings": [],
-                                            "htmlTemplate": "pdcb322a03a8d7540d88285088055bbbb6a",
-                                            "details": [
-                                                {
-                                                    "invocationInputArguments": [
-                                                        {
-                                                            "valuesFrom": [
-                                                                {
-                                                                    "referenceType": 0,
-                                                                    "property": "content.addNewGrid.selectableData"
-                                                                }
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "parameterCollector": "content.addNewItemCollector"
-                                                }
-                                            ],
-                                            "initialSize": 8,
-                                            "supportedSizes": [
-                                                8
-                                            ]
-                                        },
-                                        "parameterProvider": true
-                                    }
-                                ]
-                            }
-                        ],
-                        "width": 2,
-                        "locked": true,
-                        "pinnable": false,
-                        "style": 2,
-                        "actionBar": {
-                            "name": "",
-                            "actionBarKind": 2,
-                            "bindings": [
-                                {
-                                    "property": "showSelectButton",
-                                    "valuesFrom": [
-                                        {
-                                            "referenceType": 0,
-                                            "property": "content.showSelectButton",
-                                            "part": "PickerPart"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "property": "triggerSelectAction",
-                                    "valuesFrom": [
-                                        {
-                                            "referenceType": 0,
-                                            "property": "content.triggerSelectAction",
-                                            "part": "PickerPart"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
                     },
                     {
                         "name": "ResourceBlade",
@@ -846,7 +845,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                                     ]
                                                 }
                                             ],
-                                            "htmlTemplate": "pdcd94b33020bb945eabca26f5dd208e321",
+                                            "htmlTemplate": "pdca9597a349c304e56844001cb16d85769",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -927,26 +926,8 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                         "lenses": [],
                         "width": 2,
                         "style": 2,
-                        "actionBar": {
-                            "name": "",
-                            "actionBarKind": 0,
-                            "bindings": []
-                        },
                         "templateBlade": {
-                            "htmlTemplate": "pdc7bf29e1b7864473898e5cb9c6bcb705c",
-                            "parameterProvider": true,
-                            "details": [
-                                {
-                                    "selectablePath": "content.apiTypeSelector.selectable",
-                                    "blade": "ProjectOxfordApiType",
-                                    "parameterCollector": "content.apiTypeCollector"
-                                },
-                                {
-                                    "selectablePath": "content.accountSpecSelector.control.selectable",
-                                    "blade": "ApiAccountSpecPicker",
-                                    "parameterCollector": "content.accountSpecSelector.collector"
-                                }
-                            ],
+                            "htmlTemplate": "pdc9ac0f058a7cf4263a9b33a0035d4b583",
                             "partSize": 0
                         }
                     },
@@ -964,7 +945,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             "partKind": 0,
                                             "inputs": [],
                                             "bindings": [],
-                                            "htmlTemplate": "pdcb322a03a8d7540d88285088055bbbb6a",
+                                            "htmlTemplate": "pdc3cd24d3f6f634ac2b4af71fd3bff651a",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -1177,19 +1158,19 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                     }
                 ],
                 "htmlTemplates": {
-                    "pdc7bf29e1b7864473898e5cb9c6bcb705c": {
+                    "pdc9ac0f058a7cf4263a9b33a0035d4b583": {
                         "file": "Create.html",
                         "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgContent\"></div> <div data-bind=\"formElement: svgLogoContent\"></div> <!--<div data-bind=\"formElement: nameTextBox\"></div>\r\n    <div data-bind=\"formElement: apiTypeSelector\"></div>\r\n    <div data-bind=\"formElement: accountSpecSelector.control\"></div>\r\n    <div data-bind=\"formElement: subscriptionDropDown.control\"></div>\r\n    <div data-bind=\"formElement: resourceGroupDropDown.control\"></div>\r\n    <div data-bind=\"formElement: locationDropDown.control\"></div>\r\n    <div data-bind=\"formElement: legalSelector, visible: showLegalTerms\"></div>--> </div>"
                     },
-                    "pdcc995572b90b24957aaa6e0c22e4f005f": {
+                    "pdc1c85ecf9741842c291510f6c87a5b0eb": {
                         "file": "LegalForm.html",
                         "content": "<div class=\"msportalfx-form\" data-bind=\"html: legalTermHtml\"> </div> "
                     },
-                    "pdcb322a03a8d7540d88285088055bbbb6a": {
+                    "pdc3cd24d3f6f634ac2b4af71fd3bff651a": {
                         "file": "Client/Resource/Create/CognitiveServicesCreate.pdl",
                         "content": "<div data-bind=\"pcPickerV3: $root\"></div>"
                     },
-                    "pdcd94b33020bb945eabca26f5dd208e321": {
+                    "pdca9597a349c304e56844001cb16d85769": {
                         "file": "Client/Resource/Settings/SettingsBlade.pdl",
                         "content": "<div data-bind=\"pcGrid: settingList\"></div>"
                     }
@@ -1365,12 +1346,12 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
         })(AssetTypeNames = ExtensionDefinition.AssetTypeNames || (ExtensionDefinition.AssetTypeNames = {}));
         var BladeNames;
         (function (BladeNames) {
-            BladeNames.propertiesBlade = "PropertiesBlade";
-            BladeNames.apiAccountSpecPicker = "ApiAccountSpecPicker";
-            BladeNames.keySettingBlade = "KeySettingBlade";
             BladeNames.createBlade = "CreateBlade";
             BladeNames.creationLegalBlade = "CreationLegalBlade";
             BladeNames.cognitiveServicesApiType = "CognitiveServicesApiType";
+            BladeNames.propertiesBlade = "PropertiesBlade";
+            BladeNames.apiAccountSpecPicker = "ApiAccountSpecPicker";
+            BladeNames.keySettingBlade = "KeySettingBlade";
             BladeNames.resourceBlade = "ResourceBlade";
             BladeNames.quickStartBlade = "QuickStartBlade";
             BladeNames.settingsBlade = "SettingsBlade";
