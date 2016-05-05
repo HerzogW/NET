@@ -256,14 +256,6 @@
     <TypeScriptCompile Include="Client\Resource\Summary\ViewModels\ResourceBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\QuickStart\ViewModels\QuickStartBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\QuickStart\ViewModels\QuickStartPartViewModel.ts" />
-    <SvgTypeScriptCompile Include="Client\_generated\Svg.ts">
-      <Namespace>ProjectOxfordExtension</Namespace>
-      <IsAmd>true</IsAmd>
-    </SvgTypeScriptCompile>
-    <SvgLogoTypeScriptCompile Include="Client\_generated\SvgLogo.ts">
-      <Namespace>ProjectOxfordExtension</Namespace>
-      <IsAmd>true</IsAmd>
-    </SvgLogoTypeScriptCompile>
     <Svg Include="Content\SVG\sample.svg" />
     <TypeScriptCompile Include="Client\Resource\Summary\ViewModels\ResourceSummaryPartViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsBladeViewModel.ts" />
@@ -285,6 +277,8 @@
     <Svg Include="Content\SVG\topicDetection.svg" />
     <Svg Include="Content\SVG\sentimentAnalysis.svg" />
     <SvgLogo Include="Content\SVG\sampleLogo.svg" />
+    <Content Include="Client\_generated\Svg.js" />
+    <Content Include="Client\_generated\SvgLogo.js" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Hero.png" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Large.png" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Medium.png" />
@@ -348,6 +342,8 @@
       <TsLintLevel>Minimal</TsLintLevel>
     </TypeScriptCompile>
     <TypeScriptCompile Include="Client\_generated\Manifest.ts" />
+    <TypeScriptCompile Include="Client\_generated\Svg.ts" />
+    <TypeScriptCompile Include="Client\_generated\SvgLogo.ts" />
     <TypeScriptCompile Include="Client\_generated\TypeMetadataModels.d.ts" />
     <TypeScriptCompile Include="Client\_generated\ViewModelFactories.ts">
       <TsLintLevel>Minimal</TsLintLevel>
@@ -433,7 +429,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties GalleryPackages_2CognitiveServicesCreate_2Manifest_1json__JSONSchema="" GalleryPackages_2CognitiveServicesCreate_2UIDefinition_1json__JSONSchema="" />
+      <UserProperties GalleryPackages_2CognitiveServicesCreate_2UIDefinition_1json__JSONSchema="" GalleryPackages_2CognitiveServicesCreate_2Manifest_1json__JSONSchema="" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Azure.Gallery.AzureGalleryUtility.5.1.0.19\build\Microsoft.Azure.Gallery.AzureGalleryUtility.targets" Condition="Exists('..\..\packages\Microsoft.Azure.Gallery.AzureGalleryUtility.5.1.0.19\build\Microsoft.Azure.Gallery.AzureGalleryUtility.targets')" />

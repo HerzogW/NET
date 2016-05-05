@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-using System.IO.Compression;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.Windows.Forms.Form" />
     public partial class Form1 : Form
     {
         /// <summary>
@@ -21,13 +24,26 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <summary>
         /// The API configuration storage container
         /// </summary>
-        public static string apiConfigurationStorageContainer;
+        public static string apiConfigurationStorageContainer = "apiconfiguration";
 
+        /// <summary>
+        /// The setting format
+        /// </summary>
         private JsonSerializerSettings settingFormat = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore
         };
+
+        /// <summary>
+        /// The temporary zip file bytes
+        /// </summary>
+        private byte[] tempZipFileBytes;
+
+        /// <summary>
+        /// The zip file name
+        /// </summary>
+        private string zipFileName = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Form1"/> class.
@@ -37,12 +53,15 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             InitializeComponent();
         }
 
+        #region Tab "Validation"
+
+        #region Check single configuration zip file.
         /// <summary>
         /// Handles the Click event of the button1 control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void button1_Click(object sender, EventArgs e)
+        private void btnSelectZip_Click(object sender, EventArgs e)
         {
             this.openFileDialog1.ShowDialog();
         }
@@ -55,9 +74,15 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             this.textErrorMessage.Text = "";
+            this.btnUploadSingleData.Enabled = false;
             this.fileName.Text = this.openFileDialog1.FileName;
+            zipFileName = this.openFileDialog1.SafeFileName;
             FileInfo fileInfo = new FileInfo(this.openFileDialog1.FileName);
             Stream stream = fileInfo.OpenRead();
+
+            tempZipFileBytes = new byte[stream.Length];
+            stream.Read(tempZipFileBytes, 0, tempZipFileBytes.Length);
+
             apiConfigurationManager.VeriliadteStream(stream, this.openFileDialog1.FileName);
 
             List<ErrorEntity> listError = apiConfigurationManager.listError;
@@ -68,14 +93,67 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     this.textErrorMessage.Text += (i++) + "、" + errorEntity.GetErrorInfo() + "\r\n";
                 }
+                this.btnUploadSingleData.Enabled = false;
             }
             else
             {
-                this.textErrorMessage.Text = "This ZIP file is Correct!";
+                this.textErrorMessage.Text = "This zip file is correct!";
+                this.btnUploadSingleData.Enabled = true;
             }
             apiConfigurationManager.listError = new List<ErrorEntity>();
         }
+        #endregion
 
+        #region Upload single local zip file to test blob.
+        /// <summary>
+        /// Handles the Click event of the btnUploadSingleData control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void btnUploadSingleData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                string ApiCongigurationTestBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+                string ApiConfigurationTestBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+                if (string.IsNullOrWhiteSpace(ApiCongigurationTestBlobAccountName))
+                {
+                    this.textErrorMessage.Text = "Not find the key 'ApiCongigurationTestBlobAccountName' in App.config or its value is empty.";
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(ApiConfigurationTestBlobAccountKey))
+                {
+                    this.textErrorMessage.Text = "Not find the key 'ApiConfigurationTestBlobAccountKey' in App.config or its value is empty.";
+                    return;
+                }
+
+                StorageCredentials credentials = new StorageCredentials(ApiCongigurationTestBlobAccountName, ApiConfigurationTestBlobAccountKey, "AccountKey");
+                Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", ApiCongigurationTestBlobAccountName));
+
+                CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
+
+                CloudBlobContainer container = cloudBlobClient.GetContainerReference(apiConfigurationStorageContainer);
+                var blockBlob = container.GetBlockBlobReference(zipFileName);
+
+                Stream stream = new MemoryStream(tempZipFileBytes);
+                blockBlob.UploadFromStream(stream);
+
+                this.textErrorMessage.Text = "Upload file successfully.";
+            }
+            catch (Exception ex)
+            {
+                this.textErrorMessage.Text = string.Format("Original Error Message: {0}", ex.Message);
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Tab "Upload"
+
+        #region File tree operation
         /// <summary>
         /// Handles the Click event of the button3 control.
         /// </summary>
@@ -83,8 +161,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            this.btnUpLoadData.Enabled = false;
-            apiConfigurationStorageContainer = CloudConfigurationManager.GetSetting("ApiConfigurationContainer");
+            this.btnUpLoadMultiZip.Enabled = false;
             var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
 
             apiConfigurationManager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
@@ -102,7 +179,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
             else
             {
-                this.btnUpLoadData.Enabled = true;
+                this.btnUpLoadMultiZip.Enabled = true;
                 LoadFileTree(apiConfigurationManager.CacheData);
             }
         }
@@ -242,48 +319,89 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 }
             }
         }
+        #endregion
 
+        #region Update multi zip files from test blob to production blob.
         /// <summary>
         /// Handles the Click event of the btnUpLoadData control.
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void btnUpLoadData_Click(object sender, EventArgs e)
+        private void btnUpLoadMultiZip_Click(object sender, EventArgs e)
         {
             this.textFileContent.Text = string.Empty;
 
             string storageAccount = this.textAccount.Text;
             string storageAccountKey = this.textAccountKey.Text;
-            string container = this.textBlobContainer.Text.ToLower();//Blob container name can only include lower-case characters.
 
             if (string.IsNullOrWhiteSpace(storageAccount))
             {
-                this.textFileContent.Text = "Please input the Storage Account.";
+                this.textFileContent.Text = "Please input the Storage Account .";
                 return;
             }
             if (string.IsNullOrWhiteSpace(storageAccountKey))
             {
-                this.textFileContent.Text = "Please input the Storage Account Key.";
+                this.textFileContent.Text = "Please input the Storage Account Key .";
                 return;
             }
-            if (string.IsNullOrWhiteSpace(container))
+
+            try
             {
-                this.textFileContent.Text = "Please input the Blob container.";
-                return;
-            }
-            StorageHelper.GetContainerList<string>(storageAccountKey, storageAccount, container);
+                StorageCredentials credentials = new StorageCredentials(storageAccount, storageAccountKey, "AccountKey");
+                Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", storageAccount));
+                CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
 
-            bool existBlobContainer = StorageHelper.CreateBlobContainer(storageAccountKey, storageAccount, container);
-            if (!existBlobContainer)
+                CloudBlobContainer container = cloudBlobClient.GetContainerReference(apiConfigurationStorageContainer);
+                
+
+
+
+
+                string errorMessageStr = UpdateData();
+                if (!string.IsNullOrWhiteSpace(errorMessageStr))
+                {
+                    this.textFileContent.Text = errorMessageStr;
+                    return;
+                }
+
+
+
+
+            }
+            catch (Exception ex)
             {
-                this.textFileContent.Text = "Failed to create the specified container or the specified container has been disabled by the administrator.";
+                this.textFileContent.Text = string.Format("Original Error Message: {0}", ex.Message);
             }
-            else
-            {
-
-            }
-
-
         }
+
+        /// <summary>
+        /// Updates the data.
+        /// </summary>
+        /// <returns></returns>
+        private string UpdateData()
+        {
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+
+            apiConfigurationManager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
+
+            apiConfigurationManager.LoadDataToCache();
+            List<ErrorEntity> listError = apiConfigurationManager.listError;
+
+            if (listError.Count > 0)
+            {
+                string errorMessageStr = string.Empty;
+                int i = 1;
+                foreach (ErrorEntity errorMessage in listError)
+                {
+                    errorMessageStr += (i++) + "、" + errorMessage.GetErrorInfo() + "\n";
+                }
+                return errorMessageStr;
+            }
+            return null;
+        }
+        #endregion
+
+        #endregion
+
     }
 }
