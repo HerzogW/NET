@@ -23,6 +23,15 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private const string IconToken = "ms-icon:";
 
         /// <summary>
+        /// The setting format
+        /// </summary>
+        private JsonSerializerSettings settingFormat = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        /// <summary>
         /// Gets or sets the locale identifier.
         /// </summary>
         /// <value>
@@ -178,6 +187,335 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             {
                 return new FindResourceResult { status = FindResourceResultStatus.NotFound, resourceInfo = key };
             }
+        }
+
+        /// <summary>
+        /// Handles the items.
+        /// </summary>
+        public void HandleItems()
+        {
+            HandleApiItem();
+            handleSpecItem();
+            handleQuickStartItem();
+        }
+
+        /// <summary>
+        /// Handles the API item.
+        /// </summary>
+        private void HandleApiItem()
+        {
+            var resourceEn = new Dictionary<string, string>();
+
+            ApiEntity apiEntity = JsonConvert.DeserializeObject<ApiEntity>(this.ApiItem.ToString());
+            resourceEn.Add("title", apiEntity.title);
+            apiEntity.title = string.Format("{0}title", ResourceToken);
+
+            resourceEn.Add("subtitle", apiEntity.subtitle);
+            apiEntity.subtitle = string.Format("{0}subtitle", ResourceToken);
+
+            Icons.Add(string.Format("{0}.svg", apiEntity.item), apiEntity.iconData);
+            apiEntity.iconData = string.Format("{0}{1}.svg", IconToken, apiEntity.item);
+
+            this.ApiItem = JObject.Parse(JsonConvert.SerializeObject(apiEntity, settingFormat));
+            this.Resources.Add("en", resourceEn);
+        }
+
+        private void handleSpecItem()
+        {
+            var resourceEn = this.Resources["en"];
+            SpecsEntity specsEntity = JsonConvert.DeserializeObject<SpecsEntity>(this.Spec.ToString());
+            for (int i = 0; i < specsEntity.specs.Count; i++)
+            {
+                var entity = specsEntity.specs[i];
+                resourceEn.Add(string.Format("spec.{0}.title", entity.id.ToLower()), entity.title);
+                specsEntity.specs[i].title = string.Format("{0}spec.{1}.title", ResourceToken, entity.id.ToLower());
+
+                for (int j = 0; j < entity.promotedFeatures.Count; j++)
+                {
+                    var feature = entity.promotedFeatures[j];
+
+                    string key = GetKeyByValue(resourceEn, feature.unitDescription);
+                    if (!string.IsNullOrWhiteSpace(key))
+                    {
+                        specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, key);
+                    }
+                    else
+                    {
+                        int num = 1;
+                        while (true)
+                        {
+                            string newKey = string.Format("spec.promotedFeature.unitDescription{0}", num++);
+                            if (!ExistKey(resourceEn, newKey))
+                            {
+                                resourceEn.Add(newKey, feature.unitDescription);
+                                specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, newKey);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                resourceEn.Add(string.Format("spec.cost.{0}.caption.format", entity.id.ToLower()), entity.cost.caption);
+                specsEntity.specs[i].cost.caption = string.Format("{0}spec.cost.{1}.caption.format", ResourceToken, entity.id.ToLower());
+            }
+
+            for (int i = 0; i < specsEntity.features.Count; i++)
+            {
+                var entity = specsEntity.features[i];
+                resourceEn.Add(string.Format("feature.{0}.displayName", entity.id), entity.displayName);
+                specsEntity.features[i].displayName = string.Format("{0}feature.{1}.displayName", ResourceToken, entity.id);
+
+                Icons.Add(string.Format("spec.feature.{0}.svg", entity.id), entity.iconSvgData);
+                specsEntity.features[i].iconSvgData = string.Format("{0}spec.feature.{1}.svg", IconToken, entity.id);
+            }
+
+            this.Spec = JObject.Parse(JsonConvert.SerializeObject(specsEntity, settingFormat));
+            this.Resources["en"] = resourceEn;
+        }
+
+        private void handleQuickStartItem()
+        {
+            var resourceEn = this.Resources["en"];
+            QuickStartsEntity quickStartsEntity = JsonConvert.DeserializeObject<QuickStartsEntity>(this.QuickStart.ToString());
+
+            for (int i = 0; i < quickStartsEntity.quickStarts.Count; i++)
+            {
+                var entity = quickStartsEntity.quickStarts[i];
+
+                resourceEn.Add(string.Format("quickStart{0}.title", i), entity.title);
+                quickStartsEntity.quickStarts[i].title = string.Format("{0}quickStart{1}.title", ResourceToken, i);
+
+                resourceEn.Add(string.Format("quickStart{0}.des", i), entity.description);
+                quickStartsEntity.quickStarts[i].description = string.Format("{0}quickStart{1}.des", ResourceToken, i);
+
+                for (int j = 0; j < entity.links.Count; j++)
+                {
+                    var link = entity.links[j];
+
+                    resourceEn.Add(string.Format("quickStart{0}.link{1}.text", i, j), link.text);
+                    quickStartsEntity.quickStarts[i].links[j].text = string.Format("{0}quickStart{1}.link{2}.text", ResourceToken, i, j);
+                }
+            }
+
+            this.QuickStart = JObject.Parse(JsonConvert.SerializeObject(quickStartsEntity, settingFormat));
+            this.Resources["en"] = resourceEn;
+        }
+
+        ///// <summary>
+        ///// Handles the API item.
+        ///// </summary>
+        //private void HandleApiItem()
+        //{
+        //    var resourceEn = new Dictionary<string, string>();
+
+        //    var tempResult = JObject.FromObject(this.ApiItem);
+        //    var reader = this.ApiItem.CreateReader();
+        //    bool flag = false;
+        //    string itemKey = string.Empty;
+        //    while (reader.Read())
+        //    {
+        //        var value = reader.Value as string;
+
+        //        if (reader.TokenType == JsonToken.PropertyName && !flag)
+        //        {
+        //            value = value.ToLower();
+
+        //            if (value == "title" || value == "subtitle" || value == "icondata")
+        //            {
+        //                itemKey = value;
+        //                flag = true;
+        //            }
+        //        }
+        //        else if (reader.TokenType == JsonToken.String && flag)
+        //        {
+        //            switch (itemKey)
+        //            {
+        //                case "title":
+        //                case "subtitle":
+        //                    resourceEn.Add(itemKey, value);
+        //                    tempResult.SelectToken(reader.Path).Replace(string.Format("{0}{1}", ResourceToken, itemKey));
+        //                    break;
+        //                case "icondata":
+        //                    Icons.Add(itemKey, value);
+        //                    tempResult.SelectToken(reader.Path).Replace(string.Format("{0}{1}.svg", IconToken, itemKey));
+        //                    break;
+        //            }
+        //            itemKey = string.Empty;
+        //            flag = false;
+        //        }
+        //    }
+        //    this.Resources.Add("en", resourceEn);
+        //    this.ApiItem = tempResult;
+        //}
+
+
+        ///// <summary>
+        ///// Handles the spec item.
+        ///// </summary>
+        //private void handleSpecItem()
+        //{
+        //    var resourceEn = this.Resources["en"];
+        //    var tempResult = JObject.FromObject(this.Spec);
+        //    var reader = this.Spec.CreateReader();
+        //    bool flag = false;
+        //    string itemKey = string.Empty;
+        //    string specCodeName = string.Empty;
+        //    string specCodeValue = string.Empty;
+        //    int num = 1;
+        //    while (reader.Read())
+        //    {
+        //        var value = reader.Value as string;
+
+        //        if (reader.TokenType == JsonToken.PropertyName && !flag)
+        //        {
+        //            value = value.ToLower();
+
+        //            if (value == "title" || value == "unitdescription" || value == "caption" || value == "displayname" || value == "iconsvgdata")
+        //            {
+        //                itemKey = value;
+        //                flag = true;
+        //            }
+        //            else if (value == "specCode")
+        //            {
+        //                specCodeName = value;
+        //            }
+        //        }
+        //        else if (reader.TokenType == JsonToken.String)
+        //        {
+        //            if (specCodeName == "specCode")
+        //            {
+        //                specCodeValue = value;
+        //                specCodeName = string.Empty;
+        //            }
+        //            else if (flag)
+        //            {
+        //                switch (itemKey)
+        //                {
+        //                    case "title":
+        //                        resourceEn.Add(string.Format("spec.{0}.{1}", specCodeValue, itemKey), value);
+        //                        tempResult.SelectToken(reader.Path).Replace(string.Format("{0}spec.{1}.{2}", ResourceToken, specCodeValue, itemKey));
+        //                        break;
+        //                    case "unitdescription":
+        //                        if (resourceEn.Values.Contains(value))
+        //                        {
+        //                            string key = "";
+        //                            foreach (var dic in resourceEn)
+        //                            {
+        //                                if (dic.Value.Equals(value))
+        //                                {
+        //                                    key = dic.Key;
+        //                                    break;
+        //                                }
+        //                            }
+        //                            tempResult.SelectToken(reader.Path).Replace(string.Format("{0}{1}", ResourceToken, key));
+        //                        }
+        //                        else
+        //                        {
+        //                            resourceEn.Add(string.Format("spec.promotedFeature.{0}{1}", itemKey, num), value);
+        //                            tempResult.SelectToken(reader.Path).Replace(string.Format("{0}spec.promotedFeature.{1}{2}", ResourceToken, itemKey, num++));
+        //                        }
+        //                        break;
+        //                    case "caption":
+        //                        resourceEn.Add(string.Format("spec.cost.{0}.{1}.format", specCodeValue, itemKey), value);
+        //                        tempResult.SelectToken(reader.Path).Replace(string.Format("{0}spec.cost.{1}.{2}.format", ResourceToken, specCodeValue, itemKey));
+        //                        break;
+        //                    case "displayname":
+        //                        resourceEn.Add(string.Format("feature.{0}.{1}", specCodeValue, itemKey), value);
+        //                        tempResult.SelectToken(reader.Path).Replace(string.Format("{0}feature.{1}.{2}", ResourceToken, specCodeValue, itemKey));
+        //                        break;
+        //                    case "iconsvgdata":
+        //                        Icons.Add(string.Format("feature.{0}.{1}", specCodeValue, itemKey), value);
+        //                        tempResult.SelectToken(reader.Path).Replace(string.Format("{0}feature.{1}.svg", IconToken, specCodeValue));
+        //                        break;
+        //                }
+        //                flag = false;
+        //            }
+        //        }
+        //    }
+        //    this.Resources["en"] = resourceEn;
+        //    this.Spec = tempResult;
+        //}
+
+        ///// <summary>
+        ///// Handles the quick start item.
+        ///// </summary>
+        //private void handleQuickStartItem()
+        //{
+        //    var resourceEn = this.Resources["en"];
+        //    var tempResult = JObject.FromObject(this.QuickStart);
+        //    var reader = this.QuickStart.CreateReader();
+        //    bool flag = false;
+        //    string itemKey = string.Empty;
+        //    int titleNum = 1, textNum = 1;
+
+        //    while (reader.Read())
+        //    {
+        //        var value = reader.Value as string;
+
+        //        if (reader.TokenType == JsonToken.PropertyName && !flag)
+        //        {
+        //            value = value.ToLower();
+
+        //            if (value == "title" || value == "description" || value == "text")
+        //            {
+        //                itemKey = value;
+        //                flag = true;
+        //            }
+        //            else if (value == "links")
+        //            {
+        //                textNum = 1;
+        //            }
+        //        }
+        //        else if (reader.TokenType == JsonToken.String && flag)
+        //        {
+        //            switch (itemKey)
+        //            {
+        //                case "title":
+        //                    resourceEn.Add(string.Format("quickStart{0}.{1}", titleNum, itemKey), value);
+        //                    tempResult.SelectToken(reader.Path).Replace(string.Format("{0}quickStart{1}.{2}", ResourceToken, titleNum, itemKey));
+        //                    break;
+        //                case "description":
+        //                    resourceEn.Add(string.Format("quickStart{0}.des", titleNum), value);
+        //                    tempResult.SelectToken(reader.Path).Replace(string.Format("{0}quickStart{1}.des", ResourceToken, titleNum));
+        //                    titleNum++;
+        //                    break;
+        //                case "text":
+        //                    resourceEn.Add(string.Format("quickStart{0}.link{1}.text", titleNum, textNum), value);
+        //                    tempResult.SelectToken(reader.Path).Replace(string.Format("{0}quickStart{1}.link{2}.text", ResourceToken, titleNum, textNum));
+        //                    textNum++;
+        //                    break;
+        //            }
+        //            flag = false;
+        //        }
+        //    }
+        //    this.Resources["en"] = resourceEn;
+        //    this.QuickStart = tempResult;
+        //}
+
+
+        private string GetKeyByValue(Dictionary<string, string> resource, string value)
+        {
+            foreach (var dic in resource)
+            {
+                if (dic.Value.Equals(value))
+                {
+                    return dic.Key;
+                }
+            }
+            return string.Empty;
+        }
+
+        private bool ExistKey(Dictionary<string, string> resource, string key)
+        {
+            foreach (var dic in resource)
+            {
+                if (dic.Key.Equals(key))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

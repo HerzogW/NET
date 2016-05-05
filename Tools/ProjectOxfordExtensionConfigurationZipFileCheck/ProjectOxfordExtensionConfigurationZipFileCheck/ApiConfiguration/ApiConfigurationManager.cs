@@ -108,6 +108,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
         }
 
+        public IEnumerable<IListBlobItem> GetCloudBlockBlob()
+        {
+            return configContainer.ListBlobs();
+        }
+
         /// <summary>
         /// Setups the BLOB connection.
         /// </summary>
@@ -270,6 +275,28 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 }
             }
         }
+
+        public void HandleOriginalData(Stream stream)
+        {
+            using (var zip = new ZipArchive(stream))
+            {
+                ApiConfigurationData originalData = new ApiConfigurationData();
+
+                var apiItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == ApiItemFileName));
+                originalData.ApiItem = JObject.Parse(apiItemJson);
+
+                var specJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName));
+                originalData.Spec = JObject.Parse(specJson);
+
+                var quickStartJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName));
+                originalData.QuickStart = JObject.Parse(quickStartJson);
+
+                originalData.HandleItems();
+
+
+            }
+        }
+
 
         /// <summary>
         /// Reads the zip entry to string.

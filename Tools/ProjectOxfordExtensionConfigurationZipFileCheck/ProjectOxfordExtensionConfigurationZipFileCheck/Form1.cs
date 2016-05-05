@@ -5,8 +5,10 @@ using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Azure;
+using Microsoft.WindowsAzure.Storage.RetryPolicies;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Linq;
 
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
@@ -53,7 +55,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             InitializeComponent();
         }
 
-        #region Tab "Validation"
+        #region 1 Tab "Validation"
 
         #region Check single configuration zip file.
         /// <summary>
@@ -73,9 +75,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            this.textErrorMessage.Text = "";
-            this.btnUploadSingleData.Enabled = false;
-            this.fileName.Text = this.openFileDialog1.FileName;
+            this.textMessage1.Text = "";
+            this.btnUploadData1.Enabled = false;
+            this.textFilePath1.Text = this.openFileDialog1.FileName;
             zipFileName = this.openFileDialog1.SafeFileName;
             FileInfo fileInfo = new FileInfo(this.openFileDialog1.FileName);
             Stream stream = fileInfo.OpenRead();
@@ -91,14 +93,14 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 int i = 1;
                 foreach (ErrorEntity errorEntity in listError)
                 {
-                    this.textErrorMessage.Text += (i++) + "、" + errorEntity.GetErrorInfo() + "\r\n";
+                    this.textMessage1.Text += (i++) + "、" + errorEntity.GetErrorInfo() + "\r\n";
                 }
-                this.btnUploadSingleData.Enabled = false;
+                this.btnUploadData1.Enabled = false;
             }
             else
             {
-                this.textErrorMessage.Text = "This zip file is correct!";
-                this.btnUploadSingleData.Enabled = true;
+                this.textMessage1.Text = "This zip file is correct!";
+                this.btnUploadData1.Enabled = true;
             }
             apiConfigurationManager.listError = new List<ErrorEntity>();
         }
@@ -114,18 +116,17 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         {
             try
             {
-
                 string ApiCongigurationTestBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
                 string ApiConfigurationTestBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
 
                 if (string.IsNullOrWhiteSpace(ApiCongigurationTestBlobAccountName))
                 {
-                    this.textErrorMessage.Text = "Not find the key 'ApiCongigurationTestBlobAccountName' in App.config or its value is empty.";
+                    this.textMessage1.Text = "Not find the key 'ApiCongigurationTestBlobAccountName' in App.config or its value is empty.";
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(ApiConfigurationTestBlobAccountKey))
                 {
-                    this.textErrorMessage.Text = "Not find the key 'ApiConfigurationTestBlobAccountKey' in App.config or its value is empty.";
+                    this.textMessage1.Text = "Not find the key 'ApiConfigurationTestBlobAccountKey' in App.config or its value is empty.";
                     return;
                 }
 
@@ -140,18 +141,18 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 Stream stream = new MemoryStream(tempZipFileBytes);
                 blockBlob.UploadFromStream(stream);
 
-                this.textErrorMessage.Text = "Upload file successfully.";
+                this.textMessage1.Text = "Upload file successfully.";
             }
             catch (Exception ex)
             {
-                this.textErrorMessage.Text = string.Format("Original Error Message: {0}", ex.Message);
+                this.textMessage1.Text = string.Format("Original Error Message: {0}", ex.Message);
             }
         }
         #endregion
 
         #endregion
 
-        #region Tab "Upload"
+        #region 2 Tab "Upload"
 
         #region File tree operation
         /// <summary>
@@ -161,7 +162,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnLoadData_Click(object sender, EventArgs e)
         {
-            this.btnUpLoadMultiZip.Enabled = false;
+            this.btnUpLoadZip2.Enabled = false;
             var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
 
             apiConfigurationManager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
@@ -174,12 +175,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 int i = 1;
                 foreach (ErrorEntity errorMessage in listError)
                 {
-                    this.textFileContent.Text += (i++) + "、" + errorMessage.GetErrorInfo() + "\n";
+                    this.textMessage2.Text += (i++) + "、" + errorMessage.GetErrorInfo() + "\n";
                 }
             }
             else
             {
-                this.btnUpLoadMultiZip.Enabled = true;
+                this.btnUpLoadZip2.Enabled = true;
                 LoadFileTree(apiConfigurationManager.CacheData);
             }
         }
@@ -195,7 +196,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 return;
             }
 
-            this.root.Nodes.Clear();
+            this.root2.Nodes.Clear();
 
             foreach (var apiCongigurationData in cacheData)
             {
@@ -258,7 +259,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     apiNode.Nodes.Add(stringsNode);
                 }
 
-                this.root.Nodes.Add(apiNode);
+                this.root2.Nodes.Add(apiNode);
             }
         }
 
@@ -269,11 +270,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void root_DoubleClick(object sender, EventArgs e)
         {
-            if (this.root.SelectedNode != null)
+            if (this.root2.SelectedNode != null)
             {
-                if (this.root.SelectedNode.Tag != null)
+                if (this.root2.SelectedNode.Tag != null)
                 {
-                    string selectedNodeTag = this.root.SelectedNode.Tag.ToString();
+                    string selectedNodeTag = this.root2.SelectedNode.Tag.ToString();
                     string[] pathArr = selectedNodeTag.Split('/');
                     ApiConfigurationData tempData = null;
 
@@ -293,13 +294,13 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                             switch (pathArr[1])
                             {
                                 case "api.json":
-                                    this.textFileContent.Text = JsonConvert.SerializeObject(tempData.ApiItem, settingFormat);
+                                    this.textMessage2.Text = JsonConvert.SerializeObject(tempData.ApiItem, settingFormat);
                                     break;
                                 case "spec.json":
-                                    this.textFileContent.Text = JsonConvert.SerializeObject(tempData.Spec, settingFormat);
+                                    this.textMessage2.Text = JsonConvert.SerializeObject(tempData.Spec, settingFormat);
                                     break;
                                 case "quickStarts.json":
-                                    this.textFileContent.Text = JsonConvert.SerializeObject(tempData.QuickStart, settingFormat);
+                                    this.textMessage2.Text = JsonConvert.SerializeObject(tempData.QuickStart, settingFormat);
                                     break;
 
                             }
@@ -308,11 +309,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         {
                             if (pathArr[1] == "icons")
                             {
-                                this.textFileContent.Text = tempData.Icons[pathArr[2]];
+                                this.textMessage2.Text = tempData.Icons[pathArr[2]];
                             }
                             if (pathArr[1] == "strings")
                             {
-                                this.textFileContent.Text = JsonConvert.SerializeObject(tempData.Resources[pathArr[2]], settingFormat);
+                                this.textMessage2.Text = JsonConvert.SerializeObject(tempData.Resources[pathArr[2]], settingFormat);
                             }
                         }
                     }
@@ -329,48 +330,54 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void btnUpLoadMultiZip_Click(object sender, EventArgs e)
         {
-            this.textFileContent.Text = string.Empty;
+            this.textMessage2.Text = string.Empty;
 
-            string storageAccount = this.textAccount.Text;
-            string storageAccountKey = this.textAccountKey.Text;
+            string storageAccount = this.textAccount2.Text;
+            string storageAccountKey = this.textAccountKey2.Text;
 
             if (string.IsNullOrWhiteSpace(storageAccount))
             {
-                this.textFileContent.Text = "Please input the Storage Account .";
+                this.textMessage2.Text = "Please input the Storage Account .";
                 return;
             }
             if (string.IsNullOrWhiteSpace(storageAccountKey))
             {
-                this.textFileContent.Text = "Please input the Storage Account Key .";
+                this.textMessage2.Text = "Please input the Storage Account Key .";
                 return;
             }
 
             try
             {
+                string errorMessageStr = UpdateData();
+                if (!string.IsNullOrWhiteSpace(errorMessageStr))
+                {
+                    this.textMessage2.Text = errorMessageStr;
+                    return;
+                }
+
                 StorageCredentials credentials = new StorageCredentials(storageAccount, storageAccountKey, "AccountKey");
                 Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", storageAccount));
                 CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
 
                 CloudBlobContainer container = cloudBlobClient.GetContainerReference(apiConfigurationStorageContainer);
-                
 
+                var blobs = apiConfigurationManager.GetCloudBlockBlob();
+                var requestOption = new BlobRequestOptions() { RetryPolicy = new ExponentialRetry() };
 
-
-
-                string errorMessageStr = UpdateData();
-                if (!string.IsNullOrWhiteSpace(errorMessageStr))
+                foreach (var apiZip in blobs.OfType<CloudBlockBlob>())
                 {
-                    this.textFileContent.Text = errorMessageStr;
-                    return;
+                    using (var blobStream = apiZip.OpenRead(null, requestOption))
+                    {
+                        var blockBlob = container.GetBlockBlobReference(apiZip.Name);
+                        blockBlob.UploadFromStream(blobStream);
+                    }
                 }
 
-
-
-
+                this.textMessage2.Text = "Successfully Upload files from Test blob to Production blob.";
             }
             catch (Exception ex)
             {
-                this.textFileContent.Text = string.Format("Original Error Message: {0}", ex.Message);
+                this.textMessage2.Text = string.Format("Original Error Message: {0}", ex.Message);
             }
         }
 
@@ -399,9 +406,47 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
             return null;
         }
-        #endregion
 
         #endregion
 
+        #endregion
+
+        #region  3 Tab "SeparateKeyValue"
+
+        /// <summary>
+        /// Handles the Click event of the btnSelectOriginalZip control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void btnSelectOriginalZip_Click(object sender, EventArgs e)
+        {
+            this.openFileDialog3.ShowDialog();
+        }
+
+
+        /// <summary>
+        /// Handles the FileOk event of the openFileDialog2 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="CancelEventArgs"/> instance containing the event data.</param>
+        private void openFileDialog3_FileOk(object sender, CancelEventArgs e)
+        {
+            this.textMessage3.Text = "";
+            this.btnSave3.Enabled = false;
+            this.btnUploadData3.Enabled = false;
+            this.textFilePath3.Text = this.openFileDialog3.FileName;
+
+            FileInfo fileInfo = new FileInfo(this.openFileDialog3.FileName);
+            Stream stream = fileInfo.OpenRead();
+
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            ApiConfigurationManager manager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
+
+            manager.HandleOriginalData(stream);
+
+
+        }
+
+        #endregion        
     }
 }
