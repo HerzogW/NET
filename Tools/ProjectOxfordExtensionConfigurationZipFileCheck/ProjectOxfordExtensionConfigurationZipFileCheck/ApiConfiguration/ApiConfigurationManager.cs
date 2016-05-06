@@ -213,7 +213,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         if (zipEntry.Name == ResourceFileName)
                         {
                             string localizationDirectoryName = GetLocalizationDirectoryName(zipEntry);
-                            errorEntity.jsonFileName = string.Format("{0}/{1}", localizationDirectoryName, ResourceFileName);
+                            errorEntity.jsonFileName = string.Format("{0}{1}", localizationDirectoryName, ResourceFileName);
                             errorEntity.errorType = ErrorType.CanNotConvertToJson;
 
                             localizableStrings.Add(localizationDirectoryName, JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));
@@ -336,18 +336,18 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName));
             zipStream.SetLevel(0);
 
-            Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}\\{1}", apiName, ApiItemFileName));
-            Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}\\{1}", apiName, SpecFileName));
-            Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}\\{1}", apiName, QuickStartsFileName));
+            Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}/{1}", apiName, ApiItemFileName));
+            Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}/{1}", apiName, SpecFileName));
+            Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}/{1}", apiName, QuickStartsFileName));
             Compress(zipStream, JsonConvert.SerializeObject(configurationData.Resources["en"], new JsonSerializerSettings()
             {
                 Formatting = Formatting.Indented,
                 NullValueHandling = NullValueHandling.Ignore
-            }), string.Format("{0}\\{1}\\{2}", apiName, "strings", ResourceFileName));
+            }), string.Format("{0}/{1}/{2}", apiName, "strings", ResourceFileName));
 
             foreach (var entity in configurationData.Icons)
             {
-                Compress(zipStream, entity.Value, string.Format("{0}\\{1}\\{2}", apiName, "icons", entity.Key));
+                Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiName, "icons", entity.Key));
             }
 
             Stream stream = zipStream;
