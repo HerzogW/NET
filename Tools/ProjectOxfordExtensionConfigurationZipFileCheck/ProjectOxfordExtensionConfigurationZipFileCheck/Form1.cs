@@ -19,14 +19,19 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     public partial class Form1 : Form
     {
         /// <summary>
-        /// The API configuration manager
+        /// The temporary zip file bytes
         /// </summary>
-        public static ApiConfigurationManager apiConfigurationManager = new ApiConfigurationManager();
+        private byte[] tempZipFileBytes;
 
         /// <summary>
-        /// The API configuration storage container
+        /// The zip file name
         /// </summary>
-        public static string apiConfigurationStorageContainer = "apiconfiguration";
+        private string zipFileName1 = string.Empty;
+
+        /// <summary>
+        /// The zip file name
+        /// </summary>
+        private string zipFileName3 = string.Empty;
 
         /// <summary>
         /// The setting format
@@ -38,14 +43,20 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         };
 
         /// <summary>
-        /// The temporary zip file bytes
+        /// The configuration data3(For Tab "SeparateKeyValue")
         /// </summary>
-        private byte[] tempZipFileBytes;
+        private ApiConfigurationData configurationData3 = new ApiConfigurationData();
+
 
         /// <summary>
-        /// The zip file name
+        /// The API configuration manager
         /// </summary>
-        private string zipFileName = string.Empty;
+        public static ApiConfigurationManager apiConfigurationManager = new ApiConfigurationManager();
+
+        /// <summary>
+        /// The API configuration storage container
+        /// </summary>
+        public static string apiConfigurationStorageContainer = "apiconfiguration";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Form1"/> class.
@@ -78,7 +89,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             this.textMessage1.Text = "";
             this.btnUploadData1.Enabled = false;
             this.textFilePath1.Text = this.openFileDialog1.FileName;
-            zipFileName = this.openFileDialog1.SafeFileName;
+            zipFileName1 = this.openFileDialog1.SafeFileName;
             FileInfo fileInfo = new FileInfo(this.openFileDialog1.FileName);
             Stream stream = fileInfo.OpenRead();
 
@@ -136,7 +147,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
 
                 CloudBlobContainer container = cloudBlobClient.GetContainerReference(apiConfigurationStorageContainer);
-                var blockBlob = container.GetBlockBlobReference(zipFileName);
+                var blockBlob = container.GetBlockBlobReference(zipFileName1);
 
                 Stream stream = new MemoryStream(tempZipFileBytes);
                 blockBlob.UploadFromStream(stream);
@@ -423,7 +434,6 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             this.openFileDialog3.ShowDialog();
         }
 
-
         /// <summary>
         /// Handles the FileOk event of the openFileDialog2 control.
         /// </summary>
@@ -432,9 +442,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private void openFileDialog3_FileOk(object sender, CancelEventArgs e)
         {
             this.textMessage3.Text = "";
-            this.btnSave3.Enabled = false;
             this.btnUploadData3.Enabled = false;
             this.textFilePath3.Text = this.openFileDialog3.FileName;
+            this.zipFileName3 = this.openFileDialog3.SafeFileName;
 
             FileInfo fileInfo = new FileInfo(this.openFileDialog3.FileName);
             Stream stream = fileInfo.OpenRead();
@@ -442,11 +452,64 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
             ApiConfigurationManager manager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
 
-            manager.HandleOriginalData(stream);
-
-
+            configurationData3 = manager.HandleOriginalData(stream);
+            if (configurationData3.listError.Count > 0)
+            {
+                foreach (var entity in configurationData3.listError)
+                {
+                    this.textMessage3.Text += entity.GetErrorInfo();
+                }
+            }
+            else
+            {
+                this.textMessage3.Text = "The original data has been handled successfully.\r\nYou can save the handled data to local or upload the it to the test blob container.";
+                this.btnUploadData3.Enabled = true;
+            }
         }
 
-        #endregion        
+        /// <summary>
+        /// Handles the Click event of the btnUploadData3 control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void btnUploadData3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string ApiCongigurationTestBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+                string ApiConfigurationTestBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+                if (string.IsNullOrWhiteSpace(ApiCongigurationTestBlobAccountName))
+                {
+                    this.textMessage1.Text = "Not find the key 'ApiCongigurationTestBlobAccountName' in App.config or its value is empty.";
+                    return;
+                }
+                if (string.IsNullOrWhiteSpace(ApiConfigurationTestBlobAccountKey))
+                {
+                    this.textMessage1.Text = "Not find the key 'ApiConfigurationTestBlobAccountKey' in App.config or its value is empty.";
+                    return;
+                }
+
+                StorageCredentials credentials = new StorageCredentials(ApiCongigurationTestBlobAccountName, ApiConfigurationTestBlobAccountKey, "AccountKey");
+                Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", ApiCongigurationTestBlobAccountName));
+
+                ApiConfigurationManager manager = new ApiConfigurationManager();
+                Stream stream = manager.GetConfigurationData(configurationData3, zipFileName3.Substring(0, zipFileName3.LastIndexOf('.')));
+
+                CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
+                CloudBlobContainer container = cloudBlobClient.GetContainerReference(apiConfigurationStorageContainer);
+                var blockBlob = container.GetBlockBlobReference(zipFileName3);
+                //blockBlob.UploadFromStream(stream);
+
+                this.textMessage3.Text = "Upload file successfully.";
+            }
+            catch (Exception ex)
+            {
+                this.textMessage3.Text = string.Format("Original Error Message: {0}", ex.Message);
+            }
+        }
+
+        #endregion
+
     }
 }

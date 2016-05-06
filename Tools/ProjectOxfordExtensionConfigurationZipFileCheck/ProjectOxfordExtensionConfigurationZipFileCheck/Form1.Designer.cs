@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.textFilePath1 = new System.Windows.Forms.TextBox();
-            this.btnSelectZip1 = new System.Windows.Forms.Button();
             this.textMessage1 = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -50,14 +49,14 @@
             this.textAccountKey2 = new System.Windows.Forms.TextBox();
             this.btnUpLoadZip2 = new System.Windows.Forms.Button();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btnSelectZip3 = new System.Windows.Forms.Button();
-            this.btnSave3 = new System.Windows.Forms.Button();
-            this.btnUploadData3 = new System.Windows.Forms.Button();
-            this.textFilePath3 = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.groupBox31 = new System.Windows.Forms.GroupBox();
             this.textMessage3 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textFilePath3 = new System.Windows.Forms.TextBox();
+            this.btnUploadData3 = new System.Windows.Forms.Button();
+            this.btnSelectZip3 = new System.Windows.Forms.Button();
             this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
+            this.btnSelectZip1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox11.SuspendLayout();
@@ -76,17 +75,6 @@
             this.textFilePath1.Name = "textFilePath1";
             this.textFilePath1.Size = new System.Drawing.Size(695, 26);
             this.textFilePath1.TabIndex = 0;
-            // 
-            // btnSelectZip1
-            // 
-            this.btnSelectZip1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelectZip1.Location = new System.Drawing.Point(779, 6);
-            this.btnSelectZip1.Name = "btnSelectZip1";
-            this.btnSelectZip1.Size = new System.Drawing.Size(86, 28);
-            this.btnSelectZip1.TabIndex = 1;
-            this.btnSelectZip1.Text = "Select";
-            this.btnSelectZip1.UseVisualStyleBackColor = true;
-            this.btnSelectZip1.Click += new System.EventHandler(this.btnSelectZip_Click);
             // 
             // textMessage1
             // 
@@ -301,7 +289,6 @@
             this.tabPage3.Controls.Add(this.label2);
             this.tabPage3.Controls.Add(this.textFilePath3);
             this.tabPage3.Controls.Add(this.btnUploadData3);
-            this.tabPage3.Controls.Add(this.btnSave3);
             this.tabPage3.Controls.Add(this.btnSelectZip3);
             this.tabPage3.Location = new System.Drawing.Point(4, 25);
             this.tabPage3.Name = "tabPage3";
@@ -309,57 +296,6 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "SeparateKeyValue";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // btnSelectZip3
-            // 
-            this.btnSelectZip3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelectZip3.Location = new System.Drawing.Point(687, 6);
-            this.btnSelectZip3.Name = "btnSelectZip3";
-            this.btnSelectZip3.Size = new System.Drawing.Size(86, 28);
-            this.btnSelectZip3.TabIndex = 0;
-            this.btnSelectZip3.Text = "Select";
-            this.btnSelectZip3.UseVisualStyleBackColor = true;
-            this.btnSelectZip3.Click += new System.EventHandler(this.btnSelectOriginalZip_Click);
-            // 
-            // btnSave3
-            // 
-            this.btnSave3.Enabled = false;
-            this.btnSave3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSave3.Location = new System.Drawing.Point(779, 6);
-            this.btnSave3.Name = "btnSave3";
-            this.btnSave3.Size = new System.Drawing.Size(86, 28);
-            this.btnSave3.TabIndex = 1;
-            this.btnSave3.Text = "Save";
-            this.btnSave3.UseVisualStyleBackColor = true;
-            // 
-            // btnUploadData3
-            // 
-            this.btnUploadData3.Enabled = false;
-            this.btnUploadData3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnUploadData3.Location = new System.Drawing.Point(871, 6);
-            this.btnUploadData3.Name = "btnUploadData3";
-            this.btnUploadData3.Size = new System.Drawing.Size(75, 28);
-            this.btnUploadData3.TabIndex = 2;
-            this.btnUploadData3.Text = "Upload";
-            this.btnUploadData3.UseVisualStyleBackColor = true;
-            // 
-            // textFilePath3
-            // 
-            this.textFilePath3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textFilePath3.Location = new System.Drawing.Point(78, 6);
-            this.textFilePath3.Name = "textFilePath3";
-            this.textFilePath3.Size = new System.Drawing.Size(603, 26);
-            this.textFilePath3.TabIndex = 3;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(9, 12);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 17);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "FilePath:";
             // 
             // groupBox31
             // 
@@ -380,10 +316,62 @@
             this.textMessage3.Size = new System.Drawing.Size(928, 396);
             this.textMessage3.TabIndex = 0;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(9, 12);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 17);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "FilePath:";
+            // 
+            // textFilePath3
+            // 
+            this.textFilePath3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textFilePath3.Location = new System.Drawing.Point(78, 6);
+            this.textFilePath3.Name = "textFilePath3";
+            this.textFilePath3.Size = new System.Drawing.Size(695, 26);
+            this.textFilePath3.TabIndex = 3;
+            // 
+            // btnUploadData3
+            // 
+            this.btnUploadData3.Enabled = false;
+            this.btnUploadData3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnUploadData3.Location = new System.Drawing.Point(871, 6);
+            this.btnUploadData3.Name = "btnUploadData3";
+            this.btnUploadData3.Size = new System.Drawing.Size(75, 28);
+            this.btnUploadData3.TabIndex = 2;
+            this.btnUploadData3.Text = "Upload";
+            this.btnUploadData3.UseVisualStyleBackColor = true;
+            this.btnUploadData3.Click += new System.EventHandler(this.btnUploadData3_Click);
+            // 
+            // btnSelectZip3
+            // 
+            this.btnSelectZip3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelectZip3.Location = new System.Drawing.Point(779, 6);
+            this.btnSelectZip3.Name = "btnSelectZip3";
+            this.btnSelectZip3.Size = new System.Drawing.Size(86, 28);
+            this.btnSelectZip3.TabIndex = 0;
+            this.btnSelectZip3.Text = "Select";
+            this.btnSelectZip3.UseVisualStyleBackColor = true;
+            this.btnSelectZip3.Click += new System.EventHandler(this.btnSelectOriginalZip_Click);
+            // 
             // openFileDialog3
             // 
             this.openFileDialog3.FileName = "openFileDialog3";
             this.openFileDialog3.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog3_FileOk);
+            // 
+            // btnSelectZip1
+            // 
+            this.btnSelectZip1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelectZip1.Location = new System.Drawing.Point(779, 6);
+            this.btnSelectZip1.Name = "btnSelectZip1";
+            this.btnSelectZip1.Size = new System.Drawing.Size(86, 28);
+            this.btnSelectZip1.TabIndex = 1;
+            this.btnSelectZip1.Text = "Select";
+            this.btnSelectZip1.UseVisualStyleBackColor = true;
+            this.btnSelectZip1.Click += new System.EventHandler(this.btnSelectZip_Click);
             // 
             // Form1
             // 
@@ -417,7 +405,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox textFilePath1;
-        private System.Windows.Forms.Button btnSelectZip1;
         private System.Windows.Forms.TextBox textMessage1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.TabControl tabControl1;
@@ -441,11 +428,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textFilePath3;
         private System.Windows.Forms.Button btnUploadData3;
-        private System.Windows.Forms.Button btnSave3;
         private System.Windows.Forms.Button btnSelectZip3;
         private System.Windows.Forms.GroupBox groupBox31;
         private System.Windows.Forms.TextBox textMessage3;
         private System.Windows.Forms.OpenFileDialog openFileDialog3;
+        private System.Windows.Forms.Button btnSelectZip1;
     }
 }
 

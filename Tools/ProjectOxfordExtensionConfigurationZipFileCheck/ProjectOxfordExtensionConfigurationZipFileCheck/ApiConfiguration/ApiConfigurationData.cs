@@ -6,6 +6,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
     using System.Linq;
+    using System;
 
     /// <summary>
     /// The Api configuration data class.
@@ -206,99 +207,138 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         {
             var resourceEn = new Dictionary<string, string>();
 
-            ApiEntity apiEntity = JsonConvert.DeserializeObject<ApiEntity>(this.ApiItem.ToString());
-            resourceEn.Add("title", apiEntity.title);
-            apiEntity.title = string.Format("{0}title", ResourceToken);
+            try
+            {
+                ApiEntity apiEntity = JsonConvert.DeserializeObject<ApiEntity>(this.ApiItem.ToString());
+                resourceEn.Add("title", apiEntity.title);
+                apiEntity.title = string.Format("{0}title", ResourceToken);
 
-            resourceEn.Add("subtitle", apiEntity.subtitle);
-            apiEntity.subtitle = string.Format("{0}subtitle", ResourceToken);
+                resourceEn.Add("subtitle", apiEntity.subtitle);
+                apiEntity.subtitle = string.Format("{0}subtitle", ResourceToken);
 
-            Icons.Add(string.Format("{0}.svg", apiEntity.item), apiEntity.iconData);
-            apiEntity.iconData = string.Format("{0}{1}.svg", IconToken, apiEntity.item);
+                Icons.Add(string.Format("{0}.svg", apiEntity.item), apiEntity.iconData);
+                apiEntity.iconData = string.Format("{0}{1}.svg", IconToken, apiEntity.item);
 
-            this.ApiItem = JObject.Parse(JsonConvert.SerializeObject(apiEntity, settingFormat));
-            this.Resources.Add("en", resourceEn);
+                this.ApiItem = JObject.Parse(JsonConvert.SerializeObject(apiEntity, settingFormat));
+                this.Resources.Add("en", resourceEn);
+            }
+            catch (Exception ex)
+            {
+                ErrorEntity entity = new ErrorEntity();
+                entity.errorType = ErrorType.Common;
+                entity.errorMessage = ex.Message;
+
+                this.listError.Add(entity);
+            }
         }
 
+        /// <summary>
+        /// Handles the spec item.
+        /// </summary>
         private void handleSpecItem()
         {
             var resourceEn = this.Resources["en"];
-            SpecsEntity specsEntity = JsonConvert.DeserializeObject<SpecsEntity>(this.Spec.ToString());
-            for (int i = 0; i < specsEntity.specs.Count; i++)
+            try
             {
-                var entity = specsEntity.specs[i];
-                resourceEn.Add(string.Format("spec.{0}.title", entity.id.ToLower()), entity.title);
-                specsEntity.specs[i].title = string.Format("{0}spec.{1}.title", ResourceToken, entity.id.ToLower());
-
-                for (int j = 0; j < entity.promotedFeatures.Count; j++)
+                SpecsEntity specsEntity = JsonConvert.DeserializeObject<SpecsEntity>(this.Spec.ToString());
+                for (int i = 0; i < specsEntity.specs.Count; i++)
                 {
-                    var feature = entity.promotedFeatures[j];
+                    var entity = specsEntity.specs[i];
+                    resourceEn.Add(string.Format("spec.{0}.title", entity.id.ToLower()), entity.title);
+                    specsEntity.specs[i].title = string.Format("{0}spec.{1}.title", ResourceToken, entity.id.ToLower());
 
-                    string key = GetKeyByValue(resourceEn, feature.unitDescription);
-                    if (!string.IsNullOrWhiteSpace(key))
+                    for (int j = 0; j < entity.promotedFeatures.Count; j++)
                     {
-                        specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, key);
-                    }
-                    else
-                    {
-                        int num = 1;
-                        while (true)
+                        var feature = entity.promotedFeatures[j];
+
+                        string key = GetKeyByValue(resourceEn, feature.unitDescription);
+                        if (!string.IsNullOrWhiteSpace(key))
                         {
-                            string newKey = string.Format("spec.promotedFeature.unitDescription{0}", num++);
-                            if (!ExistKey(resourceEn, newKey))
+                            specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, key);
+                        }
+                        else
+                        {
+                            int num = 1;
+                            while (true)
                             {
-                                resourceEn.Add(newKey, feature.unitDescription);
-                                specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, newKey);
-                                break;
+                                string newKey = string.Format("spec.promotedFeature.unitDescription{0}", num++);
+                                if (!ExistKey(resourceEn, newKey))
+                                {
+                                    resourceEn.Add(newKey, feature.unitDescription);
+                                    specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, newKey);
+                                    break;
+                                }
                             }
                         }
                     }
+
+                    resourceEn.Add(string.Format("spec.cost.{0}.caption.format", entity.id.ToLower()), entity.cost.caption);
+                    specsEntity.specs[i].cost.caption = string.Format("{0}spec.cost.{1}.caption.format", ResourceToken, entity.id.ToLower());
                 }
 
-                resourceEn.Add(string.Format("spec.cost.{0}.caption.format", entity.id.ToLower()), entity.cost.caption);
-                specsEntity.specs[i].cost.caption = string.Format("{0}spec.cost.{1}.caption.format", ResourceToken, entity.id.ToLower());
-            }
+                for (int i = 0; i < specsEntity.features.Count; i++)
+                {
+                    var entity = specsEntity.features[i];
+                    resourceEn.Add(string.Format("feature.{0}.displayName", entity.id), entity.displayName);
+                    specsEntity.features[i].displayName = string.Format("{0}feature.{1}.displayName", ResourceToken, entity.id);
 
-            for (int i = 0; i < specsEntity.features.Count; i++)
+                    Icons.Add(string.Format("spec.feature.{0}.svg", entity.id), entity.iconSvgData);
+                    specsEntity.features[i].iconSvgData = string.Format("{0}spec.feature.{1}.svg", IconToken, entity.id);
+                }
+
+                this.Spec = JObject.Parse(JsonConvert.SerializeObject(specsEntity, settingFormat));
+                this.Resources["en"] = resourceEn;
+            }
+            catch (Exception ex)
             {
-                var entity = specsEntity.features[i];
-                resourceEn.Add(string.Format("feature.{0}.displayName", entity.id), entity.displayName);
-                specsEntity.features[i].displayName = string.Format("{0}feature.{1}.displayName", ResourceToken, entity.id);
+                ErrorEntity entity = new ErrorEntity();
+                entity.errorType = ErrorType.Common;
+                entity.errorMessage = ex.Message;
 
-                Icons.Add(string.Format("spec.feature.{0}.svg", entity.id), entity.iconSvgData);
-                specsEntity.features[i].iconSvgData = string.Format("{0}spec.feature.{1}.svg", IconToken, entity.id);
+                this.listError.Add(entity);
             }
-
-            this.Spec = JObject.Parse(JsonConvert.SerializeObject(specsEntity, settingFormat));
-            this.Resources["en"] = resourceEn;
         }
 
+        /// <summary>
+        /// Handles the quick start item.
+        /// </summary>
         private void handleQuickStartItem()
         {
             var resourceEn = this.Resources["en"];
-            QuickStartsEntity quickStartsEntity = JsonConvert.DeserializeObject<QuickStartsEntity>(this.QuickStart.ToString());
-
-            for (int i = 0; i < quickStartsEntity.quickStarts.Count; i++)
+            try
             {
-                var entity = quickStartsEntity.quickStarts[i];
+                QuickStartsEntity quickStartsEntity = JsonConvert.DeserializeObject<QuickStartsEntity>(this.QuickStart.ToString());
 
-                resourceEn.Add(string.Format("quickStart{0}.title", i), entity.title);
-                quickStartsEntity.quickStarts[i].title = string.Format("{0}quickStart{1}.title", ResourceToken, i);
-
-                resourceEn.Add(string.Format("quickStart{0}.des", i), entity.description);
-                quickStartsEntity.quickStarts[i].description = string.Format("{0}quickStart{1}.des", ResourceToken, i);
-
-                for (int j = 0; j < entity.links.Count; j++)
+                for (int i = 0; i < quickStartsEntity.quickStarts.Count; i++)
                 {
-                    var link = entity.links[j];
+                    var entity = quickStartsEntity.quickStarts[i];
 
-                    resourceEn.Add(string.Format("quickStart{0}.link{1}.text", i, j), link.text);
-                    quickStartsEntity.quickStarts[i].links[j].text = string.Format("{0}quickStart{1}.link{2}.text", ResourceToken, i, j);
+                    resourceEn.Add(string.Format("quickStart{0}.title", i), entity.title);
+                    quickStartsEntity.quickStarts[i].title = string.Format("{0}quickStart{1}.title", ResourceToken, i);
+
+                    resourceEn.Add(string.Format("quickStart{0}.des", i), entity.description);
+                    quickStartsEntity.quickStarts[i].description = string.Format("{0}quickStart{1}.des", ResourceToken, i);
+
+                    for (int j = 0; j < entity.links.Count; j++)
+                    {
+                        var link = entity.links[j];
+
+                        resourceEn.Add(string.Format("quickStart{0}.link{1}.text", i, j), link.text);
+                        quickStartsEntity.quickStarts[i].links[j].text = string.Format("{0}quickStart{1}.link{2}.text", ResourceToken, i, j);
+                    }
                 }
-            }
 
-            this.QuickStart = JObject.Parse(JsonConvert.SerializeObject(quickStartsEntity, settingFormat));
-            this.Resources["en"] = resourceEn;
+                this.QuickStart = JObject.Parse(JsonConvert.SerializeObject(quickStartsEntity, settingFormat));
+                this.Resources["en"] = resourceEn;
+            }
+            catch (Exception ex)
+            {
+                ErrorEntity entity = new ErrorEntity();
+                entity.errorType = ErrorType.Common;
+                entity.errorMessage = ex.Message;
+
+                this.listError.Add(entity);
+            }
         }
 
         ///// <summary>
@@ -493,6 +533,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         //}
 
 
+        /// <summary>
+        /// Gets the key by value.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
         private string GetKeyByValue(Dictionary<string, string> resource, string value)
         {
             foreach (var dic in resource)
@@ -505,6 +551,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             return string.Empty;
         }
 
+        /// <summary>
+        /// Exists the key.
+        /// </summary>
+        /// <param name="resource">The resource.</param>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         private bool ExistKey(Dictionary<string, string> resource, string key)
         {
             foreach (var dic in resource)

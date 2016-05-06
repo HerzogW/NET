@@ -20,7 +20,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
         public string GetErrorInfo()
         {
-            string errorInfo = string.Format("【Zip   {0}】:   ", this.zipFileName);
+            string errorInfo = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(this.zipFileName))
+            {
+                errorInfo = string.Format("【Zip   {0}】:   ", this.zipFileName);
+            }
 
             switch (errorType)
             {
