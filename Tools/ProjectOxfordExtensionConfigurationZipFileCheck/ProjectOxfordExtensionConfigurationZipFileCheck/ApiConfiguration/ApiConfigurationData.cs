@@ -5,7 +5,6 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
-    using System.Linq;
     using System;
 
     /// <summary>

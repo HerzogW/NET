@@ -12,9 +12,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     using System.IO.Compression;
     using System.Linq;
     using ICSharpCode.SharpZipLib;
-    using ICSharpCode.SharpZipLib.Checksums;    /// <summary>
-                                                /// The Api configuration manager.
-                                                /// </summary>
+    using ICSharpCode.SharpZipLib.Checksums;
+
+    /// <summary>
+    /// The Api configuration manager.
+    /// </summary>
     public class ApiConfigurationManager
     {
         /// <summary>

@@ -174,6 +174,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private void btnLoadData_Click(object sender, EventArgs e)
         {
             this.btnUpLoadZip2.Enabled = false;
+            this.textMessage2.Text = "Loading files...";
             var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
 
             apiConfigurationManager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, apiConfigurationStorageContainer);
@@ -193,6 +194,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             {
                 this.btnUpLoadZip2.Enabled = true;
                 LoadFileTree(apiConfigurationManager.CacheData);
+                this.textMessage2.Text = "Loaded successfully!";
             }
         }
 

@@ -36,6 +36,7 @@
             this.btnUploadData1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
+            this.btnSelectZip1 = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox23 = new System.Windows.Forms.GroupBox();
             this.textMessage2 = new System.Windows.Forms.TextBox();
@@ -56,7 +57,6 @@
             this.btnUploadData3 = new System.Windows.Forms.Button();
             this.btnSelectZip3 = new System.Windows.Forms.Button();
             this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
-            this.btnSelectZip1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox11.SuspendLayout();
@@ -151,6 +151,17 @@
             this.groupBox11.TabIndex = 3;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Message";
+            // 
+            // btnSelectZip1
+            // 
+            this.btnSelectZip1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSelectZip1.Location = new System.Drawing.Point(779, 6);
+            this.btnSelectZip1.Name = "btnSelectZip1";
+            this.btnSelectZip1.Size = new System.Drawing.Size(86, 28);
+            this.btnSelectZip1.TabIndex = 1;
+            this.btnSelectZip1.Text = "Select";
+            this.btnSelectZip1.UseVisualStyleBackColor = true;
+            this.btnSelectZip1.Click += new System.EventHandler(this.btnSelectZip_Click);
             // 
             // tabPage2
             // 
@@ -294,7 +305,7 @@
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(952, 471);
             this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "SeparateKeyValue";
+            this.tabPage3.Text = "HandleOriginalData";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // groupBox31
@@ -361,17 +372,6 @@
             // 
             this.openFileDialog3.FileName = "openFileDialog3";
             this.openFileDialog3.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog3_FileOk);
-            // 
-            // btnSelectZip1
-            // 
-            this.btnSelectZip1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSelectZip1.Location = new System.Drawing.Point(779, 6);
-            this.btnSelectZip1.Name = "btnSelectZip1";
-            this.btnSelectZip1.Size = new System.Drawing.Size(86, 28);
-            this.btnSelectZip1.TabIndex = 1;
-            this.btnSelectZip1.Text = "Select";
-            this.btnSelectZip1.UseVisualStyleBackColor = true;
-            this.btnSelectZip1.Click += new System.EventHandler(this.btnSelectZip_Click);
             // 
             // Form1
             // 

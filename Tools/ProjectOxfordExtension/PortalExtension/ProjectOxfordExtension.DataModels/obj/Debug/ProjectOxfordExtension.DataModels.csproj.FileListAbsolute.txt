@@ -21,3 +21,4 @@ D:\MyCodeSource\Net\Tools\ProjectOxfordExtension\PortalExtension\ProjectOxfordEx
 D:\MyCodeSource\Net\Tools\ProjectOxfordExtension\PortalExtension\ProjectOxfordExtension.DataModels\bin\Debug\Newtonsoft.Json.xml
 D:\MyCodeSource\Net\Tools\ProjectOxfordExtension\PortalExtension\ProjectOxfordExtension.DataModels\obj\Debug\Microsoft.Portal.Extensions.ProjectOxfordExtension.DataModels.dll
 D:\MyCodeSource\Net\Tools\ProjectOxfordExtension\PortalExtension\ProjectOxfordExtension.DataModels\obj\Debug\Microsoft.Portal.Extensions.ProjectOxfordExtension.DataModels.pdb
+D:\MyCodeSource\Net\Tools\ProjectOxfordExtension\PortalExtension\ProjectOxfordExtension.DataModels\obj\Debug\ProjectOxfordExtension.DataModels.csprojResolveAssemblyReference.cache
