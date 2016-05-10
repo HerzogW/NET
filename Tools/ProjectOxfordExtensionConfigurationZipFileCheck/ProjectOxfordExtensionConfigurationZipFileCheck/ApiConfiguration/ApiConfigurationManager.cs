@@ -1,5 +1,4 @@
 ﻿
-
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
     using Microsoft.WindowsAzure.Storage.Blob;
@@ -325,9 +324,8 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="configurationData">The configuration data.</param>
         /// <param name="apiName">Name of the API.</param>
         /// <returns></returns>
-        public Stream GetConfigurationData(ApiConfigurationData configurationData, string apiName)
+        public void GetConfigurationData(ApiConfigurationData configurationData, string tempFolderPath, string apiName)
         {
-            string tempFolderPath = "C:\\ApiConfigurationDataTemp";
             string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, apiName);
             if (Directory.Exists(tempFolderPath))
             {
@@ -335,27 +333,24 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
             Directory.CreateDirectory(tempFolderPath);
 
-            ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName));
-            zipStream.SetLevel(0);
-
-            Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}/{1}", apiName, ApiItemFileName));
-            Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}/{1}", apiName, SpecFileName));
-            Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}/{1}", apiName, QuickStartsFileName));
-            Compress(zipStream, JsonConvert.SerializeObject(configurationData.Resources["en"], new JsonSerializerSettings()
+            using (ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName)))
             {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore
-            }), string.Format("{0}/{1}/{2}", apiName, "strings", ResourceFileName));
+                zipStream.SetLevel(6);
 
-            foreach (var entity in configurationData.Icons)
-            {
-                Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiName, "icons", entity.Key));
+                Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}/{1}", apiName, ApiItemFileName));
+                Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}/{1}", apiName, SpecFileName));
+                Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}/{1}", apiName, QuickStartsFileName));
+                Compress(zipStream, JsonConvert.SerializeObject(configurationData.Resources["en"], new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore
+                }), string.Format("{0}/{1}/{2}", apiName, "strings", ResourceFileName));
+
+                foreach (var entity in configurationData.Icons)
+                {
+                    Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiName, "icons", entity.Key));
+                }
             }
-
-            Stream stream = zipStream;
-            zipStream.Close();
-
-            return stream;
         }
 
         /// <summary>

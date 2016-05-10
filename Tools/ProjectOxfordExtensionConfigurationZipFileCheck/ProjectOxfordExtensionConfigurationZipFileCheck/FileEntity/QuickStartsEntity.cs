@@ -1,16 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class QuickStartsEntity
     {
         public List<QucikStartUnit> quickStarts { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class QucikStartUnit
     {
         public string title { get; set; }
@@ -22,6 +25,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public List<QuickStartLink> links { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class QuickStartLink
     {
         public string text { get; set; }

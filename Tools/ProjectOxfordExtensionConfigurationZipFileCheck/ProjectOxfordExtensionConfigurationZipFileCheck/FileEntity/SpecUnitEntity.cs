@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecUnitEntity
     {
         public string id { get; set; }
@@ -22,6 +22,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public SpecCost cost {get;set;}
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecPromotedFeature
     {
         public string value { get; set; }
@@ -29,11 +32,17 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public string unitDescription { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecFeatureUnit
     {
         public string id { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecCost
     {
         public float amount { get; set; }

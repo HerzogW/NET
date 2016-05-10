@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-
-
+﻿
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    using System.Collections.Generic;
+    using System.Runtime.Serialization;
+
+    /// <summary>
+    /// 
+    /// </summary>
     [DataContract]
     public class SpecResourceMapEntity
     {
@@ -16,6 +15,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecResourceMapDefault
     {
         public string id { get; set; }
@@ -23,6 +25,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public SpecFirstParty firstParty { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecFirstParty
     {
         public string resourceId { get; set; }

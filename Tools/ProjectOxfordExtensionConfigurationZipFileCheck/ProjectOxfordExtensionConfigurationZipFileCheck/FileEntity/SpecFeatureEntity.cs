@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectOxfordExtensionConfigurationZipFileCheck
+﻿namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SpecFeatureEntity
     {
         public string id { get; set; }

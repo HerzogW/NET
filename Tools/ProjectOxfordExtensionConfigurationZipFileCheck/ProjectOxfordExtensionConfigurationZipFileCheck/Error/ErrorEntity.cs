@@ -1,23 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProjectOxfordExtensionConfigurationZipFileCheck
+﻿namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ErrorEntity
     {
+        /// <summary>
+        /// Gets or sets the type of the error.
+        /// </summary>
+        /// <value>
+        /// The type of the error.
+        /// </value>
         public ErrorType errorType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the zip file.
+        /// </summary>
+        /// <value>
+        /// The name of the zip file.
+        /// </value>
         public string zipFileName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the json file.
+        /// </summary>
+        /// <value>
+        /// The name of the json file.
+        /// </value>
         public string jsonFileName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the resource.
+        /// </summary>
+        /// <value>
+        /// The name of the resource.
+        /// </value>
         public string resourceName { get; set; }
 
+        /// <summary>
+        /// Gets or sets the error message.
+        /// </summary>
+        /// <value>
+        /// The error message.
+        /// </value>
         public string errorMessage { get; set; }
 
+        /// <summary>
+        /// Gets the error information.
+        /// </summary>
+        /// <returns></returns>
         public string GetErrorInfo()
         {
             string errorInfo = string.Empty;

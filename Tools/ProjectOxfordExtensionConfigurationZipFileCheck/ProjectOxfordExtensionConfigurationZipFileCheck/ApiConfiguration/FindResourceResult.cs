@@ -1,7 +1,9 @@
 ﻿
-
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FindResourceResult
     {
         public FindResourceResultStatus status { get; set; }
@@ -9,6 +11,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public string resourceInfo { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum FindResourceResultStatus
     {
         Ok,

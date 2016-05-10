@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApiEntity
     {
         public string item { get; set; }
@@ -23,6 +27,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public bool ApiSkuQuotaEntity { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ApiSkuQuotaEntity
     {
         public string code { get; set; }
