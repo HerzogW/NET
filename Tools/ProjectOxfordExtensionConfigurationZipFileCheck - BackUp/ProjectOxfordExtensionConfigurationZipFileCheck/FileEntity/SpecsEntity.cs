@@ -14,6 +14,8 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
         public List<SpecFeatureEntity> features { get; set; }
 
+
+
         public List<string> specsToAllowZeroCost { get; set; }
     }
 }

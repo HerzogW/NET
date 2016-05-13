@@ -10,6 +10,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
+    using ICSharpCode.SharpZipLib;
     using ICSharpCode.SharpZipLib.Checksums;
 
     /// <summary>
@@ -68,6 +69,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public List<ErrorEntity> listError = new List<ErrorEntity>();
 
         /// <summary>
+        /// The cache data
+        /// </summary>
+        public List<ApiConfigurationData> CacheData = new List<ApiConfigurationData>();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ApiConfigurationManager"/> class.
         /// </summary>
         public ApiConfigurationManager()
@@ -91,120 +97,23 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// Fetches all.
         /// </summary>
         /// <exception cref="System.InvalidOperationException"></exception>
-        public List<ApiConfigurationData> LoadDataToCache()
+        public void LoadDataToCache()
         {
             var blobs = configContainer.ListBlobs();
-            List<ApiConfigurationData> CacheData = new List<ApiConfigurationData>();
-            var requestOption = new BlobRequestOptions() { RetryPolicy = new ExponentialRetry() };
 
             foreach (var apiZip in blobs.OfType<CloudBlockBlob>())
             {
-                using (var blobStream = apiZip.OpenRead(null, requestOption))
-                {
-                    CacheData.Add(VeriliadteStream(blobStream, apiZip.Name));
-                }
+                DeserializeApiConfig(apiZip);
             }
-
-            return CacheData;
         }
 
         /// <summary>
-        /// Veriliadtes the stream.
+        /// Gets the cloud block BLOB.
         /// </summary>
-        /// <param name="stream">The stream.</param>
-        /// <param name="zipFileName">Name of the zip file.</param>
-        public ApiConfigurationData VeriliadteStream(Stream stream, string zipFileName)
+        /// <returns></returns>
+        public IEnumerable<IListBlobItem> GetCloudBlockBlob()
         {
-            ApiConfigurationData originalApiConfig;
-            ErrorEntity errorEntity = new ErrorEntity();
-            errorEntity.zipFileName = zipFileName;
-            using (var zip = new ZipArchive(stream))
-            {
-                try
-                {
-                    errorEntity.jsonFileName = ApiItemFileName;
-                    errorEntity.errorType = ErrorType.NotFound;
-                    var apiItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == ApiItemFileName));
-                    errorEntity.errorType = ErrorType.CanNotDeserialize;
-
-                    originalApiConfig = JsonConvert.DeserializeObject<ApiConfigurationData>(apiItemJson);
-                    if (string.IsNullOrWhiteSpace(originalApiConfig.ApiTypeName))
-                    {
-                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NullValue, zipFileName, ApiItemFileName, "item");
-                        listError.Add(errorEntity2);
-                    }
-
-                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
-                    var apiItem = JObject.Parse(apiItemJson);
-                    originalApiConfig.ApiItem = apiItem;
-
-                    errorEntity.jsonFileName = SpecFileName;
-                    errorEntity.errorType = ErrorType.NotFound;
-                    var specItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName));
-                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
-                    originalApiConfig.Spec = JObject.Parse(specItemJson);
-
-                    errorEntity.jsonFileName = QuickStartsFileName;
-                    errorEntity.errorType = ErrorType.NotFound;
-                    var quickStartItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName));
-                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
-                    originalApiConfig.QuickStart = JObject.Parse(quickStartItemJson);
-
-                    errorEntity.errorType = ErrorType.None;
-
-                    var icons = new Dictionary<string, string>();
-                    var localizableStrings = new Dictionary<string, Dictionary<string, string>>();
-
-                    foreach (var zipEntry in zip.Entries)
-                    {
-                        if (zipEntry.Name.EndsWith(IconFileExtension))
-                        {
-                            icons.Add(zipEntry.Name, ReadZipEntryToString(zipEntry));
-                        }
-
-                        if (zipEntry.Name == ResourceFileName)
-                        {
-                            string localizationDirectoryName = GetLocalizationDirectoryName(zipEntry);
-                            errorEntity.jsonFileName = string.Format(@"{0}\{1}", localizationDirectoryName, ResourceFileName);
-                            errorEntity.errorType = ErrorType.CanNotConvertToJson;
-
-                            localizableStrings.Add(localizationDirectoryName, JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));
-                        }
-                    }
-
-                    //若无Resource本地化配置信息，则默认添加英文en版本地化配置信息
-                    if (localizableStrings.Count == 0)
-                    {
-                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NotFound, zipFileName, ResourceFileName);
-                        errorEntity2.errorStatus = ErrorStatus.Fixed;
-                        listError.Add(errorEntity2);
-
-                        localizableStrings.Add(DefaultLanguage, new Dictionary<string, string>());
-                    }
-
-                    originalApiConfig.Icons = icons;
-                    originalApiConfig.Resources = localizableStrings;
-
-                    originalApiConfig.HandleItems();
-
-                    foreach (ErrorEntity errorInfo in originalApiConfig.listError)
-                    {
-                        errorInfo.zipFileName = zipFileName;
-                        listError.Add(errorInfo);
-                    }
-
-                    return originalApiConfig;
-                }
-                catch (Exception ex)
-                {
-                    if (errorEntity.errorType != ErrorType.None)
-                    {
-                        errorEntity.exceptionMessage = ex.Message;
-                        listError.Add(errorEntity);
-                    }
-                    return null;
-                }
-            }
+            return configContainer.ListBlobs();
         }
 
         /// <summary>
@@ -237,6 +146,212 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             return currentDirName == StringsFolderName ? DefaultLanguage : currentDirName;
         }
 
+        /// <summary>
+        /// Deserializes the API configuration.
+        /// </summary>
+        /// <param name="apiZipBlob">The API directory.</param>
+        /// <returns></returns>
+        private void DeserializeApiConfig(CloudBlockBlob apiZipBlob)
+        {
+            List<ErrorEntity> listError = new List<ErrorEntity>();
+            var requestOption = new BlobRequestOptions() { RetryPolicy = new ExponentialRetry() };
+
+            using (var blobStream = apiZipBlob.OpenRead(null, requestOption))
+            {
+                VeriliadteStream(blobStream, apiZipBlob.Name, true);
+            }
+        }
+
+        /// <summary>
+        /// Veriliadtes the stream.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="zipFileName">Name of the zip file.</param>
+        /// <param name="cacheData">if set to <c>true</c> [cache data].</param>
+        public void VeriliadteStream(Stream stream, string zipFileName = null, bool cacheData = false)
+        {
+            ErrorEntity errorEntity = new ErrorEntity();
+            errorEntity.zipFileName = zipFileName;
+            using (var zip = new ZipArchive(stream))
+            {
+                try
+                {
+                    errorEntity.jsonFileName = ApiItemFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
+                    var apiItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == ApiItemFileName));
+                    errorEntity.errorType = ErrorType.CanNotDeserialize;
+                    var originalApiConfig = JsonConvert.DeserializeObject<ApiConfigurationData>(apiItemJson);
+
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    var apiItem = JObject.Parse(apiItemJson);
+                    originalApiConfig.ApiItem = apiItem;
+
+                    errorEntity.jsonFileName = SpecFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
+                    var specItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName));
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    originalApiConfig.Spec = JObject.Parse(specItemJson);
+
+                    errorEntity.jsonFileName = QuickStartsFileName;
+                    errorEntity.errorType = ErrorType.NotFound;
+                    var quickStartItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName));
+                    errorEntity.errorType = ErrorType.CanNotConvertToJson;
+                    originalApiConfig.QuickStart = JObject.Parse(quickStartItemJson);
+
+                    errorEntity.errorType = ErrorType.None;
+
+                    var icons = new Dictionary<string, string>();
+
+                    var localizableStrings = new Dictionary<string, Dictionary<string, string>>();
+
+                    foreach (var zipEntry in zip.Entries)
+                    {
+                        if (zipEntry.Name.EndsWith(IconFileExtension))
+                        {
+                            icons.Add(zipEntry.Name, ReadZipEntryToString(zipEntry));
+                        }
+
+                        if (zipEntry.Name == ResourceFileName)
+                        {
+                            string localizationDirectoryName = GetLocalizationDirectoryName(zipEntry);
+                            errorEntity.jsonFileName = string.Format("{0}{1}", localizationDirectoryName, ResourceFileName);
+                            errorEntity.errorType = ErrorType.CanNotConvertToJson;
+
+                            localizableStrings.Add(localizationDirectoryName, JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));
+                        }
+                    }
+
+                    originalApiConfig.Icons = icons;
+                    originalApiConfig.Resources = localizableStrings;
+
+                    if (cacheData)
+                    {
+                        var tempApiConfig = new ApiConfigurationData();
+                        tempApiConfig.LocaleId = originalApiConfig.LocaleId;
+                        tempApiConfig.ApiTypeName = originalApiConfig.ApiTypeName;
+                        tempApiConfig.ApiItem = originalApiConfig.ApiItem;
+                        tempApiConfig.Spec = originalApiConfig.Spec;
+                        tempApiConfig.QuickStart = originalApiConfig.QuickStart;
+
+                        tempApiConfig.Icons = originalApiConfig.Icons;
+                        tempApiConfig.Resources = originalApiConfig.Resources;
+
+                        CacheData.Add(tempApiConfig);
+                    }
+
+                    ApiConfigurationData apiConfigurationData = new ApiConfigurationData();
+
+                    apiConfigurationData.ReplaceIcons(originalApiConfig, icons);
+
+                    var localizedConfigs = new Dictionary<string, ApiConfigurationData>();
+
+                    if (localizableStrings.Count != 0)
+                    {
+                        foreach (var localeString in localizableStrings)
+                        {
+                            localizedConfigs.Add(localeString.Key, apiConfigurationData.GetLocalized(originalApiConfig, localeString.Key, localeString.Value, localizableStrings[DefaultLanguage]));
+                        }
+                    }
+                    else
+                    {
+                        listError.Add(new ErrorEntity()
+                        {
+                            zipFileName = zipFileName,
+                            errorType = ErrorType.LostResource,
+                            resourceName = ResourceFileName
+                        });
+                    }
+
+                    foreach (ErrorEntity errorInfo in apiConfigurationData.listError)
+                    {
+                        errorInfo.zipFileName = zipFileName;
+                        listError.Add(errorInfo);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    if (errorEntity.errorType != ErrorType.None)
+                    {
+                        errorEntity.errorMessage = ex.Message;
+                        listError.Add(errorEntity);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Handles the original data.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <returns></returns>
+        public ApiConfigurationData HandleOriginalData(Stream stream)
+        {
+            ApiConfigurationData configurationData = new ApiConfigurationData();
+
+            ErrorEntity entity = new ErrorEntity();
+            entity.errorType = ErrorType.CanNotConvertToJson;
+            try
+            {
+                using (var zip = new ZipArchive(stream))
+                {
+                    entity.jsonFileName = ApiItemFileName;
+                    var apiItemJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == ApiItemFileName));
+                    configurationData.ApiItem = JObject.Parse(apiItemJson);
+
+                    entity.jsonFileName = SpecFileName;
+                    var specJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == SpecFileName));
+                    configurationData.Spec = JObject.Parse(specJson);
+
+                    entity.jsonFileName = QuickStartsFileName;
+                    var quickStartJson = ReadZipEntryToString(zip.Entries.First(z => z.Name == QuickStartsFileName));
+                    configurationData.QuickStart = JObject.Parse(quickStartJson);
+
+                    configurationData.HandleItems();
+                }
+            }
+            catch (Exception ex)
+            {
+                entity.errorMessage = ex.Message;
+                configurationData.listError.Add(entity);
+            }
+
+            return configurationData;
+        }
+
+        /// <summary>
+        /// Gets the configuration data.
+        /// </summary>
+        /// <param name="configurationData">The configuration data.</param>
+        /// <param name="apiName">Name of the API.</param>
+        /// <returns></returns>
+        public void GetConfigurationData(ApiConfigurationData configurationData, string tempFolderPath, string apiName)
+        {
+            string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, apiName);
+            if (Directory.Exists(tempFolderPath))
+            {
+                Directory.Delete(tempFolderPath, true);
+            }
+            Directory.CreateDirectory(tempFolderPath);
+
+            using (ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName)))
+            {
+                zipStream.SetLevel(6);
+
+                Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}/{1}", apiName, ApiItemFileName));
+                Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}/{1}", apiName, SpecFileName));
+                Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}/{1}", apiName, QuickStartsFileName));
+                Compress(zipStream, JsonConvert.SerializeObject(configurationData.Resources["en"], new JsonSerializerSettings()
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Ignore
+                }), string.Format("{0}/{1}/{2}", apiName, "strings", ResourceFileName));
+
+                foreach (var entity in configurationData.Icons)
+                {
+                    Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiName, "icons", entity.Key));
+                }
+            }
+        }
 
         /// <summary>
         /// Reads the zip entry to string.
@@ -254,48 +369,18 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
         }
 
-
-
         /// <summary>
-        /// Gets the configuration data.
+        /// Writes the data to local file.
         /// </summary>
-        /// <param name="configurationData">The configuration data.</param>
-        /// <param name="apiName">Name of the API.</param>
-        /// <returns></returns>
-        public static void GetConfigurationData(ApiConfigurationData configurationData, string tempFolderPath, string apiName)
+        /// <param name="filePath">The file path.</param>
+        /// <param name="data">The data.</param>
+        private void WriteDataToLocalFile(string filePath, string data)
         {
-            string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, apiName);
-            if (Directory.Exists(tempFolderPath))
+            using (FileStream fs = File.Create(filePath))
             {
-                Directory.Delete(tempFolderPath, true);
-            }
-            Directory.CreateDirectory(tempFolderPath);
-
-            using (ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName)))
-            {
-                zipStream.SetLevel(6);
-
-                Compress(zipStream, configurationData.ApiItem.ToString(), string.Format("{0}/{1}", apiName, ApiItemFileName));
-                Compress(zipStream, configurationData.Spec.ToString(), string.Format("{0}/{1}", apiName, SpecFileName));
-                Compress(zipStream, configurationData.QuickStart.ToString(), string.Format("{0}/{1}", apiName, QuickStartsFileName));
-
-                foreach (var resource in configurationData.Resources)
+                using (StreamWriter writer = new StreamWriter(fs))
                 {
-                    string filePath = string.Format("{0}/{1}/{2}", apiName, "strings", ResourceFileName);
-                    if (resource.Key != "en")
-                    {
-                        filePath = string.Format("{0}/{1}/{2}/{3}", apiName, "strings", resource.Key, ResourceFileName);
-                    }
-                    Compress(zipStream, JsonConvert.SerializeObject(resource.Value, new JsonSerializerSettings()
-                    {
-                        Formatting = Formatting.Indented,
-                        NullValueHandling = NullValueHandling.Ignore
-                    }), filePath);
-                }
-
-                foreach (var entity in configurationData.Icons)
-                {
-                    Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiName, "icons", entity.Key));
+                    writer.WriteLine(data);
                 }
             }
         }
@@ -306,7 +391,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="zipStream">The zip stream.</param>
         /// <param name="data">The data.</param>
         /// <param name="filePath">The file path.</param>
-        private static void Compress(ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream, string data, string filePath)
+        private void Compress(ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream, string data, string filePath)
         {
             Crc32 crc = new Crc32();
             byte[] buffer = System.Text.Encoding.Default.GetBytes(data);

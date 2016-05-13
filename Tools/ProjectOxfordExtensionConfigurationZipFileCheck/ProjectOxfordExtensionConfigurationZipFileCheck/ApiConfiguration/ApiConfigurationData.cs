@@ -28,7 +28,8 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         private JsonSerializerSettings settingFormat = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
-            NullValueHandling = NullValueHandling.Ignore
+            NullValueHandling = NullValueHandling.Include,
+            MissingMemberHandling = MissingMemberHandling.Error
         };
 
         /// <summary>
@@ -95,101 +96,6 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         }
 
         /// <summary>
-        /// Gets the localized.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="localeId">The locale identifier.</param>
-        /// <param name="resources">The resources.</param>
-        /// <returns>The ApiConfigurationData Object.</returns>
-        public ApiConfigurationData GetLocalized(ApiConfigurationData data, string localeId, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null)
-        {
-            return new ApiConfigurationData()
-            {
-                LocaleId = localeId,
-                ApiTypeName = data.ApiTypeName,
-                Spec = ReplaceJObject(ResourceToken, data.Spec, resources, defaultResources, localeId),
-                ApiItem = ReplaceJObject(ResourceToken, data.ApiItem, resources, defaultResources, localeId),
-                QuickStart = ReplaceJObject(ResourceToken, data.QuickStart, resources, defaultResources, localeId)
-            };
-        }
-
-        /// <summary>
-        /// Repairs the icons.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="icons">The icons.</param>
-        /// <param name="localeId">The locale identifier.</param>
-        public void ReplaceIcons(ApiConfigurationData data, Dictionary<string, string> icons)
-        {
-            data.Spec = ReplaceJObject(IconToken, data.Spec, icons);
-            data.ApiItem = ReplaceJObject(IconToken, data.ApiItem, icons);
-            data.QuickStart = ReplaceJObject(IconToken, data.QuickStart, icons);
-        }
-
-        /// <summary>
-        /// Replaces the json.
-        /// </summary>
-        /// <param name="tokenFlag">The token flag.</param>
-        /// <param name="original">The original spec.</param>
-        /// <param name="resources">The resources.</param>
-        /// <returns>The replaced Json.</returns>
-        private JObject ReplaceJObject(string tokenFlag, JObject original, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null, string localeId = "")
-        {
-            var result = JObject.FromObject(original);
-            var reader = original.CreateReader();
-
-            FindResourceResult findResourceResult;
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonToken.String)
-                {
-                    var value = reader.Value as string;
-                    if (value.StartsWith(tokenFlag))
-                    {
-                        findResourceResult = FindResource(value.Split(':')[1], resources, defaultResources);
-                        if (findResourceResult.status == FindResourceResultStatus.Ok)
-                        {
-                            result.SelectToken(reader.Path).Replace(findResourceResult.resourceInfo);
-                        }
-                        else
-                        {
-                            listError.Add(new ErrorEntity()
-                            {
-                                errorType = ErrorType.LostResource,
-                                jsonFileName = string.Format("{0}/resources.resjson", localeId),
-                                resourceName = findResourceResult.resourceInfo,
-                            });
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Finds the resource.
-        /// </summary>
-        /// <param name="key">The original.</param>
-        /// <param name="resources">The resources.</param>
-        /// <returns>The resource string.</returns>
-        private FindResourceResult FindResource(string key, Dictionary<string, string> resources, Dictionary<string, string> defaultResources = null)
-        {
-            if (resources.ContainsKey(key))
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceInfo = resources[key] };
-            }
-            else if (defaultResources != null && defaultResources.ContainsKey(key))
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.Ok, resourceInfo = defaultResources[key] };
-            }
-            else
-            {
-                return new FindResourceResult { status = FindResourceResultStatus.NotFound, resourceInfo = key };
-            }
-        }
-
-        /// <summary>
         /// Handles the items.
         /// </summary>
         public void HandleItems()
@@ -202,30 +108,25 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <summary>
         /// Handles the API item.
         /// </summary>
+        /// <param name="existResourceFile">if set to <c>true</c> [exist resource file].</param>
         private void HandleApiItem()
         {
-            var resourceEn = new Dictionary<string, string>();
-
             try
             {
                 ApiEntity apiEntity = JsonConvert.DeserializeObject<ApiEntity>(this.ApiItem.ToString());
-                resourceEn.Add("title", apiEntity.title);
-                apiEntity.title = string.Format("{0}title", ResourceToken);
 
-                resourceEn.Add("subtitle", apiEntity.subtitle);
-                apiEntity.subtitle = string.Format("{0}subtitle", ResourceToken);
+                apiEntity.title = HandleSpecificItemResource("api.json", "title", "title", apiEntity.title);
+                apiEntity.subtitle = HandleSpecificItemResource("api.json", "subtitle", "subtitle", apiEntity.subtitle);
 
-                Icons.Add(string.Format("{0}.svg", apiEntity.item), apiEntity.iconData);
-                apiEntity.iconData = string.Format("{0}{1}.svg", IconToken, apiEntity.item);
+                apiEntity.iconData = HandleSpecificItemIcon("api.json", "iconData", string.Format("{0}.svg", apiEntity.item), apiEntity.iconData);
 
                 this.ApiItem = JObject.Parse(JsonConvert.SerializeObject(apiEntity, settingFormat));
-                this.Resources.Add("en", resourceEn);
             }
             catch (Exception ex)
             {
                 ErrorEntity entity = new ErrorEntity();
                 entity.errorType = ErrorType.Common;
-                entity.errorMessage = ex.Message;
+                entity.exceptionMessage = ex.Message;
 
                 this.listError.Add(entity);
             }
@@ -234,65 +135,45 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <summary>
         /// Handles the spec item.
         /// </summary>
+        /// <param name="existResourceFile">if set to <c>true</c> [exist resource file].</param>
         private void handleSpecItem()
         {
-            var resourceEn = this.Resources["en"];
             try
             {
+                string propertyDetail = string.Empty;
                 SpecsEntity specsEntity = JsonConvert.DeserializeObject<SpecsEntity>(this.Spec.ToString());
                 for (int i = 0; i < specsEntity.specs.Count; i++)
                 {
                     var entity = specsEntity.specs[i];
-                    resourceEn.Add(string.Format("spec.{0}.title", entity.id.ToLower()), entity.title);
-                    specsEntity.specs[i].title = string.Format("{0}spec.{1}.title", ResourceToken, entity.id.ToLower());
+                    propertyDetail = string.Format("specs[{0}].title", i);
+                    specsEntity.specs[i].title = HandleSpecificItemResource("spec.json", "title", string.Format("spec.{0}.title", entity.id.ToLower()), specsEntity.specs[i].title, true, propertyDetail);
 
                     for (int j = 0; j < entity.promotedFeatures.Count; j++)
                     {
                         var feature = entity.promotedFeatures[j];
-
-                        string key = GetKeyByValue(resourceEn, feature.unitDescription);
-                        if (!string.IsNullOrWhiteSpace(key))
-                        {
-                            specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, key);
-                        }
-                        else
-                        {
-                            int num = 1;
-                            while (true)
-                            {
-                                string newKey = string.Format("spec.promotedFeature.unitDescription{0}", num++);
-                                if (!ExistKey(resourceEn, newKey))
-                                {
-                                    resourceEn.Add(newKey, feature.unitDescription);
-                                    specsEntity.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, newKey);
-                                    break;
-                                }
-                            }
-                        }
+                        propertyDetail = string.Format("specs[{0}].promotedFeatures[{1}].unitDescription", i, j);
+                        specsEntity.specs[i].promotedFeatures[j].unitDescription = HandleSpecificItemSpecialResource("spec.json", "unitDescription", "spec.promotedFeature.unitDescription", specsEntity.specs[i].promotedFeatures[j].unitDescription, true, propertyDetail);
                     }
-
-                    resourceEn.Add(string.Format("spec.cost.{0}.caption.format", entity.id.ToLower()), entity.cost.caption);
-                    specsEntity.specs[i].cost.caption = string.Format("{0}spec.cost.{1}.caption.format", ResourceToken, entity.id.ToLower());
+                    propertyDetail = string.Format("specs[{0}].caption", i);
+                    specsEntity.specs[i].cost.caption = HandleSpecificItemResource("spec.json", "caption", string.Format("spec.cost.{0}.caption.format", entity.id.ToLower()), specsEntity.specs[i].cost.caption);
                 }
 
                 for (int i = 0; i < specsEntity.features.Count; i++)
                 {
                     var entity = specsEntity.features[i];
-                    resourceEn.Add(string.Format("feature.{0}.displayName", entity.id), entity.displayName);
-                    specsEntity.features[i].displayName = string.Format("{0}feature.{1}.displayName", ResourceToken, entity.id);
-
-                    Icons.Add(string.Format("spec.feature.{0}.svg", entity.id), entity.iconSvgData);
-                    specsEntity.features[i].iconSvgData = string.Format("{0}spec.feature.{1}.svg", IconToken, entity.id);
+                    propertyDetail = string.Format("features[{0}].displayName", i);
+                    specsEntity.features[i].displayName = HandleSpecificItemResource("spec.json", "displayName", string.Format("feature.{0}.displayName", entity.id), specsEntity.features[i].displayName, true, propertyDetail);
+                    propertyDetail = string.Format("features[{0}].iconSvgData", i);
+                    specsEntity.features[i].iconSvgData = HandleSpecificItemIcon("spec.json", "iconSvgData", string.Format("spec.feature.{0}.svg", entity.id), specsEntity.features[i].iconSvgData, false, propertyDetail);
                 }
 
                 this.Spec = JObject.Parse(JsonConvert.SerializeObject(specsEntity, settingFormat));
-                this.Resources["en"] = resourceEn;
             }
             catch (Exception ex)
             {
                 ErrorEntity entity = new ErrorEntity();
                 entity.errorType = ErrorType.Common;
-                entity.errorMessage = ex.Message;
+                entity.exceptionMessage = ex.Message;
 
                 this.listError.Add(entity);
             }
@@ -301,80 +182,245 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <summary>
         /// Handles the quick start item.
         /// </summary>
+        /// <param name="existResourceFile">if set to <c>true</c> [exist resource file].</param>
         private void handleQuickStartItem()
         {
-            var resourceEn = this.Resources["en"];
             try
             {
                 QuickStartsEntity quickStartsEntity = JsonConvert.DeserializeObject<QuickStartsEntity>(this.QuickStart.ToString());
-
+                string propertyDetail = string.Empty;
                 for (int i = 0; i < quickStartsEntity.quickStarts.Count; i++)
                 {
                     var entity = quickStartsEntity.quickStarts[i];
+                    propertyDetail = string.Format("quickStarts[{0}].title", i);
+                    quickStartsEntity.quickStarts[i].title = HandleSpecificItemResource("quickStarts.json", "title", string.Format("quickStart{0}.title", i + 1), quickStartsEntity.quickStarts[i].title, true, propertyDetail);
 
-                    resourceEn.Add(string.Format("quickStart{0}.title", i), entity.title);
-                    quickStartsEntity.quickStarts[i].title = string.Format("{0}quickStart{1}.title", ResourceToken, i);
-
-                    resourceEn.Add(string.Format("quickStart{0}.des", i), entity.description);
-                    quickStartsEntity.quickStarts[i].description = string.Format("{0}quickStart{1}.des", ResourceToken, i);
+                    propertyDetail = string.Format("quickStarts[{0}].description", i);
+                    quickStartsEntity.quickStarts[i].description = HandleSpecificItemResource("quickStarts.json", "description", string.Format("quickStart{0}.des", i + 1), quickStartsEntity.quickStarts[i].description, true, propertyDetail);
 
                     for (int j = 0; j < entity.links.Count; j++)
                     {
                         var link = entity.links[j];
-
-                        resourceEn.Add(string.Format("quickStart{0}.link{1}.text", i, j), link.text);
-                        quickStartsEntity.quickStarts[i].links[j].text = string.Format("{0}quickStart{1}.link{2}.text", ResourceToken, i, j);
+                        propertyDetail = string.Format("quickStarts[{0}].links[{1}].text", i, j);
+                        quickStartsEntity.quickStarts[i].links[j].text = HandleSpecificItemResource("quickStarts.json", "text", string.Format("quickStart{0}.link{1}.text", i + 1, j + 1), quickStartsEntity.quickStarts[i].links[j].text, true, propertyDetail);
                     }
                 }
 
                 this.QuickStart = JObject.Parse(JsonConvert.SerializeObject(quickStartsEntity, settingFormat));
-                this.Resources["en"] = resourceEn;
             }
             catch (Exception ex)
             {
                 ErrorEntity entity = new ErrorEntity();
                 entity.errorType = ErrorType.Common;
-                entity.errorMessage = ex.Message;
+                entity.exceptionMessage = ex.Message;
 
                 this.listError.Add(entity);
             }
         }
 
+
+
         /// <summary>
-        /// Gets the key by value.
+        /// Handles the specific item resource.(Check the item\value in resource files and )
         /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        private string GetKeyByValue(Dictionary<string, string> resource, string value)
+        /// <param name="fileName">Name of the json file.</param>
+        /// <param name="propertyName">Name of the property in json file.</param>
+        /// <param name="itemName">Name of the specific item in resources.resjson.</param>
+        /// <param name="itemValue">The value of the specific item.</param>
+        /// <param name="valueRequired">When itemValue is NUll,if set true,will get an 'NotFixed' error;if set false, will get an 'Ignored' error</param>
+        /// <returns>The itemName in resources.resjson start with ResourceToken</returns>
+        private string HandleSpecificItemResource(string fileName, string propertyName, string itemName, string itemValue, bool valueRequired = true, string propertyDetail = null)
         {
-            foreach (var dic in resource)
+            ErrorEntity entity = new ErrorEntity();
+            entity.jsonFileName = fileName;
+            if (string.IsNullOrWhiteSpace(itemValue))
             {
-                if (dic.Value.Equals(value))
+                entity.errorType = ErrorType.NullValue;
+                entity.itemName = propertyName;
+                entity.errorDetail = propertyDetail;
+                if (!valueRequired)
                 {
-                    return dic.Key;
+                    entity.errorStatus = ErrorStatus.Ignored;
                 }
+                listError.Add(entity);
+                return itemValue;
             }
-            return string.Empty;
+            //若指定字段已经被初始化，则检查在所有Resource配置文件中能否找到该字段对应的配置信息，若查找不到，则报错。
+            if (itemValue.StartsWith(ResourceToken))
+            {
+                string tempItemName = itemValue.Replace(ResourceToken, "");
+                foreach (var resource in this.Resources)
+                {
+                    if (!resource.Value.ContainsKey(tempItemName))
+                    {
+                        entity.errorType = ErrorType.LostResource;
+                        entity.jsonFileName = string.Format(@"{0}\resources.resjson", resource.Key);
+                        entity.itemName = tempItemName;
+                        listError.Add(entity);
+                    }
+                }
+                return itemValue;
+            }
+            else//若指定字段未被初始化，则先报错提示该字段未被初始化；然后向所有的Resource配置文件中添加关于该字段的配置信息；
+            {
+                entity.errorType = ErrorType.NotSetAsResourceItem;
+                entity.itemName = propertyName;
+                entity.errorStatus = ErrorStatus.Fixed;
+                listError.Add(entity);
+
+                foreach (var resource in this.Resources)
+                {
+                    if (resource.Value.ContainsKey(itemName))//若已存在同名的配置信息，进行值覆盖
+                    {
+                        resource.Value[itemName] = itemValue;
+                    }
+                    else//添加配置信息
+                    {
+                        resource.Value.Add(itemName, itemValue);
+                    }
+                }
+                return string.Format("{0}{1}", ResourceToken, itemName);
+            }
         }
 
         /// <summary>
-        /// Exists the key.
+        /// Handles the specific item special resource.
         /// </summary>
-        /// <param name="resource">The resource.</param>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        private bool ExistKey(Dictionary<string, string> resource, string key)
+        /// <param name="fileName">Name of the json file.</param>
+        /// <param name="propertyName">Name of the property in json file.</param>
+        /// <param name="itemName">Name of the specific item in resources.resjson.</param>
+        /// <param name="itemValue">The value of the specific item.</param>
+        /// <param name="valueRequired">When itemValue is NUll,if set true,will get an 'NotFixed' error;if set false, will get an 'Ignored' error</param>
+        /// <returns>The itemName in resources.resjson start with ResourceToken</returns>
+        private string HandleSpecificItemSpecialResource(string fileName, string propertyName, string itemName, string itemValue, bool valueRequired = true, string propertyDetail = null)
         {
-            foreach (var dic in resource)
+            ErrorEntity entity = new ErrorEntity();
+            entity.jsonFileName = fileName;
+            if (string.IsNullOrWhiteSpace(itemValue))
             {
-                if (dic.Key.Equals(key))
+                entity.errorType = ErrorType.NullValue;
+                entity.itemName = propertyName;
+                entity.errorDetail = propertyDetail;
+                if (!valueRequired)
                 {
-                    return true;
+                    entity.errorStatus = ErrorStatus.Ignored;
                 }
+                listError.Add(entity);
+                return itemValue;
             }
 
-            return false;
+            if (itemValue.StartsWith(ResourceToken))
+            {
+                string tempItemName = itemValue.Replace(ResourceToken, "");
+                foreach (var resource in this.Resources)
+                {
+                    if (!resource.Value.ContainsKey(tempItemName))
+                    {
+                        entity.errorType = ErrorType.LostResource;
+                        entity.jsonFileName = string.Format(@"{0}\resources.resjson", resource.Key);
+                        entity.itemName = tempItemName;
+                        listError.Add(entity);
+                    }
+                }
+                return itemValue;
+            }
+            else
+            {
+                int num = 1;
+                string newKey = string.Format("{0}{1}", itemName, num);
+                bool firstResource = true; ;
+
+                foreach (var resource in this.Resources)
+                {
+                    if (firstResource)
+                    {
+                        while (true)
+                        {
+                            if (!resource.Value.ContainsKey(newKey))
+                            {
+                                this.Resources["en"].Add(newKey, itemValue);
+                                break;
+                            }
+                            newKey = string.Format("{0}{1}", itemName, ++num);
+                        }
+                        firstResource = false;
+                    }
+
+                    if (resource.Value.ContainsKey(newKey))
+                    {
+                        resource.Value[newKey] = itemValue;
+                    }
+                    else
+                    {
+                        resource.Value.Add(newKey, itemValue);
+                    }
+                }
+
+                entity.errorType = ErrorType.NotSetAsResourceItem;
+                entity.itemName = newKey;
+                entity.errorStatus = ErrorStatus.Fixed;
+                listError.Add(entity);
+
+                return string.Format("{0}{1}", ResourceToken, newKey);
+            }
+        }
+
+        /// <summary>
+        /// Handles the specific item icon.
+        /// </summary>
+        /// <param name="fileName">Name of the json file.</param>
+        /// <param name="propertyName">Name of the property in json file.</param>
+        /// <param name="itemName">Name of the specific item in resources.resjson.</param>
+        /// <param name="itemValue">The value of the specific item.</param>
+        /// <param name="valueRequired">When itemValue is NUll,if set true,will get an 'NotFixed' error;if set false, will get an 'Ignored' error</param>
+        /// <returns>The name of svg file start with IconToken</returns>
+        private string HandleSpecificItemIcon(string fileName, string propertyName, string itemName, string itemValue, bool valueRequired = true, string propertyDetail = null)
+        {
+            ErrorEntity entity = new ErrorEntity();
+            entity.jsonFileName = fileName;
+            if (string.IsNullOrWhiteSpace(itemValue))
+            {
+                entity.errorType = ErrorType.NullValue;
+                entity.itemName = propertyName;
+                entity.errorDetail = propertyDetail;
+                if (!valueRequired)
+                {
+                    entity.errorStatus = ErrorStatus.Ignored;
+                }
+                listError.Add(entity);
+                return itemValue;
+            }
+
+            if (itemValue.StartsWith(IconToken))
+            {
+                string tempItemName = itemValue.Replace(IconToken, "");
+
+                if (!this.Icons.ContainsKey(tempItemName))
+                {
+
+                    entity.errorType = ErrorType.LostResource;
+                    entity.itemName = tempItemName;
+                    listError.Add(entity);
+                }
+                return itemValue;
+            }
+            else
+            {
+                entity.errorType = ErrorType.NotSetAsSvgFile;
+                entity.itemName = itemName;
+                entity.errorStatus = ErrorStatus.Fixed;
+                listError.Add(entity);
+
+                if (this.Icons.ContainsKey(itemName))
+                {
+                    this.Icons[itemName] = itemValue;
+                }
+                else
+                {
+                    this.Icons.Add(itemName, itemValue);
+                }
+                return string.Format("{0}{1}", IconToken, itemName);
+            }
         }
     }
 }

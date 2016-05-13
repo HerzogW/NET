@@ -24,7 +24,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
         public List<ApiSkuQuotaEntity> skuQuota { get; set; }
 
-        public bool showLegalTerm { get; set; }
+        public bool ApiSkuQuotaEntity { get; set; }
     }
 
     /// <summary>
