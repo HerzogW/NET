@@ -1,0 +1,23 @@
+﻿@using WebAppEFTest.Areas.SPA.Model
+@model EmployeeListViewModel
+
+<div>
+    @{
+        Html.RenderAction("GetAddNewLink");
+    }
+    <table style="border:1px;" id="EmployeeTable">
+        <tr>
+            <th>EmployeeName</th>
+            <th>Salary</th>
+        </tr>
+
+        @foreach (EmployeeViewModel employee in Model)
+        {
+            <tr>
+                <td>employee.EmployeeName</td>
+                <td>employee.Salary</td>
+            </tr>
+        }
+
+    </table>
+</div>

@@ -1,0 +1,41 @@
+﻿@model WebAppEFTest.Models.UserDetails
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript" src="~/Scripts/jquery-1.10.2.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <title>Login</title>
+</head>
+<body>
+    <div>
+        @Html.ValidationMessage("CredentialError", new { style = "color:red;" })
+        @using (Html.BeginForm("DoLogin", "Authentication", FormMethod.Post))
+        {
+            @Html.LabelFor(c => c.UserName)
+
+            @Html.TextBoxFor(x => x.UserName)
+            @Html.ValidationMessageFor(x => x.UserName)
+
+            <br />
+
+            @Html.LabelFor(c => c.Password)
+
+            @Html.TextBoxFor(x => x.Password)
+
+            @Html.ValidationMessageFor(x => x.Password)
+
+            <br />
+
+            <input type="submit" name="BtnSubmit" value="Login" />
+        }
+    </div>
+</body>
+</html>
