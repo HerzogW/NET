@@ -242,9 +242,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     entity.errorStatus = ErrorStatus.Ignored;
                 }
+
                 listError.Add(entity);
                 return itemValue;
             }
+
             //若指定字段已经被初始化，则检查在所有Resource配置文件中能否找到该字段对应的配置信息，若查找不到，则报错。
             if (itemValue.StartsWith(ResourceToken))
             {
@@ -253,12 +255,22 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     if (!resource.Value.ContainsKey(tempItemName))
                     {
-                        entity.errorType = ErrorType.LostResource;
-                        entity.jsonFileName = string.Format(@"{0}\resources.resjson", resource.Key);
-                        entity.itemName = tempItemName;
-                        listError.Add(entity);
+                        ErrorEntity currentError = new ErrorEntity();
+                        currentError.errorType = ErrorType.LostResource;
+                        if (resource.Key == "en")
+                        {
+                            currentError.jsonFileName = @"strings\resources.resjson";
+                        }
+                        else
+                        {
+                            currentError.jsonFileName = string.Format(@"strings\{0}\resources.resjson", resource.Key);
+                        }
+
+                        currentError.itemName = tempItemName;
+                        listError.Add(currentError);
                     }
                 }
+
                 return itemValue;
             }
             else//若指定字段未被初始化，则先报错提示该字段未被初始化；然后向所有的Resource配置文件中添加关于该字段的配置信息；
@@ -279,6 +291,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         resource.Value.Add(itemName, itemValue);
                     }
                 }
+
                 return string.Format("{0}{1}", ResourceToken, itemName);
             }
         }
@@ -305,6 +318,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     entity.errorStatus = ErrorStatus.Ignored;
                 }
+
                 listError.Add(entity);
                 return itemValue;
             }
@@ -316,12 +330,22 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     if (!resource.Value.ContainsKey(tempItemName))
                     {
-                        entity.errorType = ErrorType.LostResource;
-                        entity.jsonFileName = string.Format(@"{0}\resources.resjson", resource.Key);
-                        entity.itemName = tempItemName;
-                        listError.Add(entity);
+                        ErrorEntity currentError = new ErrorEntity();
+                        currentError.errorType = ErrorType.LostResource;
+                        if (resource.Key == "en")
+                        {
+                            currentError.jsonFileName = @"strings\resources.resjson";
+                        }
+                        else
+                        {
+                            currentError.jsonFileName = string.Format(@"strings\{0}\resources.resjson", resource.Key);
+                        }
+
+                        currentError.itemName = tempItemName;
+                        listError.Add(currentError);
                     }
                 }
+
                 return itemValue;
             }
             else
@@ -341,8 +365,10 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                                 this.Resources["en"].Add(newKey, itemValue);
                                 break;
                             }
+
                             newKey = string.Format("{0}{1}", itemName, ++num);
                         }
+
                         firstResource = false;
                     }
 
@@ -387,6 +413,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     entity.errorStatus = ErrorStatus.Ignored;
                 }
+
                 listError.Add(entity);
                 return itemValue;
             }
@@ -397,11 +424,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
                 if (!this.Icons.ContainsKey(tempItemName))
                 {
-
                     entity.errorType = ErrorType.LostResource;
                     entity.itemName = tempItemName;
                     listError.Add(entity);
                 }
+
                 return itemValue;
             }
             else
@@ -419,6 +446,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                 {
                     this.Icons.Add(itemName, itemValue);
                 }
+
                 return string.Format("{0}{1}", IconToken, itemName);
             }
         }

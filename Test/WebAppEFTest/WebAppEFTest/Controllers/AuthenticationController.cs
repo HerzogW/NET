@@ -42,7 +42,7 @@ namespace WebAppEFTest.Controllers
 
                 FormsAuthentication.SetAuthCookie(u.UserName, false);
                 Session["IsAdmin"] = IsAdmin;
-                return RedirectToAction("Index", "Employee");
+                return RedirectToAction("Index", "SPA/Main");
             }
             else
             {

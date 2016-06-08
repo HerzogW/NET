@@ -6,37 +6,46 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class B:A
+    class Test
     {
-        public B()
-        {
-            Console.WriteLine("B()");
-        }
-
-        public override void Fun()
-        {
-            Console.WriteLine("B.Fun()");
-        }
-
+        static List<string> tempList = new List<string>();
 
         static void Main(string[] args)
         {
-            A a = new B();
-            a.Fun();
+            //Parent();
+            AddToList1();
             Console.ReadKey();
         }
-    }
 
-    abstract class A
-    {
-        public A()
+        private static void Parent()
         {
-            Console.WriteLine("A()");
+            Task parent = new Task(AddToList1);
+            parent.Start();
+            parent.ContinueWith((obj) =>
+            {
+                foreach (string elem in tempList)
+                {
+                    Console.WriteLine(elem);
+                }
+            });
         }
 
-        public virtual void Fun()
+        private static void AddToList1()
         {
-            Console.WriteLine("A.Fun()");
-        } 
+            for (int i = 0; i < 500; i++)
+            {
+                new Task(() => { tempList.Add(i.ToString()); }).Start();
+            }
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+            //new Task(() => { for (int i = 0; i < 100; i++) tempList.Add(i.ToString()); }, TaskCreationOptions.AttachedToParent).Start();
+        }
     }
+
 }

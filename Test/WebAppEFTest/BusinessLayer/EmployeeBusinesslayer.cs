@@ -1,5 +1,6 @@
 ﻿using BusinessEntities;
 using DataAccessLayer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,6 +45,14 @@ namespace BusinessLayer
         public void UploadEmployees(List<Employee> employees)
         {
 
+        }
+
+        public void SaveEmployee(Employee employee)
+        {
+            EFTestDBDAL dal = new EFTestDBDAL();
+            employee.EmployeeId = Guid.NewGuid().ToString();
+            dal.Employees.Add(employee);
+            dal.SaveChanges();            
         }
     }
 }

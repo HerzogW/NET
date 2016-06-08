@@ -5,17 +5,17 @@
     @{
         Html.RenderAction("GetAddNewLink");
     }
-    <table style="border:1px;" id="EmployeeTable">
+    <table style="border:1px;border-style:solid;border-color:black;" id="EmployeeTable">
         <tr>
-            <th>EmployeeName</th>
-            <th>Salary</th>
+            <th style="border:1px;border-style:solid;border-color:black;">EmployeeName</th>
+            <th style="border:1px;border-style:solid;border-color:black;">Salary</th>
         </tr>
 
-        @foreach (EmployeeViewModel employee in Model)
+        @foreach (EmployeeViewModel employee in Model.employees)
         {
             <tr>
-                <td>employee.EmployeeName</td>
-                <td>employee.Salary</td>
+                <td style="border:1px;border-style:solid;border-color:black;">@employee.EmployeeName</td>
+                <td style="border:1px;border-style:solid;border-color:black;">@employee.Salary</td>
             </tr>
         }
 

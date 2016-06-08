@@ -1,0 +1,79 @@
+﻿@using WebAppEFTest.Areas.SPA.Model
+@model CreateEmployeeViewModel
+
+<script type="text/javascript" src="~/Scripts/jquery-ui-1.11.4.js"></script>
+<script type="text/javascript" src="~/Scripts/Validation.js"></script>
+<script type="text/javascript">
+    function ResetForm() {
+        $("#TxtFName").val("");
+        $("#TxtLName").val("");
+        $("#TxtSalary").val("");
+    }
+
+    function CancelForm() {
+        $("#DivCreateEmployee").remove();
+    }
+
+    function IsValid() {
+        return true;
+    }
+
+    function SaveEmployee() {
+        if (IsValid()) {
+            var e =
+                {
+                    FirstName: $("#TxtFName").val(),
+                    LastName: $("#TxtLName").val(),
+                    Salary: $("#TxtSalary").val()
+                }
+
+            $.post("/SPA/Main/SaveEmployee", e).then(
+                function (r) {
+                    var newTr = $("<tr></tr>");
+                    var nameTD = $("<td></td>");
+                    var salaryTD = $("<td></td>");
+
+                    nameTD.text(r.EmployeeName);
+                    salaryTD.text(r.Salary);
+
+                    salaryTD.css("background-color", r.SalaryColor);
+
+                    newTr.append(nameTD);
+                    newTr.append(salaryTD);
+
+                    $("#EmployeeTable").append(newTr);
+                    $("#DivCreateEmployee").dialog("close");
+                });
+        }
+    }
+</script>
+<div>
+    <div class="form-group">
+        FirstName:
+        <div class="col-md-10">
+            <input type="text" id="TxtFName" name="FirstName" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        LastName:
+        <div class="col-md-10">
+            <input type="text" id="TxtLName" name="LastName" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        Salary:
+        <div class="col-md-10">
+            <input type="text" id="TxtSalary" name="Salary" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="button" value="Create" onclick="SaveEmployee();" class="btn btn-default" />
+            <input type="button" value="Reset" onclick="ResetForm();" class="btn btn-default" />
+            <input type="button" value="Cancel" onclick="CancelForm();" class="btn btn-default" />
+        </div>
+    </div>
+</div>

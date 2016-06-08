@@ -7,7 +7,7 @@ using ViewModel;
 
 namespace BusinessEntities
 {
-    public class Employee : BaseViewModel
+    public class Employee
     {
         [Key]
         public string EmployeeId { get; set; }

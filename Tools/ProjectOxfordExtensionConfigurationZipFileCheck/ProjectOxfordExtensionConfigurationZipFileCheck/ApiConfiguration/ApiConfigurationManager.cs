@@ -165,7 +165,14 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                         if (zipEntry.Name == ResourceFileName)
                         {
                             string localizationDirectoryName = GetLocalizationDirectoryName(zipEntry);
-                            errorEntity.jsonFileName = string.Format(@"{0}\{1}", localizationDirectoryName, ResourceFileName);
+                            if (localizationDirectoryName == DefaultLanguage)
+                            {
+                                errorEntity.jsonFileName = string.Format(@"strings\{0}", ResourceFileName);
+                            }
+                            else
+                            {
+                                errorEntity.jsonFileName = string.Format(@"strings\{0}\{1}", localizationDirectoryName, ResourceFileName);
+                            }
                             errorEntity.errorType = ErrorType.CanNotConvertToJson;
 
                             localizableStrings.Add(localizationDirectoryName, JsonConvert.DeserializeObject<Dictionary<string, string>>(ReadZipEntryToString(zipEntry)));

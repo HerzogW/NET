@@ -20,29 +20,30 @@ namespace WebAppEFTest.Controllers
             EmployeeBusinesslayer helper = new EmployeeBusinesslayer();
             //List<Employee> employees = helper.GetEmployees();
 
-            EmployeeListViewModel employeeModel = new EmployeeListViewModel();
-            employeeModel.UserName = "WWJ";
-            employeeModel.Employees.Add(new Employee() { EmployeeId = "1", FirstName = "2", LastName = "3", Salary = 100 });
+            //EmployeeListViewModel employeeModel = new EmployeeListViewModel();
+            //employeeModel.UserName = "WWJ";
+            //employeeModel.Employees.Add(new Employee() { EmployeeId = "1", FirstName = "2", LastName = "3", Salary = 100 });
 
             //employeeModel.FooterData = new FooterViewModel();
             //employeeModel.FooterData.CompanyName = "Microsoft";
             //employeeModel.FooterData.Year = DateTime.Now.Year.ToString();
 
-            return View("Index", employeeModel);
+            //return View("Index", employeeModel);
+            return View();
         }
 
-        [HeaderFilter]
-        [AdminFilter]
-        public ActionResult AddNew()
-        {
-            Employee employee = new Employee();
-            employee.UserName = "Admin";
-            employee.FooterData = new FooterViewModel();
-            employee.FooterData.CompanyName = "Microsoft";
-            employee.FooterData.Year = DateTime.Now.Year.ToString();
+        //[HeaderFilter]
+        //[AdminFilter]
+        //public ActionResult AddNew()
+        //{
+        //    Employee employee = new Employee();
+        //    employee.UserName = "Admin";
+        //    employee.FooterData = new FooterViewModel();
+        //    employee.FooterData.CompanyName = "Microsoft";
+        //    employee.FooterData.Year = DateTime.Now.Year.ToString();
 
-            return View("AddNewEmployee", employee);
-        }
+        //    return View("AddNewEmployee", employee);
+        //}
         
         public ActionResult GetAddNewLink()
         {
@@ -56,24 +57,24 @@ namespace WebAppEFTest.Controllers
             }
         }
 
-        [HeaderFilter]
-        [AdminFilter]
-        public ActionResult SaveEmployee(Employee e)
-        {
-            if (ModelState.IsValid)
-            {
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                Employee employee = new Employee();
-                employee.UserName = "Admin";
-                employee.FooterData = new FooterViewModel();
-                employee.FooterData.CompanyName = "Microsoft";
-                employee.FooterData.Year = DateTime.Now.Year.ToString();
+        //[HeaderFilter]
+        //[AdminFilter]
+        //public ActionResult SaveEmployee(Employee e)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        Employee employee = new Employee();
+        //        employee.UserName = "Admin";
+        //        employee.FooterData = new FooterViewModel();
+        //        employee.FooterData.CompanyName = "Microsoft";
+        //        employee.FooterData.Year = DateTime.Now.Year.ToString();
 
-                return View("AddNewEmployee", employee);
-            }
-        }
+        //        return View("AddNewEmployee", employee);
+        //    }
+        //}
     }
 }

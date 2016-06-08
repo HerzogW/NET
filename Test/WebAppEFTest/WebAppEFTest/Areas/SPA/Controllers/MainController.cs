@@ -8,12 +8,21 @@ using System.Web.Mvc;
 using ViewModel;
 using ViewModel.SPA;
 using WebAppEFTest.Areas.SPA.Model;
+using WebAppEFTest.Filters;
 
 namespace WebAppEFTest.Areas.SPA.Controllers
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <seealso cref="System.Web.Mvc.Controller" />
     public class MainController : Controller
     {
         // GET: SPA/Main
+        /// <summary>
+        /// Indexes this instance.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             MainViewModel v = new MainViewModel();
@@ -25,6 +34,10 @@ namespace WebAppEFTest.Areas.SPA.Controllers
             return View("Index", v);
         }
 
+        /// <summary>
+        /// Employees the list.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult EmployeeList()
         {
             EmployeeListViewModel employeeListViewModel = new EmployeeListViewModel();
@@ -55,6 +68,10 @@ namespace WebAppEFTest.Areas.SPA.Controllers
             return PartialView("EmployeeList", employeeListViewModel);
         }
 
+        /// <summary>
+        /// Gets the add new link.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GetAddNewLink()
         {
             if (Convert.ToBoolean(Session["IsAdmin"]))
@@ -67,5 +84,42 @@ namespace WebAppEFTest.Areas.SPA.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds the new.
+        /// </summary>
+        /// <returns></returns>
+        [AdminFilter]
+        public ActionResult AddNew()
+        {
+            CreateEmployeeViewModel v = new CreateEmployeeViewModel();
+            return PartialView("CreateEmployee", v);
+        }
+
+        /// <summary>
+        /// Saves the employee.
+        /// </summary>
+        /// <param name="emp">The emp.</param>
+        /// <returns></returns>
+        [AdminFilter]
+        public ActionResult SaveEmployee(Employee emp)
+        {
+            EmployeeBusinesslayer empBal = new EmployeeBusinesslayer();
+            empBal.SaveEmployee(emp);
+
+            EmployeeViewModel empViewModel = new EmployeeViewModel();
+            empViewModel.EmployeeName = emp.FirstName + " " + emp.LastName;
+            empViewModel.Salary = emp.Salary.ToString("C");
+
+            if (emp.Salary > 15000)
+            {
+                empViewModel.SalaryColor = "Yellow";
+            }
+            else
+            {
+                empViewModel.SalaryColor = "Green";
+            }
+
+            return Json(empViewModel);
+        }
     }
 }
