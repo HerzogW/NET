@@ -1,8 +1,5 @@
-/// <reference path="../TypeReferences.d.ts" />
 define(["require", "exports"], function (require, exports) {
-    /**
-     * Represents the data layer for querying Subscriptions from Hubs extension.
-     */
+    "use strict";
     var SubscriptionsData = (function () {
         function SubscriptionsData() {
             var _this = this;
@@ -22,6 +19,6 @@ define(["require", "exports"], function (require, exports) {
             return this._load;
         };
         return SubscriptionsData;
-    })();
+    }());
     exports.SubscriptionsData = SubscriptionsData;
 });

@@ -1,15 +1,10 @@
 define(["require", "exports", "./SubscriptionsData"], function (require, exports, SubscriptionsData) {
+    "use strict";
     var endpoint = window.fx.environment && window.fx.environment.armEndpoint && window.fx.environment.armEndpoint.replace(/\/$/, "");
-    /*
-     * A place for shared data to be used between all Resource part view models
-     */
     var DataContext = (function () {
         function DataContext() {
             this.subscriptions = new SubscriptionsData.SubscriptionsData();
             this._armVersion = "api-version=2014-04-01";
-            /**
-             * Provides a 'load by id' style cache for a given resource by name.
-             */
             this.resourceEntities = new MsPortalFx.Data.EntityCache({
                 entityTypeName: AzurePortalExtensionStudy.DataModels.RootResourceType,
                 sourceUri: MsPortalFx.Data.uriFormatter(endpoint + "{id}?" + this._armVersion, false),
@@ -29,6 +24,6 @@ define(["require", "exports", "./SubscriptionsData"], function (require, exports
             });
         }
         return DataContext;
-    })();
+    }());
     exports.DataContext = DataContext;
 });

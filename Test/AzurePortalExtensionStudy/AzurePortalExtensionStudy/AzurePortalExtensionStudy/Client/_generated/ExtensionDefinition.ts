@@ -101,11 +101,11 @@ module ExtensionDefinition {
     }
   ],
   "htmlTemplates": {
-    "pdcfad4f3e035cc4346a1cc316ee8aa64f4": {
+    "pdc76b430cee33d423f87878119b52b0474": {
       "file": "Client/Resource/Settings/SettingsBlade.pdl",
       "content": "<div data-bind=\"pcGrid: settingList\"></div>"
     },
-    "pdca665cc0cf193432299d7dc8d239dcd96": {
+    "pdcdeeaa7d328384105beed33bbd439db1c": {
       "file": "Create.html",
       "content": "<div class=\"msportalfx-form\" data-bind=\"formElement: generalSection\"></div>"
     }

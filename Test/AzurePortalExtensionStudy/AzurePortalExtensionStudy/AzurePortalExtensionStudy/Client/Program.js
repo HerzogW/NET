@@ -5,19 +5,14 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 define(["require", "exports", "./_generated/ExtensionDefinition", "./_generated/ViewModelFactories"], function (require, exports, ExtensionDefinition, ViewModelFactories) {
     "use strict";
-    /**
-     * This class provides the entry point for your extension.
-     */
+    "use strict";
     var EntryPoint = (function (_super) {
         __extends(EntryPoint, _super);
         function EntryPoint() {
             _super.apply(this, arguments);
         }
-        /**
-         * This method is called as your extension is loaded by the shell.
-         */
         EntryPoint.prototype.initialize = function () {
-            MsPortalFx.Base.Diagnostics.Telemetry.initialize(ExtensionDefinition.definitionName, false /* traceBrowserInformation already captured by shell */);
+            MsPortalFx.Base.Diagnostics.Telemetry.initialize(ExtensionDefinition.definitionName, false);
             this.viewModelFactories = new ViewModelFactories.ViewModelFactoriesBase();
             this.viewModelFactories.Resource().setDataContextFactory("./Resource/ResourceArea", function (contextModule) { return new contextModule.DataContext(); });
         };
@@ -25,7 +20,7 @@ define(["require", "exports", "./_generated/ExtensionDefinition", "./_generated/
             return ExtensionDefinition.getDefinition();
         };
         return EntryPoint;
-    })(MsPortalFx.Extension.EntryPointBase);
+    }(MsPortalFx.Extension.EntryPointBase));
     exports.EntryPoint = EntryPoint;
     function create() {
         return new EntryPoint();

@@ -4,6 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "ClientResources"], function (require, exports, ClientResources) {
+    "use strict";
     var MsFxProperties = MsPortalFx.ViewModels.Parts.Properties;
     var PropertiesPartViewModel = (function (_super) {
         __extends(PropertiesPartViewModel, _super);
@@ -22,6 +23,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
             this.setProperties(partProperties);
         };
         return PropertiesPartViewModel;
-    })(MsPortalFx.ViewModels.Parts.Properties.ViewModel);
+    }(MsPortalFx.ViewModels.Parts.Properties.ViewModel));
     exports.PropertiesPartViewModel = PropertiesPartViewModel;
 });

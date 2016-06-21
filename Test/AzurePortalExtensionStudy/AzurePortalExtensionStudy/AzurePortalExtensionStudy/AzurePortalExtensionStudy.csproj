@@ -194,13 +194,20 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Client\Browse\BrowseArea.ts" />
+    <TypeScriptCompile Include="Client\Calculator\Calculator.ts" />
+    <TypeScriptCompile Include="Client\Calculator\ProgrammerCalculator.ts" />
+    <TypeScriptCompile Include="Client\Calculator\TestCalculator.ts" />
     <TypeScriptCompile Include="Client\ClientResources.d.ts" />
+    <TypeScriptCompile Include="Client\Log.ts" />
+    <TypeScriptCompile Include="Client\observable.ts" />
+    <TypeScriptCompile Include="Client\OneTwoThree.ts" />
     <TypeScriptCompile Include="Client\QuickStart\QuickStartArea.ts" />
     <TypeScriptCompile Include="Client\Resource\Create\Models\CreateModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Create\ViewModels\CreateBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Properties\ViewModels\PropertiesPartViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Properties\ViewModels\PropertiesBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\SubscriptionsData.ts" />
+    <TypeScriptCompile Include="Client\Shapes.ts" />
     <TypeScriptCompile Include="Client\Shared\Icons.ts" />
     <TypeScriptCompile Include="Client\Browse\ViewModels\AssetTypeViewModel.ts" />
     <TypeScriptCompile Include="Client\Browse\ViewModels\ResourcePartViewModel.ts" />
@@ -266,6 +273,19 @@
       <IsAmd>true</IsAmd>
     </SvgTypeScriptCompile>
     <TypeScriptCompile Include="Client\Test.ts" />
+    <TypeScriptCompile Include="Client\TestAdvanced.ts" />
+    <TypeScriptCompile Include="Client\TestExport.ts" />
+    <TypeScriptCompile Include="Client\TestImport.ts" />
+    <TypeScriptCompile Include="Client\TestIO\LettersOnlyValidator.ts" />
+    <TypeScriptCompile Include="Client\TestIO\Test.ts" />
+    <TypeScriptCompile Include="Client\TestIO\Validation.ts" />
+    <TypeScriptCompile Include="Client\TestIO\ZipCodeValidator.ts" />
+    <TypeScriptCompile Include="Client\TestSymbol.ts" />
+    <TypeScriptCompile Include="Client\Validators\LetterOnlyValidator.ts" />
+    <TypeScriptCompile Include="Client\Validators\Test.ts" />
+    <TypeScriptCompile Include="Client\Validators\Validation.ts" />
+    <TypeScriptCompile Include="Client\Validators\ZipCodeValidator.ts" />
+    <TypeScriptCompile Include="Client\ZipCodeValidator.ts" />
     <TypeScriptCompile Include="Client\_generated\ExtensionDefinition.ts">
       <TsLintLevel>Minimal</TsLintLevel>
     </TypeScriptCompile>

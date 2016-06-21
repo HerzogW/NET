@@ -4,6 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "ClientResources", "../../../Shared/Constants"], function (require, exports, ClientResources, Constants) {
+    "use strict";
     var FxAzure = MsPortalFx.Azure;
     var Arm = FxAzure.ResourceManager;
     var Forms = MsPortalFx.ViewModels.Forms;
@@ -11,40 +12,26 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
     var LocationsDropDown = FxAzure.Locations.DropDown;
     var ResourceGroups = FxAzure.ResourceGroups;
     var resourceType = Constants.sdkResourceProvider + "/" + Constants.rootResource;
-    /**
-     * Create blade view model
-     */
     var CreateBladeViewModel = (function (_super) {
         __extends(CreateBladeViewModel, _super);
         function CreateBladeViewModel(container, initialState, dataContext) {
             _super.call(this, container);
-            //set blade titles and icons
             this.title = ko.observable(ClientResources.AssetTypeNames.Resource.singular);
             this.subtitle = ko.observable(ClientResources.AssetTypeNames.Resource.singular);
             this.icon = ko.observable(MsPortalFx.Base.Images.Polychromatic.CloudService());
             this._dataContext = dataContext;
-            // Instantiate an action bar view model. The property must be called 'actionBar' so the PDL
-            // can wire the action bar control to this view model. We're instantiating a create action
-            // bar because this is a create scenario.
             this.actionBar = new MsPortalFx.ViewModels.ActionBars.CreateActionBar.ViewModel(container);
-            // We need to hook up the action bar's valid to the form's valid (which enables/disables the
-            // 'Create' button based on whether the form is valid/invalid).
             this.valid.subscribe(container, this.actionBar.valid);
             this.parameterProvider = new MsPortalFx.ViewModels.ParameterProvider(container, {
                 mapOutgoingDataForCollector: function (outgoing) { return outgoing; },
                 mapIncomingDataForEditScope: this._mapIncomingDataForEditScope.bind(this)
             });
-            // Use the form to edit the edit scope set up by the provider
             this.editScope = this.parameterProvider.editScope;
             this.armProvisioner = new Arm.Provisioner(container, initialState, {
-                // This is where we supply the ARM provisioner with the template deployment options
-                // required by the deployment operation.
                 supplyTemplateDeploymentOptions: this._supplyProvisioningPromise.bind(this),
-                // Supplying an action bar and a parameter provider allows for automatic provisioning.
                 actionBar: this.actionBar,
                 parameterProvider: this.parameterProvider
             });
-            // Initialize the form fields.
             this._initializeFormFields(container, initialState);
         }
         Object.defineProperty(CreateBladeViewModel.prototype, "_dataModel", {
@@ -66,7 +53,6 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
             });
             this.nameTextBox.delayValidationTimeout(500);
             this.nameTextBox.valueUpdateTrigger = MsPortalFx.ViewModels.Controls.ValueUpdateTrigger.Input;
-            // The subscriptions drop down.
             var subscriptionsDropDownOptions = {
                 options: ko.observableArray([]),
                 form: this,
@@ -78,7 +64,6 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
                 ])
             };
             this.subscriptionsDropDown = new SubscriptionsDropDown(container, subscriptionsDropDownOptions);
-            // The locations drop down.
             var locationsDropDownOptions = {
                 options: ko.observableArray([]),
                 form: this,
@@ -92,7 +77,6 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
                 ]),
             };
             this.locationsDropDown = new LocationsDropDown(container, locationsDropDownOptions);
-            // The resource group drop down with creator inputs
             var resourceGroupsDropDownOptions = {
                 options: ko.observableArray([]),
                 form: this,
@@ -105,30 +89,21 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
                 ])
             };
             this.resourceGroupDropDown = new ResourceGroups.DropDown(container, resourceGroupsDropDownOptions);
-            // Subscribe to resource group changes to update the location drop down with the resource group location.
             this.resourceGroupDropDown.value.subscribe(container, function (resourceGroup) {
                 if (_this.locationsDropDown) {
                     var locationsDropDown = _this.locationsDropDown.control;
-                    var resourceGroupLocation = resourceGroup && resourceGroup.value && resourceGroup.value.location;
-                    // Try to find the resource group location in the locations list.
-                    // This is a hierarchical option (i.e. not the full location object).
+                    var resourceGroupLocation_1 = resourceGroup && resourceGroup.value && resourceGroup.value.location;
                     var location_1 = locationsDropDown.items().first(function (item) {
-                        return item.value === resourceGroupLocation;
+                        return item.value === resourceGroupLocation_1;
                     });
-                    // Since the location dropdown is filtering locations based on subscription and resource type,
-                    // the list will only contain allowed locations. If the resource group location doesn't exist
-                    // in the list, then it is not an allowed location, hence shouldn’t be selected. So set the
-                    // new location only if it's allowed.
                     if (location_1) {
                         locationsDropDown.value(location_1.text());
                     }
                 }
             });
-            // The form section.
             var sectionOptions = {
                 children: ko.observableArray([
                     this.nameTextBox,
-                    // Also add the selector fields for the pickers.
                     this.subscriptionsDropDown.control,
                     this.resourceGroupDropDown.control,
                     this.locationsDropDown.control,
@@ -156,8 +131,6 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
             return model;
         };
         CreateBladeViewModel.prototype._supplyProvisioningPromise = function (data) {
-            // This is where we supply the ARM provisioner with the template deployment options required
-            // by the deployment operation.
             var galleryCreateOptions = this.armProvisioner.armProvisioningConfig
                 && this.armProvisioner.armProvisioningConfig.galleryCreateOptions;
             var name = data.name();
@@ -169,13 +142,11 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
             var resourceIdFormattedString = "/subscriptions/" + subscriptionId + "/resourcegroups/" + resourceGroupName + "/providers/" + resourceType + "/" + name;
             var deferred = Q.defer();
             if (data.name()) {
-                // Construct the parameters required by the ARM template.
                 var parameters = {
                     name: name,
                     location: location.name,
                     customProperty: name
                 };
-                // Fill out the template deployment options.
                 var templateDeploymentOptions = {
                     subscriptionId: subscriptionId,
                     resourceGroupName: resourceGroupName,
@@ -216,6 +187,6 @@ define(["require", "exports", "ClientResources", "../../../Shared/Constants"], f
             });
         };
         return CreateBladeViewModel;
-    })(Forms.Form.ViewModel);
+    }(Forms.Form.ViewModel));
     exports.CreateBladeViewModel = CreateBladeViewModel;
 });

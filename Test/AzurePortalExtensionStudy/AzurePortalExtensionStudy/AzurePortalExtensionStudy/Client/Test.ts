@@ -1,4 +1,5 @@
-﻿interface SquareConfig {
+﻿
+interface SquareConfig {
     color?: string;
     width?: number;
     [propName: string]: any;
@@ -331,7 +332,7 @@ let suits = ["hearts", "spades", "clubs", "diamonds"];
 
 
 function pickCards(x: { suit: string; card: number; }[]): number;
-function pickCards(x: number): { suit: string, card: number };
+function pickCards(x: number): { suit: string; card: number; };
 function pickCards(x: any): any {
     if (typeof x == "object") {
         let pockedCard = Math.floor(Math.random() * x.length);
@@ -351,8 +352,196 @@ let pickedCard2 = pickCards(15);
 alert("card: " + pickedCard2.card + " of" + pickedCard2.suit);
 
 
+//GENERICS
+function identity<T>(arg: T): T {
+    return arg;
+}
+
+let myIdentity: <T>(arg: T) => T = identity;
+let myIdentity2: <U>(arg: U) => U = identity;
+let myIdentity3: { <T>(arg: T): T } = identity;
+
+interface GenericIdentityFn {
+    <T>(arg: T): T;
+}
+interface GenericIdentityFn2<T> {
+    <T>(arg: T): T;
+}
+
+let myIdentity4: GenericIdentityFn = identity;
+let myIdentity5: GenericIdentityFn2<number> = identity;
 
 
+//GENERIC CLASSES
+
+class GenericNumber<T>{
+    zeroValue: T;
+    add: (x: T, y: T) => T;
+}
+
+let myGenericNumber = new GenericNumber<number>();
+myGenericNumber.zeroValue = 0;
+myGenericNumber.add = function (x, y) { return x + y; }
+
+let stringGenericNumber = new GenericNumber<string>();
+stringGenericNumber.zeroValue = "";
+stringGenericNumber.add = function (x, y) { return x + y; }
+
+alert(stringGenericNumber.add(stringGenericNumber.zeroValue, "test"));
+
+
+interface Lengthwise {
+    length: number;
+}
+
+function loggingIdentity<T extends Lengthwise>(args: T): T {
+    console.log(args.length);
+    return args;
+}
+
+loggingIdentity({ length: 10, value: 3 });
+
+
+//function copyFields<T extends U, U>(target: T, source: U): T {
+//    for (let id in source) {
+//        target[id] = source[id];
+//    }
+//    return target;
+//}
+
+//let x = { a: 1, b: 2, c: 3, d: 4 };
+//copyFields(x, { b: 10, d: 20 });
+
+class BeeKeeper {
+    hasMask: boolean;
+}
+class ZooKeeper {
+    nameTag: string;
+}
+class Animal2 {
+    numLegs: number;
+}
+class Bee extends Animal2 {
+    keeper: BeeKeeper;
+}
+class Lion extends Animal2 {
+    keeper: ZooKeeper;
+}
+
+function findKeeper<A extends Animal2, K>(a: { new (): A; prototype: { keeper: K } }): K {
+    return a.prototype.keeper;
+}
+
+findKeeper(Lion).nameTag;
+findKeeper(Bee).hasMask;
+
+
+//ENUMS
+enum Direction {
+    Up = 1,
+    Down,
+    Left,
+    Right
+}
+
+let directions = [Direction.Up, Direction.Down, Direction.Left, Direction.Right];
+
+enum Enum {
+    A = 1,
+    B,
+    C = A * 2
+}
+let a = Enum.A;
+let nameOfA = Enum[Enum.A];
+
+window.onmousedown = function (mouseEvent) {
+    console.log(mouseEvent.button);
+}
+
+
+//TypeCompatibility
+let x = (a: number) => a;
+let y = (b: number, s: string) => b;
+
+y = x;
+//x = y;  //Error
+
+let items = [1, 2, 3];
+
+items.forEach((item, index, array) => console.log(item));
+
+items.forEach(item => console.log(item));
+
+let xx = () => ({ name: "Alice" });
+let yy = () => ({ name: "Alice", location: "Seattle" });
+
+xx = yy;
+//yy = xx;   //Error
+
+
+enum EventType { Mouse, Keyboard };
+
+interface Event { timestamp: number };
+interface MouseEvent extends Event {
+    x1: number;
+    y1: number;
+}
+interface KeyEvent extends Event {
+    keyCode: number;
+}
+
+function listenEvent(eventType: EventType, handler: (n: Event) => void) {
+
+}
+
+listenEvent(EventType.Mouse, (e: MouseEvent) => console.log(e.x1 + "," + e.y1));
+
+listenEvent(EventType.Mouse, (e: Event) => console.log((<MouseEvent>e).x1 + "," + (<MouseEvent>e).y1));
+
+//listenEvent(EventType.Mouse, <(e: Event) => void>((e: MouseEvent) => console.log(e.x + "," + e.y)));
+
+//listenEvent(EventType.Mouse, (e: number) => console.log(e)); //Error
+
+function invokeLater(args: any[], callback: (...args: any[]) => void) {
+
+}
+
+invokeLater([1, 2], (x, y) => console.log(x + ", " + y));
+
+invokeLater([1, 2], (x?, y?) => console.log(x + ", " + y));
+
+
+class NewAnimal {
+    feet: number;
+    constructor(name: string, numFeet: number) { }
+}
+
+class NewSize {
+    feet: number;
+    constructor(numFeet: number) { }
+}
+
+let aAnimal: NewAnimal, sSize: NewSize;
+aAnimal = sSize;
+sSize = aAnimal;
+
+interface Empty<T> {
+}
+
+let x3: Empty<number>;
+let y3: Empty<string>;
+x3 = y3;
+y3 = x3;
+
+let identity2 = function <T>(x: T): T {
+    return x;
+}
+
+let reverse2 = function <U>(y: U): U {
+    return y;
+}
+
+identity2 = reverse2;
 
 
 

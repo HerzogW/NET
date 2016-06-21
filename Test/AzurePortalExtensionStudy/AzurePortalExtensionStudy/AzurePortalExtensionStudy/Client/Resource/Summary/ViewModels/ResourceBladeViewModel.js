@@ -4,14 +4,9 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "ClientResources"], function (require, exports, ClientResources) {
-    /*
-     * The view model for Resource.  This is consumed in ..\Resource.pdl
-     */
+    "use strict";
     var ResourceBladeViewModel = (function (_super) {
         __extends(ResourceBladeViewModel, _super);
-        /**
-         * Set initial blade view model values.
-         */
         function ResourceBladeViewModel(container, initialState, dataContext) {
             var _this = this;
             _super.call(this);
@@ -30,6 +25,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
             return this._entityView.fetch(inputs.id);
         };
         return ResourceBladeViewModel;
-    })(MsPortalFx.ViewModels.Blade);
+    }(MsPortalFx.ViewModels.Blade));
     exports.ResourceBladeViewModel = ResourceBladeViewModel;
 });

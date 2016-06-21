@@ -39,7 +39,7 @@ module Main {
                 ]
               }
             ],
-            "htmlTemplate": "pdcfad4f3e035cc4346a1cc316ee8aa64f4",
+            "htmlTemplate": "pdc76b430cee33d423f87878119b52b0474",
             "details": [
               {
                 "invocationInputArguments": [

@@ -4,6 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "ClientResources"], function (require, exports, ClientResources) {
+    "use strict";
     var QuickStartBladeViewModel = (function (_super) {
         __extends(QuickStartBladeViewModel, _super);
         function QuickStartBladeViewModel(contianer, initialState, dataContext) {
@@ -12,6 +13,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
             this.subtitle(ClientResources.quickStartBladeSubtitle);
         }
         return QuickStartBladeViewModel;
-    })(MsPortalFx.ViewModels.Blade);
+    }(MsPortalFx.ViewModels.Blade));
     exports.QuickStartBladeViewModel = QuickStartBladeViewModel;
 });

@@ -4,6 +4,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(["require", "exports", "ClientResources"], function (require, exports, ClientResources) {
+    "use strict";
     var QuickStartPartViewModel = (function (_super) {
         __extends(QuickStartPartViewModel, _super);
         function QuickStartPartViewModel(container, initialState, dataContext) {
@@ -14,6 +15,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
             this.icon(MsPortalFx.Base.Images.AzureQuickstart());
         }
         return QuickStartPartViewModel;
-    })(MsPortalFx.ViewModels.QuickStartPart);
+    }(MsPortalFx.ViewModels.QuickStartPart));
     exports.QuickStartPartViewModel = QuickStartPartViewModel;
 });

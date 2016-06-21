@@ -21,7 +21,7 @@ module Main {
     "bindings": []
   },
   "templateBlade": {
-    "htmlTemplate": "pdca665cc0cf193432299d7dc8d239dcd96",
+    "htmlTemplate": "pdcdeeaa7d328384105beed33bbd439db1c",
     "parameterProvider": true,
     "partSize": 0
   }
