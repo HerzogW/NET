@@ -257,6 +257,14 @@
     <TypeScriptCompile Include="Client\Resource\QuickStart\ViewModels\QuickStartBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\QuickStart\ViewModels\QuickStartPartViewModel.ts" />
     <Svg Include="Content\SVG\sample.svg" />
+	 <SvgTypeScriptCompile Include="Client\_generated\Svg.ts">
+      <Namespace>ProjectOxfordExtension</Namespace>
+      <IsAmd>true</IsAmd>
+    </SvgTypeScriptCompile>
+    <SvgLogoTypeScriptCompile Include="Client\_generated\SvgLogo.ts">
+      <Namespace>ProjectOxfordExtension</Namespace>
+      <IsAmd>true</IsAmd>
+    </SvgLogoTypeScriptCompile>
     <TypeScriptCompile Include="Client\Resource\Summary\ViewModels\ResourceSummaryPartViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsPartViewModel.ts" />
