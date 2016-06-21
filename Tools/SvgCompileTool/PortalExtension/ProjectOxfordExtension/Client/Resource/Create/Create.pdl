@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definition xmlns="http://schemas.microsoft.com/aux/2013/pdl"
+            xmlns:azurefx="http://schemas.microsoft.com/aux/2013/pdl/azurefx"
+            ModulePath="./Create/ViewModels"
+            Area="Resource">
+  <TemplateBlade Name="OxfordCreateBlade"
+                 ViewModel="{ViewModel Name=OxfordCreateBladeViewModel, Module=./Create/ViewModels/OxfordCreateBladeViewModel}"
+                 Style="Create"
+                 Width="Small"
+                 Template="{Html Source='Templates\\Create.html'}"
+                 ParameterProvider="true"
+                  Export="True">
+
+    <ActionBar ActionBarKind="Create" />
+    <BladeAction Blade="ProjectOxfordApiType" ParameterCollector="apiTypeCollector" SelectableSource="apiTypeSelector.selectable" />
+    <BladeAction Blade="ApiAccountSpecPicker"
+                 ParameterCollector="accountSpecSelector.collector"
+                 SelectableSource="accountSpecSelector.control.selectable" />
+  </TemplateBlade>
+
+  <azurefx:PickerV3Blade Name="ProjectOxfordApiType"
+                         ViewModel="{ViewModel Name=OxfordApiTypeBladeViewModel, Module=./Create/ViewModels/OxfordApiTypeBladeViewModel}"
+                         PartViewModel="{ViewModel Name=ApiTypePartViewModel, Module=./Create/ViewModels/ApiTypePartViewModel}"
+                         Width="Large"/>
+</Definition>

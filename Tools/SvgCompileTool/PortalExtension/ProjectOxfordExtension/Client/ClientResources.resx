@@ -1,0 +1,701 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ResourceBlade_Subtitle" xml:space="preserve">
+    <value>Cognitive Services API account</value>
+  </data>
+  <data name="QuickStartBlade_Title" xml:space="preserve">
+    <value>Quick Start</value>
+  </data>
+  <data name="QuickStartBlade_Face_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Face_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Face API.</value>
+  </data>
+  <data name="QuickStartBlade_Common_Title1" xml:space="preserve">
+    <value>Introduction</value>
+  </data>
+  <data name="QuickStartBlade_Common_Title2" xml:space="preserve">
+    <value>Get started</value>
+  </data>
+  <data name="PropertiesBlade_Title" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertiesBlade_SubscriptionId" xml:space="preserve">
+    <value>Subscription ID</value>
+  </data>
+  <data name="PropertiesBlade_SubscriptionName" xml:space="preserve">
+    <value>Subscription name</value>
+  </data>
+  <data name="LoadingText" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_RegeneratePrimary" xml:space="preserve">
+    <value>Regenerate Key1</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_RegenerateSecondary" xml:space="preserve">
+    <value>Regenerate Key2</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_RegeneratingKeyInProgressTitle" xml:space="preserve">
+    <value>Regenerating access key ...</value>
+  </data>
+  <data name="KeyManagementBlade_Title" xml:space="preserve">
+    <value>Manage keys</value>
+  </data>
+  <data name="Location" xml:space="preserve">
+    <value>Location</value>
+  </data>
+  <data name="AssetTypeNames_Resource_plural" xml:space="preserve">
+    <value>Project Oxford API accounts</value>
+  </data>
+  <data name="AssetTypeNames_Resource_singular" xml:space="preserve">
+    <value>Project Oxford API account</value>
+  </data>
+  <data name="AssetTypeNames_Resource_lowerPlural" xml:space="preserve">
+    <value>project oxford api accounts</value>
+  </data>
+  <data name="AssetTypeNames_Resource_lowerSingular" xml:space="preserve">
+    <value>project oxford api account</value>
+  </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Microsoft_Azure_ProjectOxford</value>
+  </data>
+  <data name="ResourceBlade_MonitoringLensTitle" xml:space="preserve">
+    <value>Monitoring</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_FailureNotificationTitle" xml:space="preserve">
+    <value>Failed to regenerate key</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_SuccessNotificationTitle" xml:space="preserve">
+    <value>Successfully regenerated key</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_RegeneratePrimaryKeyConfirmMessage" xml:space="preserve">
+    <value>Do you want to regenerate primary key for {0}</value>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_RegenerateSecondaryKeyConfirmMessage" xml:space="preserve">
+    <value>Do you want to regenerate secondary key for {0}</value>
+  </data>
+  <data name="Region" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="Subscription" xml:space="preserve">
+    <value>Subscription</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SettingsBlade_Title" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ResourceName" xml:space="preserve">
+    <value>Account name</value>
+  </data>
+  <data name="CreateBlade_PleaseSelectLocation" xml:space="preserve">
+    <value>Please select a location</value>
+  </data>
+  <data name="CreateBlade_PleaseSelectResourceGroup" xml:space="preserve">
+    <value>Please select or enter a resource group</value>
+  </data>
+  <data name="CreateBlade_PleaseSelectSubscription" xml:space="preserve">
+    <value>Please select a subscription</value>
+  </data>
+  <data name="ResourceGroup" xml:space="preserve">
+    <value>Resource group</value>
+  </data>
+  <data name="CreateBlade_CreateNewResourceGroup" xml:space="preserve">
+    <value>Create a new resource group</value>
+  </data>
+  <data name="CreateBlade_ResourceNameInvalidMessage" xml:space="preserve">
+    <value>Your resource name can only include alphanumeric characters, ‘_,-’, and can’t end with ’_’ or ’-‘.</value>
+  </data>
+  <data name="CreateBlade_ResourceNameLengthValidationMessage" xml:space="preserve">
+    <value>Your resource name can only have 2 to 64 characters.</value>
+  </data>
+  <data name="CreateBlade_SelectResourceGroup" xml:space="preserve">
+    <value>Select a resource group</value>
+  </data>
+  <data name="CreateBlade_SelectSubscription" xml:space="preserve">
+    <value>Select a subscription</value>
+  </data>
+  <data name="CreateBlade_EnterTheName" xml:space="preserve">
+    <value>Enter the name</value>
+    <comment>Ghost text for the Resource name in create textbox field</comment>
+  </data>
+  <data name="CreateBlade_SelectLocation" xml:space="preserve">
+    <value>Select a location</value>
+  </data>
+  <data name="CreateBlade_ResourceNameRequired" xml:space="preserve">
+    <value>Your resource name should not be empty.</value>
+    <comment>Required field validation text for create textbox</comment>
+  </data>
+  <data name="KeyManagementBlade_RegenerateKeysCommand_Title" xml:space="preserve">
+    <value>Regenerate Keys</value>
+  </data>
+  <data name="ApiType" xml:space="preserve">
+    <value>API type</value>
+  </data>
+  <data name="ResourceBlade_DeleteCommand_ResourceKey" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="SpecPickerBlade_Subtitle" xml:space="preserve">
+    <value>Browse the available plans</value>
+  </data>
+  <data name="SpecPickerBlade_Title" xml:space="preserve">
+    <value>Choose your pricing tier</value>
+  </data>
+  <data name="QuickStartBlade_Face_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Face API.</value>
+  </data>
+  <data name="QuickStartBlade_Common_Title3" xml:space="preserve">
+    <value>Get free tools</value>
+  </data>
+  <data name="ResourceBlade_SettingsCommand_ResourceKey" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="PropertiesBlade_ResourceId" xml:space="preserve">
+    <value>Resource ID</value>
+  </data>
+  <data name="Status_Active" xml:space="preserve">
+    <value>Active</value>
+  </data>
+  <data name="KeyManagementBlade_GenKeyStateGenerateing" xml:space="preserve">
+    <value>Generating...</value>
+  </data>
+  <data name="KeyManagementBlade_GenKeyStateSuccess" xml:space="preserve">
+    <value>Success.</value>
+  </data>
+  <data name="KeyManagementBlade_Key1Title" xml:space="preserve">
+    <value>KEY 1</value>
+  </data>
+  <data name="KeyManagementBlade_Key2Title" xml:space="preserve">
+    <value>KEY 2</value>
+  </data>
+  <data name="KeyManagementBlade_MsgBox_GenKey1Des" xml:space="preserve">
+    <value>Are you sure you want to regenerate the key 1?</value>
+  </data>
+  <data name="KeyManagementBlade_MsgBox_GenKey1Title" xml:space="preserve">
+    <value>Regenerate Key 1</value>
+  </data>
+  <data name="KeyManagementBlade_MsgBox_GenKey2Des" xml:space="preserve">
+    <value>Are you sure you want to regenerate the key 2?</value>
+  </data>
+  <data name="KeyManagementBlade_MsgBox_GenKey2Title" xml:space="preserve">
+    <value>Regenerate Key 2</value>
+  </data>
+  <data name="SettingsBlade_Alert" xml:space="preserve">
+    <value>Alert rules</value>
+  </data>
+  <data name="SettingsBlade_Audit" xml:space="preserve">
+    <value>Audit logs</value>
+  </data>
+  <data name="SettingsBlade_Diagnostics" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="SettingsBlade_Group_Help" xml:space="preserve">
+    <value>HELP</value>
+  </data>
+  <data name="SettingsBlade_Group_Manage" xml:space="preserve">
+    <value>MANAGE</value>
+  </data>
+  <data name="SettingsBlade_Group_Monitor" xml:space="preserve">
+    <value>MONITOR</value>
+  </data>
+  <data name="SettingsBlade_Group_Support" xml:space="preserve">
+    <value>SUPPORT &amp; TROUBLESHOOTING</value>
+  </data>
+  <data name="SettingsBlade_Keys" xml:space="preserve">
+    <value>Keys</value>
+  </data>
+  <data name="SettingsBlade_QuickStart" xml:space="preserve">
+    <value>Quick start</value>
+  </data>
+  <data name="SettingsBlade_Support" xml:space="preserve">
+    <value>New support request</value>
+  </data>
+  <data name="SettingsBlade_Troubleshooting" xml:space="preserve">
+    <value>Troubleshoot</value>
+  </data>
+  <data name="ResourceBlade_DeleteCommand_Confirmation" xml:space="preserve">
+    <value>Are you sure you want to  delete it?</value>
+  </data>
+  <data name="ResourceBlade_DeleteCommand_Title" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ApiTypeBlade_Description" xml:space="preserve">
+    <value>Cognitive Services is a set of services for understanding data and adding 'smart' to your applications.</value>
+  </data>
+  <data name="ApiType_ComputerVision_Description" xml:space="preserve">
+    <value>Distill actionable information from images.</value>
+  </data>
+  <data name="ApiType_ComputerVision_Title" xml:space="preserve">
+    <value>Computer Vision API</value>
+  </data>
+  <data name="ApiType_Emotion_Description" xml:space="preserve">
+    <value>Personalize experiences with emotion recognition.</value>
+  </data>
+  <data name="ApiType_Emotion_Title" xml:space="preserve">
+    <value>Emotion API</value>
+  </data>
+  <data name="ApiType_Face_Description" xml:space="preserve">
+    <value>Detect, identify, analyze, organize, and tag faces in photos.</value>
+  </data>
+  <data name="ApiType_Face_Title" xml:space="preserve">
+    <value>Face API</value>
+  </data>
+  <data name="ApiType_LUIS_Description" xml:space="preserve">
+    <value>Teach your apps to understand commands from your users.</value>
+  </data>
+  <data name="ApiType_LUIS_Title" xml:space="preserve">
+    <value>Language Understanding Intelligent Service (LUIS)</value>
+  </data>
+  <data name="ApiType_Speech_Description" xml:space="preserve">
+    <value>Convert speech to text and back again, and understand its intent.</value>
+  </data>
+  <data name="ApiType_Speech_Title" xml:space="preserve">
+    <value>Bing Speech API</value>
+  </data>
+  <data name="ApiType_SpellCheck_Description" xml:space="preserve">
+    <value>Detect and correct common and uncommon spelling errors, via the Bing document index.</value>
+  </data>
+  <data name="ApiType_SpellCheck_Title" xml:space="preserve">
+    <value>Spell check APIs</value>
+  </data>
+  <data name="ApiType_Video_Stabilization_Description" xml:space="preserve">
+    <value>Understand and transform your videos.</value>
+  </data>
+  <data name="ApiType_Video_Stabilization_Title" xml:space="preserve">
+    <value>Video Stabilization API</value>
+  </data>
+  <data name="ApiType_Video_FaceDetection_Description" xml:space="preserve">
+    <value>Face Detection</value>
+  </data>
+  <data name="ApiType_Video_FaceDetection_Title" xml:space="preserve">
+    <value>Video Face Detection API</value>
+  </data>
+  <data name="ApiType_Video_MotionDetection_Description" xml:space="preserve">
+    <value>Motion Detection</value>
+  </data>
+  <data name="ApiType_Video_MotionDetection_Title" xml:space="preserve">
+    <value>Video Motion Detection API</value>
+  </data>
+  <data name="ResourceBlade_EndPoint" xml:space="preserve">
+    <value>Endpoint</value>
+  </data>
+  <data name="CreateBlade_SelectApiType" xml:space="preserve">
+    <value>Select an API type</value>
+  </data>
+  <data name="CreateBlade_SelectSpec" xml:space="preserve">
+    <value>Select a pricing tier</value>
+  </data>
+  <data name="PricingTier" xml:space="preserve">
+    <value>Pricing tier</value>
+  </data>
+  <data name="QuickStartBlade_ApiReference" xml:space="preserve">
+    <value>API Reference</value>
+  </data>
+  <data name="QuickStartBlade_DeveloperCodeOfConduct" xml:space="preserve">
+    <value>Developer Code of Conduct</value>
+  </data>
+  <data name="QuickStartBlade_LiveDemos" xml:space="preserve">
+    <value>Live demos</value>
+  </data>
+  <data name="ProjectOxford" xml:space="preserve">
+    <value>Cognitive Services</value>
+  </data>
+  <data name="QuickStartBlade_CognitiveServices_About" xml:space="preserve">
+    <value>About Cognitive Services</value>
+  </data>
+  <data name="QuickStartBlade_ComputerVision_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_ComputerVision_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Computer Vision API.</value>
+  </data>
+  <data name="QuickStartBlade_ComputerVision_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Computer Vision API.</value>
+  </data>
+  <data name="QuickStartBlade_Emotion_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Emotion_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Emotion API.</value>
+  </data>
+  <data name="QuickStartBlade_Emotion_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Emotion API.</value>
+  </data>
+  <data name="QuickStartBlade_LUIS_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_LUIS_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use LUIS.</value>
+  </data>
+  <data name="QuickStartBlade_LUIS_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with LUIS.</value>
+  </data>
+  <data name="QuickStartBlade_Speech_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Speech_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Bing Speech API.</value>
+  </data>
+  <data name="QuickStartBlade_Speech_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Bing Speech API.</value>
+  </data>
+  <data name="QuickStartBlade_SpellCheck_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_SpellCheck_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Spell Check API.</value>
+  </data>
+  <data name="QuickStartBlade_SpellCheck_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Spell Check API.</value>
+  </data>
+  <data name="QuickStartBlade_Video_FaceDetection_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Video_FaceDetection_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_Video_FaceDetection_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_Video_MotionDetection_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Video_MotionDetection_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_Video_MotionDetection_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_Video_Stabilization_Description1" xml:space="preserve">
+    <value>Learn all about Cognitive Services APIs and how you can use them.</value>
+  </data>
+  <data name="QuickStartBlade_Video_Stabilization_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_Video_Stabilization_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Video APIs.</value>
+  </data>
+  <data name="QuickStartBlade_TextAnalytics__Description1" xml:space="preserve">
+    <value>Learn about Cognitive Services APIs</value>
+  </data>
+  <data name="QuickStartBlade_TextAnalytics_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Text Analytics.</value>
+  </data>
+  <data name="QuickStartBlade_TextAnalytics_GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="QuickStartBlade_TextAnalytics_SampleCode" xml:space="preserve">
+    <value>Sample Code</value>
+  </data>
+  <data name="QuickStartBlade_TextAnalytics_TryItNow" xml:space="preserve">
+    <value>Try It Now</value>
+  </data>
+  <data name="QuickStartBlade_Recommendations__Description1" xml:space="preserve">
+    <value>Learn about Cognitive Services APIs</value>
+  </data>
+  <data name="QuickStartBlade_Recommendations_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Recommendations.</value>
+  </data>
+  <data name="QuickStartBlade_Recommendations_GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="QuickStartBlade_Recommendations_SampleCode" xml:space="preserve">
+    <value>Sample Code</value>
+  </data>
+  <data name="Status_ProvisionCanceled" xml:space="preserve">
+    <value>Provision canceled</value>
+  </data>
+  <data name="Status_ProvisionFailed" xml:space="preserve">
+    <value>Provision failed</value>
+  </data>
+  <data name="Status_Suspended" xml:space="preserve">
+    <value>Suspended</value>
+  </data>
+  <data name="QuickStartBlade_GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="ResourceBlade_DeleteCommand_Progress" xml:space="preserve">
+    <value>Deleting the resource...</value>
+  </data>
+  <data name="ResourceBlade_EventsInThePastWeekLauncherPartTitle" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="ResourceBlade_LensOperationsTitle" xml:space="preserve">
+    <value>Operations</value>
+  </data>
+  <data name="PricingTier_Basic" xml:space="preserve">
+    <value>Basic</value>
+  </data>
+  <data name="PricingTier_Free" xml:space="preserve">
+    <value>Free</value>
+  </data>
+  <data name="PricingTier_Premium" xml:space="preserve">
+    <value>Premium</value>
+  </data>
+  <data name="PricingTier_Standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="CreateBlade_Title" xml:space="preserve">
+    <value>Cognitive Services API account</value>
+  </data>
+  <data name="CreateBlade_Subtitle" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CreateBlade_FormValidation_ResourceNameAlreadyExists" xml:space="preserve">
+    <value>Specified resource name already exists in selected resource group and subscription.</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateFail_Message" xml:space="preserve">
+    <value>Failed to update pricing tier.</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateFail_Title" xml:space="preserve">
+    <value>Update pricing tier failed!</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateProgress_Message" xml:space="preserve">
+    <value>Updating pricing tier!</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateProgress_Title" xml:space="preserve">
+    <value>In progress!</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateSuccess_Message" xml:space="preserve">
+    <value>Pricing tier has been updated to {0} for resource {1}.</value>
+  </data>
+  <data name="SettingsBlade_PricingTier_UpdateSuccess_Title" xml:space="preserve">
+    <value>Updated pricing tier successfully!</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Subtitle" xml:space="preserve">
+    <value>Detect sentiment, key phrases, topics and language from your text.</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Title" xml:space="preserve">
+    <value>Text Analytics</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Features_Sentiment" xml:space="preserve">
+    <value>Sentiment Analysis</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Features_KeyPhrase" xml:space="preserve">
+    <value>Key Phrase Extraction</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Features_TopicDetection" xml:space="preserve">
+    <value>Topic Detection</value>
+  </data>
+  <data name="ApiType_TextAnalytics_Features_LanguageDetection" xml:space="preserve">
+    <value>Language Detection</value>
+  </data>
+  <data name="ApiType_Recommendations_Subtitle" xml:space="preserve">
+    <value>Provide personalized product recommendations for your customers.</value>
+  </data>
+  <data name="ApiType_Recommendations_Title" xml:space="preserve">
+    <value>Recommendations</value>
+  </data>
+  <data name="CognitiveServices_ApiTypeBlade_Description" xml:space="preserve">
+    <value>Cognitive Services is a collection of APIs that enable natural and contextual interaction with tools that augment users' experiences via the power of machine learnt models from Microsoft.</value>
+  </data>
+  <data name="CognitiveServices_CreateBlade_Subtitle" xml:space="preserve">
+    <value>Cognitive Services account</value>
+  </data>
+  <data name="CognitiveServices_CreateBlade_Title" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="CognitiveServices_AssetTypeNames_Resource_plural" xml:space="preserve">
+    <value>Cognitive Services accounts</value>
+  </data>
+  <data name="CognitiveServices_AssetTypeNames_Resource_singular" xml:space="preserve">
+    <value>Cognitive Services account</value>
+  </data>
+  <data name="CognitiveServices_AssetTypeNames_Resource_lowerPlural" xml:space="preserve">
+    <value>cognitive services accounts</value>
+  </data>
+  <data name="CognitiveServices_AssetTypeNames_Resource_lowerSingular" xml:space="preserve">
+    <value>cognitive services account</value>
+  </data>
+  <data name="CognitiveServices_ResourceBlade_Subtitle" xml:space="preserve">
+    <value>Cognitive Services account</value>
+  </data>
+  <data name="CognitiveServices" xml:space="preserve">
+    <value>Cognitive Services</value>
+  </data>
+  <data name="ResourceBlade_LensUsageTitle" xml:space="preserve">
+    <value>Usage</value>
+  </data>
+  <data name="ResourceBlade_PricingTierPartTitle" xml:space="preserve">
+    <value>Pricing Tier</value>
+  </data>
+  <data name="ApiType_WebLM_Description" xml:space="preserve">
+    <value>Leverage the power of language models trained on web-scale data.</value>
+  </data>
+  <data name="ApiType_WebLM_Title" xml:space="preserve">
+    <value>Web Language Model API</value>
+  </data>
+  <data name="QuickStartBlade_WebLM_Description2" xml:space="preserve">
+    <value>Get up to speed on how to use Web Language Model.</value>
+  </data>
+  <data name="QuickStartBlade_WebLM_Description3" xml:space="preserve">
+    <value>Use the SDK to build apps with Web Language Model.</value>
+  </data>
+  <data name="QuickStartBlade_WebLM__Description1" xml:space="preserve">
+    <value>Learn all about Web Language Model APIs and how you can use them.</value>
+  </data>
+  <data name="SpecCard_DisabledMessage" xml:space="preserve">
+    <value>Subscribed</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceFail_Message" xml:space="preserve">
+    <value>Failed to delete account {0}</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceFail_Title" xml:space="preserve">
+    <value>Failed to delete account.</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceInProgress_Message" xml:space="preserve">
+    <value>Deleting account {0}</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceInProgress_Title" xml:space="preserve">
+    <value>Deleting account</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceSuccess_Message" xml:space="preserve">
+    <value>Account {0} has been deleted successfully.</value>
+  </data>
+  <data name="BrowseBlade_DeleteResourceSuccess_Title" xml:space="preserve">
+    <value>Account has been deleted successfully.</value>
+  </data>
+  <data name="SpecCard_DisabledHelpMessage" xml:space="preserve">
+    <value>You can only create {0} {1} account(s) per API type per Azure subscription.</value>
+  </data>
+  <data name="QuickStartBlade_ApiDoc" xml:space="preserve">
+    <value>API Documentation </value>
+  </data>
+  <data name="QuickStartBlade_ApiSdk" xml:space="preserve">
+    <value>API SDK</value>
+  </data>
+  <data name="CreateBlade_LegalTerm_Agreed" xml:space="preserve">
+    <value>Agreed</value>
+  </data>
+  <data name="CreateBlade_LegalTerm_BladeTitle" xml:space="preserve">
+    <value>Cognitive Services legal terms</value>
+  </data>
+  <data name="CreateBlade_LegalTerm_ButtonText" xml:space="preserve">
+    <value>I Agree</value>
+  </data>
+  <data name="CreateBlade_LegalTerm_Description" xml:space="preserve">
+    <value>Review legal terms</value>
+  </data>
+  <data name="CreateBlade_LegalTerm_Title" xml:space="preserve">
+    <value>Legal terms</value>
+  </data>
+</root>
