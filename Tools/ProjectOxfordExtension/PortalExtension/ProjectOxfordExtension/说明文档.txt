@@ -7,3 +7,25 @@
 在左侧导航栏中选择“Cognitive Services accounts”,在新弹出的面板中点击“Add”按钮，新弹出的面板中有两个text文本框，显示的是指定的svg图片经过编译之后的数据。SvgContent文本框对应的是sample.svg的编译结果，SvgLogoContent文本框对应的是sampleLogo.svg的编译结果。
 
 
+曾经出现的问题：
+
+	1、如果出现\_generated\文件夹文件不能正常生成的情况，则检查项目文件(.csproj文件)：
+
+	例如曾出现Svg.ts和SvgLogo.ts两个文件无法编译生成的情况，经检查，是项目文件中缺少如下配置信息：
+	
+	<SvgTypeScriptCompile Include="Client\_generated\Svg.ts">
+		<Namespace>ProjectOxfordExtension</Namespace>
+		<IsAmd>true</IsAmd>
+	</SvgTypeScriptCompile>
+	<SvgLogoTypeScriptCompile Include="Client\_generated\SvgLogo.ts">
+		<Namespace>ProjectOxfordExtension</Namespace>
+		<IsAmd>true</IsAmd>
+	</SvgLogoTypeScriptCompile>
+
+
+	注：普通的svg图片需在属性中将Build Action设置为svg;
+	   Logo的Svg图片需在属性中将Build Action设置为SvgLogo;
+
+
+	2、
+				
