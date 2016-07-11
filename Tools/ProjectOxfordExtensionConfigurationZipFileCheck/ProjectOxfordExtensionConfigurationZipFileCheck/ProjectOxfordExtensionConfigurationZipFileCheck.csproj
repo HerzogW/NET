@@ -71,6 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Runtime.Serialization" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <Compile Include="ApiConfiguration\ApiConfigurationData.cs" />
     <Compile Include="ApiConfiguration\ApiConfigurationManager.cs" />
+    <Compile Include="BlobHelper\BlobHelper.cs" />
     <Compile Include="Error\ErrorEntity.cs" />
     <Compile Include="Error\ErrorStatus.cs" />
     <Compile Include="Error\ErrorType.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -143,7 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Microsoft.ico" />
-    <Content Include="Microsoft_48px_1180113_easyicon.net.ico" />
+    <Content Include="Update Log.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

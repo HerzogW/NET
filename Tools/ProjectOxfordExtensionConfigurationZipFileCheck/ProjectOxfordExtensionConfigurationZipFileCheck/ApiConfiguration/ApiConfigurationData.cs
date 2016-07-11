@@ -6,10 +6,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
     using System;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// The Api configuration data class.
     /// </summary>
+    [DataContract]
     public class ApiConfigurationData
     {
         /// <summary>
@@ -39,6 +41,9 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// The locale identifier.
         /// </value>
         public string LocaleId { get; set; }
+
+        [JsonIgnore]
+        public string ApiFolderName { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the API type.
@@ -163,8 +168,11 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     var entity = specsEntity.features[i];
                     propertyDetail = string.Format("features[{0}].displayName", i);
                     specsEntity.features[i].displayName = HandleSpecificItemResource("spec.json", "displayName", string.Format("feature.{0}.displayName", entity.id), specsEntity.features[i].displayName, true, propertyDetail);
-                    propertyDetail = string.Format("features[{0}].iconSvgData", i);
-                    specsEntity.features[i].iconSvgData = HandleSpecificItemIcon("spec.json", "iconSvgData", string.Format("spec.feature.{0}.svg", entity.id), specsEntity.features[i].iconSvgData, false, propertyDetail);
+                    if (entity.iconSvgData != null)
+                    {
+                        propertyDetail = string.Format("features[{0}].iconSvgData", i);
+                        specsEntity.features[i].iconSvgData = HandleSpecificItemIcon("spec.json", "iconSvgData", string.Format("spec.feature.{0}.svg", entity.id), specsEntity.features[i].iconSvgData, false, propertyDetail);
+                    }
                 }
 
                 this.Spec = JObject.Parse(JsonConvert.SerializeObject(specsEntity, settingFormat));

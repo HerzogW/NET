@@ -429,7 +429,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                             "bindings": []
                         },
                         "templateBlade": {
-                            "htmlTemplate": "pdcafcc5e02650344779eedb2bca62eba8e",
+                            "htmlTemplate": "pdcd1ce48ed45b14d3d95a2093c3d65899e",
                             "parameterProvider": true,
                             "details": [
                                 {
@@ -461,7 +461,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                             "bindings": []
                         },
                         "templateBlade": {
-                            "htmlTemplate": "pdcef646f15f012498b9a52489d582d9163",
+                            "htmlTemplate": "pdca8ab116f44fa43c68262a756b8e1113f",
                             "parameterProvider": true,
                             "partSize": 0
                         }
@@ -480,7 +480,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             "partKind": 0,
                                             "inputs": [],
                                             "bindings": [],
-                                            "htmlTemplate": "pdc6dc1c4cbbb184e02a270e3f00d39e758",
+                                            "htmlTemplate": "pdc09e80563331c4fc59c72bde95071d469",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -708,20 +708,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                     ]
                                 },
                                 {
-                                    "name": "MoveResourceGroupCommand",
-                                    "bindings": [
-                                        {
-                                            "property": "resourceId",
-                                            "valuesFrom": [
-                                                {
-                                                    "referenceType": 1,
-                                                    "property": "id"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                },
-                                {
                                     "name": "DeleteCommand",
                                     "bindings": [
                                         {
@@ -846,7 +832,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                                     ]
                                                 }
                                             ],
-                                            "htmlTemplate": "pdcabbb7fb3ca2c40f5a49d698bfd755b83",
+                                            "htmlTemplate": "pdcad676b03ae364be090a8b74b996311b7",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -933,7 +919,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                             "bindings": []
                         },
                         "templateBlade": {
-                            "htmlTemplate": "pdcafcc5e02650344779eedb2bca62eba8e",
+                            "htmlTemplate": "pdcd1ce48ed45b14d3d95a2093c3d65899e",
                             "parameterProvider": true,
                             "details": [
                                 {
@@ -964,7 +950,7 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             "partKind": 0,
                                             "inputs": [],
                                             "bindings": [],
-                                            "htmlTemplate": "pdc6dc1c4cbbb184e02a270e3f00d39e758",
+                                            "htmlTemplate": "pdc09e80563331c4fc59c72bde95071d469",
                                             "details": [
                                                 {
                                                     "invocationInputArguments": [
@@ -1054,25 +1040,6 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                                             {
                                                 "referenceType": 1,
                                                 "property": "id"
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            {
-                                "name": "MoveResourceGroupCommand",
-                                "reference": {
-                                    "commandType": "MoveResourceCommand",
-                                    "extension": "HubsExtension"
-                                },
-                                "bindings": [
-                                    {
-                                        "property": "resourceId",
-                                        "valuesFrom": [
-                                            {
-                                                "referenceType": 5,
-                                                "property": "constant_unknownResourceIdShouldBeOverriddenInBlade",
-                                                "constantValue": "unknownResourceIdShouldBeOverriddenInBlade"
                                             }
                                         ]
                                     }
@@ -1177,19 +1144,19 @@ define(["require", "exports", "ClientResources"], function (require, exports, Cl
                     }
                 ],
                 "htmlTemplates": {
-                    "pdcafcc5e02650344779eedb2bca62eba8e": {
+                    "pdcd1ce48ed45b14d3d95a2093c3d65899e": {
                         "file": "Create.html",
                         "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgContent\"></div> <div data-bind=\"formElement: svgLogoContent\"></div> <!--<div data-bind=\"formElement: nameTextBox\"></div>\r\n    <div data-bind=\"formElement: apiTypeSelector\"></div>\r\n    <div data-bind=\"formElement: accountSpecSelector.control\"></div>\r\n    <div data-bind=\"formElement: subscriptionDropDown.control\"></div>\r\n    <div data-bind=\"formElement: resourceGroupDropDown.control\"></div>\r\n    <div data-bind=\"formElement: locationDropDown.control\"></div>\r\n    <div data-bind=\"formElement: legalSelector, visible: showLegalTerms\"></div>--> </div>"
                     },
-                    "pdcef646f15f012498b9a52489d582d9163": {
+                    "pdca8ab116f44fa43c68262a756b8e1113f": {
                         "file": "LegalForm.html",
                         "content": "<div class=\"msportalfx-form\"> By clicking “I Agree”, you acknowledge that the Microsoft Cognitive Services are in preview. You may use the Computer Vision API, Emotion API, Face API, Language Understanding Intelligent Service (LUIS), Bing Speech API, and Web Language Model in accordance with the use, privacy, data, security, and other terms in parts B, C, and D of the <a target=\"_blank\" href=\"http://go.microsoft.com/fwlink/?LinkId=533207\">Microsoft Cognitive Services Preview Terms</a> and the <a target=\"_blank\" href=\"http://go.microsoft.com/fwlink/?LinkId=521839\">Microsoft Privacy Statement</a>. As further described in these parts of the Microsoft Cognitive Services Preview Terms, you give us permission to use Customer Data to improve Microsoft products and services. For example we may improve our underlying algorithms and models over time based on content you or your end users provide to the service. These services provide no means for you to access or extract Customer Data and Microsoft has no obligation to delete Customer Data received by these services. You may not use these services in connection with Customer Applications that are used by or targeted to children under the age of fourteen. For details on these and other variations, please see parts B, C, and D of the Microsoft Cognitive Services Preview Terms linked above. </div> "
                     },
-                    "pdc6dc1c4cbbb184e02a270e3f00d39e758": {
+                    "pdc09e80563331c4fc59c72bde95071d469": {
                         "file": "Client/Resource/Create/CognitiveServicesCreate.pdl",
                         "content": "<div data-bind=\"pcPickerV3: $root\"></div>"
                     },
-                    "pdcabbb7fb3ca2c40f5a49d698bfd755b83": {
+                    "pdcad676b03ae364be090a8b74b996311b7": {
                         "file": "Client/Resource/Settings/SettingsBlade.pdl",
                         "content": "<div data-bind=\"pcGrid: settingList\"></div>"
                     }

@@ -1,16 +1,16 @@
 ﻿
 namespace ProjectOxfordExtensionConfigurationZipFileCheck
 {
-    using Microsoft.WindowsAzure.Storage.Blob;
-    using Microsoft.WindowsAzure.Storage.RetryPolicies;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
     using System.Linq;
     using ICSharpCode.SharpZipLib.Checksums;
+    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.WindowsAzure.Storage.RetryPolicies;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// The Api configuration manager.
@@ -112,12 +112,12 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// Veriliadtes the stream.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <param name="zipFileName">Name of the zip file.</param>
-        public ApiConfigurationData VeriliadteStream(Stream stream, string zipFileName)
+        /// <param name="apiFolderName">Name of the api folder.</param>
+        public ApiConfigurationData VeriliadteStream(Stream stream, string apiFolderName)
         {
             ApiConfigurationData originalApiConfig;
             ErrorEntity errorEntity = new ErrorEntity();
-            errorEntity.zipFileName = zipFileName;
+            errorEntity.apiFolderName = apiFolderName;
             using (var zip = new ZipArchive(stream))
             {
                 try
@@ -130,7 +130,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     originalApiConfig = JsonConvert.DeserializeObject<ApiConfigurationData>(apiItemJson);
                     if (string.IsNullOrWhiteSpace(originalApiConfig.ApiTypeName))
                     {
-                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NullValue, zipFileName, ApiItemFileName, "item");
+                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NullValue, apiFolderName, ApiItemFileName, "item");
                         listError.Add(errorEntity2);
                     }
 
@@ -182,7 +182,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     //若无Resource本地化配置信息，则默认添加英文en版本地化配置信息
                     if (localizableStrings.Count == 0)
                     {
-                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NotFound, zipFileName, ResourceFileName);
+                        ErrorEntity errorEntity2 = new ErrorEntity(ErrorType.NotFound, apiFolderName, ResourceFileName);
                         errorEntity2.errorStatus = ErrorStatus.Fixed;
                         listError.Add(errorEntity2);
 
@@ -196,7 +196,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
 
                     foreach (ErrorEntity errorInfo in originalApiConfig.listError)
                     {
-                        errorInfo.zipFileName = zipFileName;
+                        errorInfo.apiFolderName = apiFolderName;
                         listError.Add(errorInfo);
                     }
 
@@ -239,11 +239,10 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <returns>The DIR name</returns>
         private string GetLocalizationDirectoryName(ZipArchiveEntry entry)
         {
-            var fullDir = entry.FullName.Replace(entry.Name, "").TrimEnd('/');
-            var currentDirName = fullDir.Substring(fullDir.LastIndexOf('/') + 1);
+            var fullDir = entry.FullName.Replace(entry.Name, "").TrimEnd('\\');
+            var currentDirName = fullDir.Substring(fullDir.LastIndexOf('\\') + 1);
             return currentDirName == StringsFolderName ? DefaultLanguage : currentDirName;
         }
-
 
         /// <summary>
         /// Reads the zip entry to string.
@@ -261,7 +260,16 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             }
         }
 
-
+        public string ReadFileInfoToString(FileInfo file)
+        {
+            using (Stream stream = file.OpenRead())
+            {
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    return reader.ReadToEnd();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the configuration data.
@@ -269,13 +277,14 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         /// <param name="configurationData">The configuration data.</param>
         /// <param name="apiName">Name of the API.</param>
         /// <returns></returns>
-        public static void GetConfigurationData(ApiConfigurationData configurationData, string tempFolderPath, string apiName)
+        public static void SaveConfigurationDataToLocal(ApiConfigurationData configurationData, string tempFolderPath, string apiName)
         {
             string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, apiName);
             if (Directory.Exists(tempFolderPath))
             {
                 Directory.Delete(tempFolderPath, true);
             }
+
             Directory.CreateDirectory(tempFolderPath);
 
             using (ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName)))
@@ -293,6 +302,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
                     {
                         filePath = string.Format("{0}/{1}/{2}/{3}", apiName, "strings", resource.Key, ResourceFileName);
                     }
+
                     Compress(zipStream, JsonConvert.SerializeObject(resource.Value, new JsonSerializerSettings()
                     {
                         Formatting = Formatting.Indented,
@@ -326,6 +336,57 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
             entry.Crc = crc.Value;
             zipStream.PutNextEntry(entry);
             zipStream.Write(buffer, 0, buffer.Length);
+        }
+
+
+        public static string CompressFolderContentIntoStream(string sourceFolder, string tempFolderPath)
+        {
+            string folderName = sourceFolder.Substring(sourceFolder.LastIndexOf(@"\") + 1);
+            string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, folderName);
+            if (Directory.Exists(tempFolderPath))
+            {
+                Directory.Delete(tempFolderPath, true);
+            }
+
+            Directory.CreateDirectory(tempFolderPath);
+
+            using (ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream = new ICSharpCode.SharpZipLib.Zip.ZipOutputStream(File.Create(tempZipFileName)))
+            {
+                zipStream.SetLevel(6);
+                Zip(sourceFolder, zipStream, sourceFolder);
+            }
+
+            return tempZipFileName;
+        }
+
+        private static void Zip(string parentPath, ICSharpCode.SharpZipLib.Zip.ZipOutputStream zipStream, string rootPath)
+        {
+            Crc32 crc = new Crc32();
+
+            string[] files = Directory.GetFileSystemEntries(parentPath);
+            foreach (string file in files)
+            {
+                if (Directory.Exists(file))
+                {
+                    Zip(file, zipStream, rootPath);
+                }
+                else
+                {
+                    using (StreamReader reader = new StreamReader(file))
+                    {
+                        byte[] buffer = System.Text.Encoding.Default.GetBytes(reader.ReadToEnd());
+                        string tempFileName = file.Substring(rootPath.LastIndexOf("\\") + 1);
+                        ICSharpCode.SharpZipLib.Zip.ZipEntry entry = new ICSharpCode.SharpZipLib.Zip.ZipEntry(tempFileName);
+                        entry.DateTime = DateTime.Now;
+                        entry.Size = buffer.Length;
+                        crc.Reset();
+                        crc.Update(buffer);
+                        entry.Crc = crc.Value;
+                        zipStream.PutNextEntry(entry);
+                        zipStream.Write(buffer, 0, buffer.Length);
+                    }
+                }
+            }
         }
     }
 }

@@ -19,25 +19,25 @@
         public ErrorEntity(ErrorType errorType, string zipFileName)
         {
             this.errorType = errorType;
-            this.zipFileName = zipFileName;
+            this.apiFolderName = zipFileName;
         }
         public ErrorEntity(ErrorType errorType, string zipFileName,string jsonFileName)
         {
             this.errorType = errorType;
-            this.zipFileName = zipFileName;
+            this.apiFolderName = zipFileName;
             this.jsonFileName = jsonFileName;
         }
         public ErrorEntity(ErrorType errorType, string zipFileName, string jsonFileName,string itemName)
         {
             this.errorType = errorType;
-            this.zipFileName = zipFileName;
+            this.apiFolderName = zipFileName;
             this.jsonFileName = jsonFileName;
             this.itemName = itemName;
         }
         public ErrorEntity(ErrorType errorType, string zipFileName, string jsonFileName, string itemName,ErrorStatus errorStatus)
         {
             this.errorType = errorType;
-            this.zipFileName = zipFileName;
+            this.apiFolderName = zipFileName;
             this.jsonFileName = jsonFileName;
             this.itemName = itemName;
             this.errorStatus = errorStatus;
@@ -59,7 +59,7 @@
         /// <value>
         /// The name of the zip file.
         /// </value>
-        public string zipFileName { get; set; }
+        public string apiFolderName { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the json file.
@@ -119,9 +119,9 @@
         {
             string errorInfo = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(this.zipFileName))
+            if (!string.IsNullOrWhiteSpace(this.apiFolderName))
             {
-                errorInfo = string.Format("【Zip   {0}】:   ", this.zipFileName);
+                errorInfo = string.Format("【Folder   {0}】:   ", this.apiFolderName);
             }
 
             switch (errorType)

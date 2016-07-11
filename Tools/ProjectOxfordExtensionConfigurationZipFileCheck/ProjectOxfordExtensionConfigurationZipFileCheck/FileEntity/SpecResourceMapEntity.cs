@@ -14,7 +14,6 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
         public List<SpecResourceMapDefault> specResourceMapDefault { get; set; }
     }
 
-
     /// <summary>
     /// 
     /// </summary>
@@ -22,7 +21,7 @@ namespace ProjectOxfordExtensionConfigurationZipFileCheck
     {
         public string id { get; set; }
 
-        public SpecFirstParty firstParty { get; set; }
+        public List<SpecFirstParty> firstParty { get; set; }
     }
 
     /// <summary>

@@ -12,9 +12,9 @@
         <BladeInput Source="{CommandProperty Property=resourceId}" Parameter="id" />
       </BladeAction>
     </Command>
-    <CommandReference Name="MoveResourceGroupCommand" CommandType="MoveResourceCommand" Extension="HubsExtension">
+    <!--<CommandReference Name="MoveResourceGroupCommand" CommandType="MoveResourceCommand" Extension="HubsExtension">
       <Binding Property="resourceId" Source="{Constant unknownResourceIdShouldBeOverriddenInBlade}" />
-    </CommandReference>
+    </CommandReference>-->
     <Command Name="DeleteCommand" Export="true" Text="{Resource ResourceBlade.DeleteCommand.resourceKey, Module=ClientResources}"
              ViewModel="{ViewModel Name=DeleteCommandViewModel, Module=./Summary/ViewModels/DeleteCommandViewModel}">
       <Property Name="resourceId" Source="{DataInput Property=id}" />
@@ -37,9 +37,9 @@
       <CommandBindings Command="SettingsCommand">
         <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
       </CommandBindings>
-      <CommandBindings Command="MoveResourceGroupCommand">
+      <!--<CommandBindings Command="MoveResourceGroupCommand">
         <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
-      </CommandBindings>
+      </CommandBindings>-->
       <CommandBindings Command="DeleteCommand">
         <Binding Property="resourceId" Source="{BladeParameter Name=id}" />
       </CommandBindings>
