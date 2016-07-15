@@ -82,5 +82,41 @@ namespace ApiOnBoardingConfigurationTool
                 }
             }
         }
+
+        /// <summary>
+        /// Deletes the API configuration list from BLOB container.
+        /// </summary>
+        /// <param name="credentials">The credentials.</param>
+        /// <param name="containerName">Name of the container.</param>
+        /// <param name="apiItemList">The API item list.</param>
+        public static void DeleteApiConfigurationListFromBlobContainer(StorageCredentials credentials, string containerName, List<string> apiItemList, string extension)
+        {
+            Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", credentials.AccountName));
+            CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+
+            foreach (var apiItemName in apiItemList)
+            {
+                var blockBlob = container.GetBlobReference(string.Format("{0}.{1}", apiItemName, extension));
+                bool result = blockBlob.DeleteIfExists();
+            }
+        }
+
+        /// <summary>
+        /// Uploads the confifuratuin to BLOB container.
+        /// </summary>
+        /// <param name="credentials">The credentials.</param>
+        /// <param name="containerName">Name of the container.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="stream">The stream.</param>
+        public static void UploadConfifuratuinToBlobContainer(StorageCredentials credentials, string containerName, string fileName, Stream stream)
+        {
+            Uri urlPath = new Uri(string.Format("https://{0}.blob.core.windows.net", credentials.AccountName));
+            CloudBlobClient cloudBlobClient = new CloudBlobClient(urlPath, credentials);
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(containerName);
+
+            var blockBlob = container.GetBlockBlobReference(fileName);
+            blockBlob.UploadFromStream(stream);
+        }
     }
 }

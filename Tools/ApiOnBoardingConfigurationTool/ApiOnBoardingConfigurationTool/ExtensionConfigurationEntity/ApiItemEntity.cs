@@ -1,12 +1,12 @@
 ﻿
-namespace ApiOnBoardingConfigurationTool
+namespace ApiOnBoardingConfigurationTool.ExtensionConfigurationEntity
 {
     using System.Collections.Generic;
 
     /// <summary>
     /// The Api Entity
     /// </summary>
-    public class ApiEntity
+    public class ApiItemEntity
     {
         /// <summary>
         /// Gets or sets the item.

@@ -1,118 +1,82 @@
 ﻿
 namespace ApiOnBoardingConfigurationTool
 {
+    using ExtensionConfigurationEntity;
+    using MeterConfigurationEntity;
     using Microsoft.Azure;
     using Microsoft.WindowsAzure.Storage.Auth;
+    using Microsoft.WindowsAzure.Storage.Blob;
+    using Microsoft.WindowsAzure.Storage.RetryPolicies;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using SkuConfigurationEntity;
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
     using System.Windows.Forms;
 
-    /// <summary>
-    /// The MainForm
-    /// </summary>
-    /// <seealso cref="System.Windows.Forms.Form" />
     public partial class MainForm : Form
     {
-        /// <summary>
-        /// The API on boarding configuration tool temporary folder
-        /// </summary>
-        private const string ApiOnBoardingConfigurationToolFolder = @"C:\ApiOnBoardingConfigurationToolTemp\";
+        private const string ApiOnBoardingConfigurationToolRootFolder = @"C:\ApiOnBoardingConfigurationTool";
 
-        /// <summary>
-        /// The API on boarding configuration tool save to local folder
-        /// </summary>
-        private const string ApiOnBoardingConfigurationToolSaveToLocalFolder = @"C:\ApiOnBoardingConfigurationToolTemp\SaveToLocal\";
+        private const string ApiOnBoardingConfigurationToolECSaveToLocalFolder = @"C:\ApiOnBoardingConfigurationTool\Extension\SaveToLocal";
 
-        /// <summary>
-        /// The API on boarding configuration tool inner temporary folder
-        /// </summary>
-        private const string ApiOnBoardingConfigurationToolInnerTempFolder = @"C:\ApiOnBoardingConfigurationToolTemp\Temp\";
+        private const string ApiOnBoardingConfigurationToolECTempFolder = @"C:\ApiOnBoardingConfigurationTool\Extension\Temp";
 
-        /// <summary>
-        /// The loading file message
-        /// </summary>
+        private const string ApiOnBoardingConfigurationToolECTempConfigurationFolder = @"C:\ApiOnBoardingConfigurationTool\Extension\TempConfiguration";
+
         private const string LoadingFileMessage = "Loading files...";
 
-        /// <summary>
-        /// The finish loading message
-        /// </summary>
-        private const string FinishLoadingMessage = "Finished!";
+        private const string LoadedMessage = "Loaded!\r\nCreate or Edit?";
 
-        /// <summary>
-        /// The occur error message
-        /// </summary>
-        private const string OccurErrorMessage = "Occured some errors!";
 
-        /// <summary>
-        /// The loaded successfully message
-        /// </summary>
-        private const string LoadedSuccessfullyMessage = "Loaded successfully!";
-
-        /// <summary>
-        /// The resource token
-        /// </summary>
         private const string ResourceToken = "ms-resource:";
 
-        /// <summary>
-        /// The icons token
-        /// </summary>
         private const string IconToken = "ms-icon:";
 
-        /// <summary>
-        /// The API configuration storage container
-        /// </summary>
-        public string ApiConfigurationStorageContainerName = "apiconfiguration";
+        public string ECConfigurationStorageContainerName = "apiconfiguration";
 
-        /// <summary>
-        /// The alert title
-        /// </summary>
+        public string SCConfigurationStorageContainerName = "cs-sku";
+
+        public string MCConfigurationStorageContainerName = "meters";
+
+        #region Common Text
+
         private const string AlertTitle = "Alert";
 
-        /// <summary>
-        /// The exception title
-        /// </summary>
         private const string ExceptionTitle = "Exception";
 
-        /// <summary>
-        /// The common alert text1
-        /// </summary>
-        private const string CommonAlertText1 = "Occured some errors!\r\nPlease check the last ErrorLog!";
+        private const string CommonLoadedSuccessfullyText = "Loaded successfully!";
 
-        /// <summary>
-        /// The common saved successfully text
-        /// </summary>
-        private const string CommonSavedSuccessfullyText = "'{0}' saved successfully!";
+        private const string CommonUploadSuccessfullyText = "Uploaded successfully!";
 
-        /// <summary>
-        /// The template should not be empty text
-        /// </summary>
+        private const string CommonOccuredErrorText1 = "Occured some errors!";
+
+        private const string CommonOccuredErrorText2 = "Occured some errors!\r\nPlease check the ErrorLog!";
+
+        private const string CommonDeleteConfirmText = "Confirm to delete these items?";
+
+        private const string CommonDeleteFromPPESuccessfullyText = "Delete these items from PPE blob successfully!";
+
+        private const string CommonInputStorageAccountAlertText = "Please input the Storage Account.\r\n";
+
+        private const string CommonInputStorageAccountKeyAlertText = "Please input the Storage Account Key.\r\n";
+
+        private const string TemplateSavedSuccessfullyText = "'{0}' saved successfully!";
+
         private const string TemplateShouldNotBeEmptyText = "'{0}' should not be empty!\r\n";
 
-        /// <summary>
-        /// The template should not all be empty text
-        /// </summary>
         private const string TemplateShouldNotAllBeEmptyText = "'{0}' and '{1}' should not all be empty!\r\n";
 
-        /// <summary>
-        /// The template cannot be deserialized text
-        /// </summary>
         private const string TemplateCannotBeDeserializedText = "'{0}' can not be converted!";
 
         private const string TemplateShouldBeANumberText = "'{0}' should be number!\r\n";
 
-        /// <summary>
-        /// The setting format
-        /// </summary>
+        private const string TemplateConnotFindConfigKeyValue = "Not find the key '{0}' in App.config or its value is empty.";
+
+        #endregion
+
         private JsonSerializerSettings settingFormat = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
@@ -120,9 +84,6 @@ namespace ApiOnBoardingConfigurationTool
             MissingMemberHandling = MissingMemberHandling.Error
         };
 
-        /// <summary>
-        /// The special setting format
-        /// </summary>
         private JsonSerializerSettings specialSettingFormat = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented,
@@ -130,32 +91,26 @@ namespace ApiOnBoardingConfigurationTool
             MissingMemberHandling = MissingMemberHandling.Ignore
         };
 
-        /// <summary>
-        /// The API configuration icons
-        /// </summary>
+        private string originalFileOrFolderName = string.Empty;
+
+        private ApiConfigurationData loadedConfigurationData;
+
         private Dictionary<string, string> ApiConfigIcons = new Dictionary<string, string>();
 
-        /// <summary>
-        /// The manual configuration data
-        /// config对象，用于存放配置信息
-        /// </summary>
-        private ApiConfigurationData ManualConfigurationData = new ApiConfigurationData();
+        private List<ApiConfigurationData> ListCachedExtensionConfigurationData;
 
-        /// <summary>
-        /// The list cached API configuration data
-        /// </summary>
-        private List<ApiConfigurationData> ListCachedApiConfigurationData;
+        private Dictionary<string, string> ListCachedSkuConfigurationData = new Dictionary<string, string>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MainForm"/> class.
-        /// </summary>
+        private Dictionary<string, string> ListCachedMeterConfigurationData = new Dictionary<string, string>();
+
+
         public MainForm()
         {
             InitializeComponent();
             string containerName = CloudConfigurationManager.GetSetting("ApiConfigurationStorageContainerName");
             if (!string.IsNullOrWhiteSpace(containerName))
             {
-                this.ApiConfigurationStorageContainerName = containerName;
+                this.ECConfigurationStorageContainerName = containerName;
             }
         }
 
@@ -163,151 +118,143 @@ namespace ApiOnBoardingConfigurationTool
 
         #region Action And Review
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnCreate control.
-        /// Create a new Extension Configuration Folder or Zip file.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ECBtnCreate_Click(object sender, EventArgs e)
-        {
-            ManualConfigurationData = new ApiConfigurationData();
-            this.ApiConfigIcons = new Dictionary<string, string>();
-            ResetAllExtensionConfigurationControls();
-        }
-
-        /// <summary>
-        /// Handles the Click event of the ECBtnLoadFromLocal control.
-        /// Load Configuration Folder from Local.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnLoadFromLocal_Click(object sender, EventArgs e)
         {
-            ApiConfigurationData cacheConfigurationData;
-
             if (this.ECFolderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
-                cacheConfigurationData = ApiConfigurationManager.LoadSingelApiConfigurationFormLoadFolderPath(this.ECFolderBrowserDialog.SelectedPath);
+                loadedConfigurationData = ApiConfigurationManager.LoadSingelApiConfigurationFormLoadFolderPath(this.ECFolderBrowserDialog.SelectedPath);
 
-                if (cacheConfigurationData != null)
-                {
-                    LoadApiConfigInfoToPage(cacheConfigurationData);
-                }
-
-                if (cacheConfigurationData.listError.Count > 0)
+                if (loadedConfigurationData.listError.Count > 0)
                 {
                     int i = 1;
-                    string tempErrorMessage = DateTime.UtcNow.ToString() + "\r\n";
-                    foreach (ErrorEntity errorEntity in cacheConfigurationData.listError)
+                    string tempErrorMessage = string.Empty;
+                    foreach (ErrorEntity errorEntity in loadedConfigurationData.listError)
                     {
                         tempErrorMessage += (i++) + "、" + errorEntity.GetErrorInfo() + "\r\n";
                     }
 
                     LogError(tempErrorMessage);
-                    MessageBox.Show(CommonAlertText1, AlertTitle);
-                    this.ECTextActionMessage.Text = OccurErrorMessage;
+                    MessageBox.Show(CommonOccuredErrorText2, AlertTitle);
+                    this.ECTextActionMessage.Text = CommonOccuredErrorText1;
                 }
                 else
                 {
-                    this.ECTextActionMessage.Text = FinishLoadingMessage;
+                    this.ECTextActionMessage.Text = LoadedMessage;
                 }
             }
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnLoadFromPPEBlob control.
-        /// Load Configuration Zip files from PPE Blob.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnLoadFromPPEBlob_Click(object sender, EventArgs e)
         {
-            this.ECBtnCreate.Enabled = false;
             this.ECBtnLoadFromPPEBlob.Enabled = false;
             this.ECBtnLoadFromLocal.Enabled = false;
             this.ECTextActionMessage.Text = LoadingFileMessage;
 
             var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            if (string.IsNullOrWhiteSpace(apiConfigurationPublicAccessUrl))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationPublicAccessUrl"), AlertTitle);
+                return;
+            }
 
-            ApiConfigurationManager manager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, this.ApiConfigurationStorageContainerName);
-            ListCachedApiConfigurationData = manager.LoadDataToCache();
+            ApiConfigurationManager manager = new ApiConfigurationManager(apiConfigurationPublicAccessUrl, this.ECConfigurationStorageContainerName);
+            ListCachedExtensionConfigurationData = manager.LoadDataToCache();
 
             List<ErrorEntity> listError = manager.listError;
 
             if (manager.listError.Count > 0)
             {
-                this.ECTextActionMessage.Text = OccurErrorMessage;
+                this.ECTextActionMessage.Text = CommonOccuredErrorText1;
                 int i = 1;
-                string tempErrorMessage = DateTime.UtcNow.ToString() + "\r\n";
+                string tempErrorMessage = string.Empty; ;
                 foreach (ErrorEntity errorMessage in manager.listError)
                 {
                     tempErrorMessage += (i++) + "、" + errorMessage.GetErrorInfo() + "\r\n";
                 }
 
                 LogError(tempErrorMessage);
-                MessageBox.Show(CommonAlertText1, AlertTitle);
-                this.ECTextActionMessage.Text = OccurErrorMessage;
+                MessageBox.Show(CommonOccuredErrorText2, AlertTitle);
+                this.ECTextActionMessage.Text = CommonOccuredErrorText1;
             }
             else
             {
-                this.ECTextActionMessage.Text = LoadedSuccessfullyMessage;
+                this.ECTextActionMessage.Text = CommonLoadedSuccessfullyText;
             }
 
             LoadApiItemList();
 
-            this.ECBtnCreate.Enabled = true;
             this.ECBtnLoadFromPPEBlob.Enabled = true;
             this.ECBtnLoadFromLocal.Enabled = true;
         }
 
-        /// <summary>
-        /// Handles the DoubleClick event of the ECListItems control.
-        /// Api configuration packages list.(Double click to load on the pages.)
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECListItems_DoubleClick(object sender, EventArgs e)
         {
             if (this.ECListItems.Items.Count > 0)
             {
                 string selectedApiItemName = this.ECListItems.SelectedItem.ToString();
-                foreach (var apiConfigInfo in ListCachedApiConfigurationData)
+                foreach (var apiConfigInfo in ListCachedExtensionConfigurationData)
                 {
                     if (apiConfigInfo.ApiFolderName.Equals(selectedApiItemName))
                     {
-                        LoadApiConfigInfoToPage(apiConfigInfo);
+                        //LoadApiConfigInfoToPage(apiConfigInfo);
+                        loadedConfigurationData = apiConfigInfo;
+                        this.ECTextActionMessage.Text = LoadedMessage;
                         break;
                     }
                 }
             }
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnUploadToProBlob control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void ECBtnUploadToProBlob_Click(object sender, EventArgs e)
+        private void ECBtnCreate_Click(object sender, EventArgs e)
         {
-            string storageAccount = this.ECTextStorageAccount.Text;
-            string storageAccountKey = this.ECTextStorageAccountKey.Text;
-
-            if (string.IsNullOrWhiteSpace(storageAccount))
+            if (loadedConfigurationData != null)
             {
-                this.ECTextActionMessage.Text = "Please input the Storage Account.";
-                return;
+                originalFileOrFolderName = string.Empty;
+                LoadApiConfigInfoToPage(loadedConfigurationData);
+                ResetJsonFileTextBox();
+                this.ECTextActionMessage.Text = string.Format("Load '{0}' as a template to create a new ApiConfiguration.\r\nTarget Folder or Zip file will be named as the 'ApiTypeName' field.", loadedConfigurationData.ApiFolderName);
+                loadedConfigurationData = null;
             }
-
-            if (string.IsNullOrWhiteSpace(storageAccountKey))
+            else
             {
-                this.ECTextActionMessage.Text = "Please input the Storage Account Key.";
-                return;
+                if (MessageBox.Show("Confirm to clear all fields?", AlertTitle, MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    originalFileOrFolderName = string.Empty;
+                    this.ApiConfigIcons = new Dictionary<string, string>();
+                    ResetAllExtensionConfigurationControls();
+                }
+                else
+                {
+                    this.ECTextActionMessage.Text = string.Empty; ;
+                }
             }
+        }
 
+        private void ECBtnEdit_Click(object sender, EventArgs e)
+        {
+            if (loadedConfigurationData != null)
+            {
+                originalFileOrFolderName = loadedConfigurationData.ApiFolderName;
+                LoadApiConfigInfoToPage(loadedConfigurationData);
+                loadedConfigurationData = null;
+                ResetJsonFileTextBox();
+                this.ECTextActionMessage.Text = string.Format("Edit the configuration '{0}'.\r\nTarget Folder or Zip file will be named as original.", originalFileOrFolderName);
+            }
+            else
+            {
+                this.ECTextActionMessage.Text = "Please load an ApiConfiguration!";
+            }
+        }
+
+        private void ECBtnDeleteFromPPEBlob_Click(object sender, EventArgs e)
+        {
             if (this.ECListItems.CheckedItems.Count == 0)
             {
-                this.ECTextActionMessage.Text = "Please select the api items to upload to production blob.";
+                return;
+            }
+
+            if (MessageBox.Show(CommonDeleteConfirmText, AlertTitle, MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+            {
                 return;
             }
 
@@ -318,71 +265,122 @@ namespace ApiOnBoardingConfigurationTool
                 selectApiItems.Add(this.ECListItems.CheckedItems[i].ToString());
             }
 
+            for (int i = 0; i < selectApiItems.Count; i++)
+            {
+                this.ECListItems.Items.Remove(selectApiItems[i]);
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            try
+            {
+                StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+                BlobHelper.DeleteApiConfigurationListFromBlobContainer(credentials, ECConfigurationStorageContainerName, selectApiItems, "zip");
+
+                this.ECTextActionMessage.Text = CommonDeleteFromPPESuccessfullyText;
+            }
+            catch
+            {
+                this.ECTextActionMessage.Text = CommonOccuredErrorText1;
+            }
+        }
+
+        private void ECBtnUploadToProBlob_Click(object sender, EventArgs e)
+        {
+            string storageAccount = this.ECTextStorageAccount.Text;
+            string storageAccountKey = this.ECTextStorageAccountKey.Text;
+
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(storageAccount))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountAlertText);
+            }
+
+            if (string.IsNullOrWhiteSpace(storageAccountKey))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountKeyAlertText);
+            }
+
+            if (this.ECListItems.CheckedItems.Count == 0)
+            {
+                ErrorMessage.Append("Please select the api items to upload to production blob.\r\n");
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to upload to Production Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            this.ECBtnUploadToProBlob.Enabled = false;
+            this.ECTextActionMessage.Text = "Uploading...";
+            List<string> selectApiItems = new List<string>();
+
+            for (int i = 0; i < this.ECListItems.CheckedItems.Count; i++)
+            {
+                selectApiItems.Add(this.ECListItems.CheckedItems[i].ToString());
+            }
+
             try
             {
                 List<ApiConfigurationData> selectedApiConfigurationDataList = new List<ApiConfigurationData>();
-                foreach (var data in ListCachedApiConfigurationData)
+                foreach (var data in ListCachedExtensionConfigurationData)
                 {
-                    if (selectApiItems.Contains(data.ApiTypeName))
+                    if (selectApiItems.Contains(data.ApiFolderName))
                     {
                         selectedApiConfigurationDataList.Add(data);
                     }
                 }
 
                 StorageCredentials credentials = new StorageCredentials(storageAccount, storageAccountKey, "AccountKey");
-                BlobHelper.UploadApiConfigurationListToBlobContainer(credentials, ApiConfigurationStorageContainerName, selectedApiConfigurationDataList, ApiOnBoardingConfigurationToolInnerTempFolder);
+                BlobHelper.UploadApiConfigurationListToBlobContainer(credentials, ECConfigurationStorageContainerName, selectedApiConfigurationDataList, ApiOnBoardingConfigurationToolECTempFolder);
 
-                this.ECTextActionMessage.Text = "Upload files from Test blob to productive blob successfully .";
+                this.ECTextActionMessage.Text = "Upload selected items from PPE Blob to Productive Blob successfully!";
             }
             catch
             {
-                this.ECTextActionMessage.Text = OccurErrorMessage;
+                this.ECTextActionMessage.Text = CommonOccuredErrorText1;
             }
+
+            this.ECBtnUploadToProBlob.Enabled = true;
         }
 
         #endregion
 
         #region Flags Operation
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnIconsFlag control.
-        /// The Flag for Icons.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void ECBtnIconsFlag_Click(object sender, EventArgs e)
         {
             this.TabApiItemPage.SelectedTab = this.TabIcon;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnApiFlag control.
-        /// The flag for Api.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void ECBtnApiFlag_Click(object sender, EventArgs e)
         {
             this.TabApiItemPage.SelectedTab = this.TabApi;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnQuickStartsFlag control.
-        /// The falg for QuickStarts
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void ECBtnQuickStartsFlag_Click(object sender, EventArgs e)
         {
             this.TabApiItemPage.SelectedTab = this.TabQuickStarts;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSpecFlag control.
-        /// The flag for Spec.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="System.EventArgs" /> instance containing the event data.</param>
         private void ECBtnSpecFlag_Click(object sender, EventArgs e)
         {
             this.TabApiItemPage.SelectedTab = this.TabSpec;
@@ -392,9 +390,6 @@ namespace ApiOnBoardingConfigurationTool
 
         #region Reset Pages
 
-        /// <summary>
-        /// Resets all flag control.
-        /// </summary>
         private void ResetAllFlagControl()
         {
             ///Flags
@@ -404,9 +399,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECBtnSpecFlag.BackColor = System.Drawing.Color.Orange;
         }
 
-        /// <summary>
-        /// Resets the icons page.
-        /// </summary>
         private void ResetIconsPage()
         {
             ///Svg Files
@@ -415,9 +407,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSvgFiles.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the API page.
-        /// </summary>
         private void ResetApiPage()
         {
             ///Api.Json
@@ -429,22 +418,15 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextApiSubTitle.BackColor = System.Drawing.Color.White;
             this.ECCBApiIconData.Items.Clear();
             this.ECCBApiIconData.BackColor = System.Drawing.Color.White;
-            this.ECTextApiCategory.Text = string.Empty;
-            //this.ECTextApiCategory.BackColor = System.Drawing.Color.White;
-            this.ECTextApiCategory.Text = "CognitiveServices";
-            this.ECTextApiCategory.BackColor = System.Drawing.Color.White;
-            this.ECTextApiSkuQuotaCode.Text = string.Empty;
-            this.ECTextApiSkuQuotaName.Text = string.Empty;
-            this.ECTextApiSkuQuotaQuota.Text = string.Empty;
+            this.ECTextApiSkuQuotaCode.Text = "F0";
+            this.ECTextApiSkuQuotaName.Text = "Free";
+            this.ECTextApiSkuQuotaQuota.Text = "1";
             this.ECTextApiSkuQuotaData.Text = string.Empty;
             this.ECRDBApiShowLegalTermTrue.Checked = true;
             this.ECRDBApiShowLegalTermFalse.Checked = false;
             this.ECTextApiDefaultLegalTerm.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Resets the quick starts page.
-        /// </summary>
         private void ResetQuickStartsPage()
         {
             ///QuickStarts.Json
@@ -458,9 +440,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextQuickStartItems.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the spec pages.
-        /// </summary>
         private void ResetSpecPages()
         {
             ResetSpecFeaturesPage();
@@ -469,9 +448,6 @@ namespace ApiOnBoardingConfigurationTool
             ResetSpecAllowZeroCostPage();
         }
 
-        /// <summary>
-        /// Resets the spec features page.
-        /// </summary>
         private void ResetSpecFeaturesPage()
         {
             ///Spec.Json Features
@@ -482,9 +458,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecFeatureItems.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the spec items page.
-        /// </summary>
         private void ResetSpecItemsPage()
         {
             ///Spec.Json SpecItems
@@ -503,9 +476,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecItems.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the spec cost item page.
-        /// </summary>
         private void ResetSpecCostItemPage()
         {
             ///Spec.Json Cost Item
@@ -517,9 +487,6 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecDefaultItems.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the spec allow zero cost page.
-        /// </summary>
         private void ResetSpecAllowZeroCostPage()
         {
             ///Spec.Json AllowZeroCost
@@ -528,25 +495,15 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecAllowZeroCostSpecCodeItems.BackColor = System.Drawing.Color.White;
         }
 
-        /// <summary>
-        /// Resets the over all page.
-        /// </summary>
-        public void ResetOverAllPage()
+        public void ResetJsonFileTextBox()
         {
-            ///OverAll
-            this.ECTextOverAllApiJson.Text = string.Empty;
-            this.ECTextOverAllQuickStartsJson.Text = string.Empty;
-            this.ECTextOverAllSpecJson.Text = string.Empty;
+            this.ECTextApiJsonContent.Text = string.Empty;
+            this.ECTextQuickStartsJsonContent.Text = string.Empty;
+            this.ECTextSpecJsonContent.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Resets all extension configuration controls.
-        /// </summary>
         private void ResetAllExtensionConfigurationControls()
         {
-            /////ApiItemList
-            //this.ECListItems.Items.Clear();
-
             this.TabApiItemPage.SelectedTab = this.TabIcon;
 
             ResetAllFlagControl();
@@ -554,21 +511,17 @@ namespace ApiOnBoardingConfigurationTool
             ResetApiPage();
             ResetQuickStartsPage();
             ResetSpecPages();
-
-            this.ECTextActionMessage.Text = "Reseted All!";
+            ResetJsonFileTextBox();
+            this.ECTextActionMessage.Text = "Cleared All Fields!";
         }
 
         #endregion
 
-        /// <summary>
-        /// Handles the MouseCaptureChanged event of the TabApiItemPage control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void TabApiItemPage_MouseCaptureChanged(object sender, EventArgs e)
         {
             if (this.TabApiItemPage.SelectedTab == this.TabApi)
             {
+                this.TabControlApi.SelectedTab = this.TabApiFields;
                 string tempSelectedValue = this.ECCBApiIconData.Text;
 
                 this.ECCBApiIconData.Items.Clear();
@@ -584,11 +537,20 @@ namespace ApiOnBoardingConfigurationTool
                     this.ECCBApiIconData.SelectedItem = tempSelectedValue;
                 }
             }
+            else if (this.TabApiItemPage.SelectedTab == this.TabQuickStarts)
+            {
+                this.TabControlQuickStarts.SelectedTab = this.TabQuickStartFileds;
+            }
             else if (this.TabApiItemPage.SelectedTab == this.TabSpec)
             {
+                this.TabControlSpec.SelectedTab = this.TabSpecFields;
                 string tempSelectedValue = this.ECCBSpecFeatureItemIconSvgData.Text;
-
                 this.ECCBSpecFeatureItemIconSvgData.Items.Clear();
+
+                if (this.ECCBSpecItemColorScheme.Items.Count > 0)
+                {
+                    this.ECCBSpecItemColorScheme.SelectedIndex = 0;
+                }
 
                 if (this.ApiConfigIcons.Count > 0)
                 {
@@ -601,45 +563,10 @@ namespace ApiOnBoardingConfigurationTool
                     this.ECCBSpecFeatureItemIconSvgData.SelectedItem = tempSelectedValue;
                 }
             }
-            else if (this.TabApiItemPage.SelectedTab == this.TabOverAll)
-            {
-                try
-                {
-                    this.ECTextOverAllApiJson.Text = string.Empty;
-                    this.ECTextOverAllQuickStartsJson.Text = string.Empty;
-                    this.ECTextOverAllSpecJson.Text = string.Empty;
-
-                    ManualConfigurationData.Icons = this.ApiConfigIcons;
-                    if (ManualConfigurationData.ApiItem != null)
-                    {
-                        this.ECTextOverAllApiJson.Text = JsonConvert.SerializeObject(ManualConfigurationData.ApiItem, specialSettingFormat);
-                    }
-
-                    if (ManualConfigurationData.QuickStart != null)
-                    {
-                        this.ECTextOverAllQuickStartsJson.Text = JsonConvert.SerializeObject(ManualConfigurationData.QuickStart, settingFormat);
-                    }
-
-                    if (ManualConfigurationData.Spec != null)
-                    {
-                        this.ECTextOverAllSpecJson.Text = JsonConvert.SerializeObject(ManualConfigurationData.Spec, settingFormat);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    this.ECTextActionMessage.Text = OccurErrorMessage;
-                    MessageBox.Show(ex.Message, ExceptionTitle);
-                }
-            }
         }
 
         #region Icon Operation
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSelectSvgFolder control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnSelectSvgFolder_Click(object sender, EventArgs e)
         {
             if (this.ECFolderBrowserDialog.ShowDialog() == DialogResult.OK)
@@ -666,10 +593,12 @@ namespace ApiOnBoardingConfigurationTool
                 if (this.ApiConfigIcons.Count > 0)
                 {
                     this.ECBtnIconsFlag.BackColor = System.Drawing.Color.Green;
+                    this.ECTextSvgFiles.BackColor = System.Drawing.Color.White;
                 }
                 else
                 {
                     this.ECBtnIconsFlag.BackColor = System.Drawing.Color.Red;
+                    this.ECTextSvgFiles.BackColor = System.Drawing.Color.Red;
                 }
             }
         }
@@ -678,32 +607,27 @@ namespace ApiOnBoardingConfigurationTool
 
         #region Api Operation
 
-        /// <summary>
-        /// Handles the Click event of the BtnApiSkuQuotaAdd control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void BtnApiSkuQuotaAdd_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextApiSkuQuotaCode.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Code");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Code"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextApiSkuQuotaName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Name");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Name"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextApiSkuQuotaQuota.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Quoda");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SkuQuota - Quoda"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -749,60 +673,50 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextApiSkuQuotaQuota.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSaveApiInfo control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnSaveApiInfo_Click(object sender, EventArgs e)
         {
             try
             {
-                string ErrorMessage = string.Empty;
-                ApiEntity entity = new ApiEntity();
+                StringBuilder ErrorMessage = new StringBuilder();
+                ApiItemEntity entity = new ApiItemEntity();
                 entity.categories = new List<string>();
                 entity.skuQuota = new List<ApiSkuQuotaEntity>();
                 List<ApiSkuQuotaEntity> apiSkuQuota = new List<ApiSkuQuotaEntity>();
 
                 if (string.IsNullOrWhiteSpace(this.ECTextApiItem.Text))
                 {
-                    ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "ApiTypeName");
+                    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApiTypeName"));
                 }
 
                 if (string.IsNullOrWhiteSpace(this.ECTextApiTitle.Text))
                 {
-                    ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Title");
+                    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Title"));
                 }
 
                 if (string.IsNullOrWhiteSpace(this.ECTextApiSubTitle.Text))
                 {
-                    ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Description");
+                    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Description"));
                 }
 
                 if (string.IsNullOrWhiteSpace(this.ECCBApiIconData.Text))
                 {
-                    ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Api Icon");
+                    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Api Icon"));
                 }
 
-                if (string.IsNullOrWhiteSpace(this.ECTextApiCategory.Text))
+                if (ErrorMessage.Length > 0)
                 {
-                    ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Category");
-                }
-
-                if (!string.IsNullOrWhiteSpace(ErrorMessage))
-                {
-                    MessageBox.Show(ErrorMessage, AlertTitle);
+                    MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                     return;
                 }
                 else
                 {
                     entity.item = this.ECTextApiItem.Text;
-                    entity.title = this.ECTextApiItem.Text;
+                    entity.title = this.ECTextApiTitle.Text;
                     entity.subtitle = this.ECTextApiSubTitle.Text;
                     entity.iconData = this.ECCBApiIconData.Text;
 
                     entity.categories = new List<string>();
-                    entity.categories.Add(this.ECTextApiCategory.Text);
+                    entity.categories.Add("CognitiveServices");
 
                     if (!string.IsNullOrWhiteSpace(this.ECTextApiSkuQuotaData.Text))
                     {
@@ -813,8 +727,7 @@ namespace ApiOnBoardingConfigurationTool
                         }
                         catch (Exception ex)
                         {
-                            ErrorMessage = string.Format(TemplateCannotBeDeserializedText, "SkuQuota", ex.Message);
-                            MessageBox.Show(ErrorMessage, ExceptionTitle);
+                            MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "SkuQuota", ex.Message), ExceptionTitle);
                             return;
                         }
                     }
@@ -825,18 +738,18 @@ namespace ApiOnBoardingConfigurationTool
                         entity.defaultLegalTerm = this.ECTextApiDefaultLegalTerm.Text;
                     }
 
-                    ManualConfigurationData.ApiTypeName = entity.item;
-                    ManualConfigurationData.ApiItem = entity;
+                    string apiContent = JsonConvert.SerializeObject(entity, specialSettingFormat);
+                    //ApiConfigurationManager.SaveContentStringToLocalFile(ApiOnBoardingConfigurationToolECTempConfigurationFolder, "api.json", apiContent);
+                    this.ECTextApiJsonContent.Text = apiContent;
 
                     this.ECBtnApiFlag.BackColor = System.Drawing.Color.Green;
-                    this.ECTextActionMessage.Text = string.Format(CommonSavedSuccessfullyText, "Api");
-
-                    ResetApiPage();
+                    this.ECTextActionMessage.Text = string.Format(TemplateSavedSuccessfullyText, "Api");
+                    this.TabControlApi.SelectedTab = this.TabApiJsonContent;
                 }
             }
             catch (Exception ex)
             {
-                this.ECTextActionMessage.Text = "Occured some errors!";
+                this.ECTextActionMessage.Text = CommonOccuredErrorText1;
                 MessageBox.Show(ex.Message, ExceptionTitle);
             }
         }
@@ -845,27 +758,22 @@ namespace ApiOnBoardingConfigurationTool
 
         #region QuickStarts Operation
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddLinkItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddLinkItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItemLinkText.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Links - Text");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Links - Text"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItemLinkUri.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Links - Uri");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Links - Uri"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -897,37 +805,32 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextQuickStartItemLinkUri.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddQuickStartItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddQuickStartItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItemTitle.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Title");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Title"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECCBQuickStartItemIcon.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Icon");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Icon"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItemDescription.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Description");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Description"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItemLinks.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Links");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Links"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -971,55 +874,44 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextQuickStartItemLinks.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSaveQuickStartsInfo control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnSaveQuickStartsInfo_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextQuickStartItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "QuickStartItems");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "QuickStartItems"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
-            List<QuickStartUnit> quickStarts = new List<QuickStartUnit>();
+            QuickStartsEntity quickStartsEntity = new QuickStartsEntity();
             try
             {
-                quickStarts = JsonConvert.DeserializeObject<List<QuickStartUnit>>(this.ECTextQuickStartItems.Text, settingFormat);
+                quickStartsEntity.quickStarts = JsonConvert.DeserializeObject<List<QuickStartUnit>>(this.ECTextQuickStartItems.Text, settingFormat);
             }
             catch
             {
-                string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "QuickStartItems");
-                MessageBox.Show(exceptionMessage, ExceptionTitle);
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "QuickStartItems"), ExceptionTitle);
                 return;
             }
 
-            ManualConfigurationData.QuickStart = new QuickStartsEntity();
-            ManualConfigurationData.QuickStart.quickStarts = quickStarts;
+            string quickStartsContent = JsonConvert.SerializeObject(quickStartsEntity, specialSettingFormat);
+            //ApiConfigurationManager.SaveContentStringToLocalFile(ApiOnBoardingConfigurationToolECTempConfigurationFolder, "quickStarts.json", quickStartsContent);
+            this.ECTextQuickStartsJsonContent.Text = quickStartsContent;
 
-            this.ECTextActionMessage.Text = string.Format(CommonSavedSuccessfullyText, "QuickStarts");
-
+            this.ECTextActionMessage.Text = string.Format(TemplateSavedSuccessfullyText, "QuickStarts");
             this.ECBtnQuickStartsFlag.BackColor = System.Drawing.Color.Green;
-            ResetQuickStartsPage();
+            this.TabControlQuickStarts.SelectedTab = this.TabQuickStartJsonContent;
         }
 
         #endregion
 
         #region Spec Operation
 
-        /// <summary>
-        /// Handles the MouseCaptureChanged event of the TabSpecContent control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void TabSpecContent_MouseCaptureChanged(object sender, EventArgs e)
         {
             if (this.TabSpecContent.SelectedTab == this.TabSpecFeatures)
@@ -1105,40 +997,35 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddSpecFeatureItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddSpecFeatureItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItemDisplayName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Display Name");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Display Name"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECCBSpecFeatureItemIconSvgData.Text) && string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItemIconName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotAllBeEmptyText, "Feature Icon", "Icon Name");
+                ErrorMessage.Append(string.Format(TemplateShouldNotAllBeEmptyText, "Feature Icon", "Icon Name"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
             SpecFeatureEntity specFeatureEntity = new SpecFeatureEntity();
             specFeatureEntity.displayName = this.ECTextSpecFeatureItemDisplayName.Text;
-            specFeatureEntity.id = specFeatureEntity.displayName.Trim(' ');
+            specFeatureEntity.id = specFeatureEntity.displayName.Replace(" ", "");
             if (!string.IsNullOrWhiteSpace(this.ECCBSpecFeatureItemIconSvgData.Text))
             {
                 specFeatureEntity.iconSvgData = this.ECCBSpecFeatureItemIconSvgData.Text;
             }
             else
             {
-                specFeatureEntity.displayName = this.ECTextSpecFeatureItemIconName.Text;
+                specFeatureEntity.iconName = this.ECTextSpecFeatureItemIconName.Text;
             }
 
             List<SpecFeatureEntity> features = new List<SpecFeatureEntity>();
@@ -1164,27 +1051,22 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecFeatureItemIconName.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddPromotedFeature control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddPromotedFeature_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemPromotedFeatureItemValue.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures - Value");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures - Value"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemPromotedFeatureItemUnitDescription.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures - unitDescription");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures - unitDescription"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1213,22 +1095,17 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecItemPromotedFeatureItemUnitDescription.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddFeatureID control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddFeatureID_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECCBSpecItemFeatureID.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Features - FeatureID");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Features - FeatureID"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1255,47 +1132,42 @@ namespace ApiOnBoardingConfigurationTool
             this.ECCBSpecItemFeatureID.SelectedItem = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddSpecItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddSpecItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemSpecCode.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SpecCode");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SpecCode"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECCBSpecItemColorScheme.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "ColorScheme");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ColorScheme"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemTitle.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Title");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Title"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemPromotedFeatureItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "PromotedFeatures"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemFeatureIDs.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Features");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Features"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItemCostCaption.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Cost - Caption");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Cost - Caption"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1371,27 +1243,22 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecItemCostCaption.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddSpecDefaultItemFirstPartyItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddSpecDefaultItemFirstPartyItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextSpecDefaultItemFirstPartyResourceID.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "FistParty - ResourceID");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FistParty - ResourceID"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecDefaultItemFirstPartyQuantity.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "FistParty - Quantity");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FistParty - Quantity"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1429,27 +1296,22 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecDefaultItemFirstPartyQuantity.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddSpecDefaultItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddSpecDefaultItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECCBSpecDefaultItemSpecCode.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SpecCode");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SpecCode"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecDefaultItemFirstPartyItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "FistParty");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FistParty"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1488,22 +1350,17 @@ namespace ApiOnBoardingConfigurationTool
             this.ECTextSpecDefaultItemFirstPartyItems.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnAddSpecAllowZeroCostSpecCodeItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnAddSpecAllowZeroCostSpecCodeItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECCBSpecAllowZeroCostSpecCode.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SpecCode");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SpecCode"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -1527,43 +1384,37 @@ namespace ApiOnBoardingConfigurationTool
             this.ECCBSpecAllowZeroCostSpecCode.SelectedItem = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSaveSpecInfo control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnSaveSpecInfo_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "FeatureItems");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FeatureItems"));
             }
 
             if (string.IsNullOrWhiteSpace(this.ECTextSpecItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SpecItems");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SpecItems"));
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECTextSpecDefaultItems.Text))
+            if (ErrorMessage.Length > 0)
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "DefaultItems");
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECTextSpecAllowZeroCostSpecCodeItems.Text))
+            if (string.IsNullOrWhiteSpace(this.ECTextApiItem.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SpecsToAllowZeroCost");
-            }
-
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
-            {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show("Please input the 'ApiTypeName'", AlertTitle);
+                this.TabApiItemPage.SelectedTab = this.TabApi;
+                this.TabControlApi.SelectedTab = this.TabApiFields;
+                this.ECTextApiItem.Focus();
                 return;
             }
 
             SpecsEntity specsEntity = new SpecsEntity();
 
-            specsEntity.specType = string.Format("Microsoft.ProjectOxford/{0}", ManualConfigurationData.ApiTypeName);
+            specsEntity.specType = string.Format("Microsoft.ProjectOxford/{0}", this.ECTextApiItem.Text);
 
             try
             {
@@ -1587,92 +1438,109 @@ namespace ApiOnBoardingConfigurationTool
                 return;
             }
 
-            try
+            if (!string.IsNullOrWhiteSpace(this.ECTextSpecDefaultItems.Text))
             {
-                List<SpecResourceMapDefault> specResourceMapDefaults = JsonConvert.DeserializeObject<List<SpecResourceMapDefault>>(this.ECTextSpecDefaultItems.Text, settingFormat);
-                specsEntity.resourceMap = new SpecResourceMapEntity { specResourceMapDefault = specResourceMapDefaults };
+                try
+                {
+                    List<SpecResourceMapDefault> specResourceMapDefaults = JsonConvert.DeserializeObject<List<SpecResourceMapDefault>>(this.ECTextSpecDefaultItems.Text, settingFormat);
+                    specsEntity.resourceMap = new SpecResourceMapEntity { specResourceMapDefault = specResourceMapDefaults };
+                }
+                catch
+                {
+                    string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "DefaultItems");
+                    MessageBox.Show(exceptionMessage, ExceptionTitle);
+                    return;
+                }
             }
-            catch
+            else
             {
-                string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "DefaultItems");
-                MessageBox.Show(exceptionMessage, ExceptionTitle);
-                return;
-            }
-
-            try
-            {
-                specsEntity.specsToAllowZeroCost = JsonConvert.DeserializeObject<List<string>>(this.ECTextSpecAllowZeroCostSpecCodeItems.Text, settingFormat);
-            }
-            catch
-            {
-                string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "SpecsToAllowZeroCost");
-                MessageBox.Show(exceptionMessage, ExceptionTitle);
-                return;
+                specsEntity.resourceMap = new SpecResourceMapEntity();
             }
 
-            ManualConfigurationData.Spec = specsEntity;
+            if (string.IsNullOrWhiteSpace(this.ECTextSpecAllowZeroCostSpecCodeItems.Text))
+            {
+                try
+                {
+                    specsEntity.specsToAllowZeroCost = JsonConvert.DeserializeObject<List<string>>(this.ECTextSpecAllowZeroCostSpecCodeItems.Text, settingFormat);
+                }
+                catch
+                {
+                    string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "SpecsToAllowZeroCost");
+                    MessageBox.Show(exceptionMessage, ExceptionTitle);
+                    return;
+                }
+            }
+            else
+            {
+                specsEntity.specsToAllowZeroCost = new List<string>();
+            }
+
+            string specContent = JsonConvert.SerializeObject(specsEntity, specialSettingFormat);
+            //ApiConfigurationManager.SaveContentStringToLocalFile(ApiOnBoardingConfigurationToolECTempConfigurationFolder, "spec.json", specContent);
+            this.ECTextSpecJsonContent.Text = specContent;
 
             this.ECBtnSpecFlag.BackColor = System.Drawing.Color.Green;
-            this.ECTextActionMessage.Text = string.Format(CommonSavedSuccessfullyText, "Spec");
-            ResetSpecPages();
-
-
+            this.ECTextActionMessage.Text = string.Format(TemplateSavedSuccessfullyText, "Spec");
+            this.TabControlSpec.SelectedTab = this.TabSpecJsonContent;
         }
 
         #endregion
 
-        #region OverAll Operation
+        #region Operation
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnSaveToLocal control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnSaveToLocal_Click(object sender, EventArgs e)
         {
-            SeperateApiConfigurationInfoIntoResource();
+            ApiConfigurationData configData = SeperateApiConfigurationInfoIntoResource();
+
+            if (configData == null)
+            {
+                return;
+            }
+
+            configData.ApiFolderName = originalFileOrFolderName;
 
             if (this.ECRDBSaveAsFolder.Checked)
             {
-                ApiConfigurationManager.SaveConfigurationDataToLocalFolder(ManualConfigurationData, ApiOnBoardingConfigurationToolSaveToLocalFolder);
+                ApiConfigurationManager.SaveConfigurationDataToLocalFolder(configData, ApiOnBoardingConfigurationToolECSaveToLocalFolder);
             }
             else
             {
-                ApiConfigurationManager.SaveConfigurationDataToLocalZip(ManualConfigurationData, ApiOnBoardingConfigurationToolSaveToLocalFolder, ManualConfigurationData.ApiFolderName);
+                ApiConfigurationManager.SaveConfigurationDataToLocalZip(configData, ApiOnBoardingConfigurationToolECSaveToLocalFolder);
             }
+
+            this.ECTextActionMessage.Text = string.Format("Saved successfully!\r\nPath: {0}", ApiOnBoardingConfigurationToolECSaveToLocalFolder);
         }
 
-        /// <summary>
-        /// Handles the Click event of the ECBtnUploadToPPEBlob control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void ECBtnUploadToPPEBlob_Click(object sender, EventArgs e)
         {
             try
             {
-                SeperateApiConfigurationInfoIntoResource();
+                ApiConfigurationData configData = SeperateApiConfigurationInfoIntoResource();
+                if (configData == null)
+                {
+                    return;
+                }
+
+                configData.ApiFolderName = originalFileOrFolderName;
 
                 string ApiCongigurationTestBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
                 string ApiConfigurationTestBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
 
                 if (string.IsNullOrWhiteSpace(ApiCongigurationTestBlobAccountName))
                 {
-                    string ErrorMessage = "Not find the key 'ApiCongigurationTestBlobAccountName' in App.config or its value is empty.";
-                    MessageBox.Show(ErrorMessage, AlertTitle);
+                    MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
                     return;
                 }
                 if (string.IsNullOrWhiteSpace(ApiConfigurationTestBlobAccountKey))
                 {
-                    string ErrorMessage = "Not find the key 'ApiConfigurationTestBlobAccountKey' in App.config or its value is empty.";
-                    MessageBox.Show(ErrorMessage, AlertTitle);
+                    MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
                     return;
                 }
 
                 StorageCredentials credentials = new StorageCredentials(ApiCongigurationTestBlobAccountName, ApiConfigurationTestBlobAccountKey, "AccountKey");
-                BlobHelper.UploadApiConfigurationToBlobContainer(credentials, ApiConfigurationStorageContainerName, ManualConfigurationData, ApiOnBoardingConfigurationToolInnerTempFolder);
+                BlobHelper.UploadApiConfigurationToBlobContainer(credentials, ECConfigurationStorageContainerName, configData, ApiOnBoardingConfigurationToolECTempFolder);
 
-                this.ECTextActionMessage.Text = "Upload file successfully.";
+                this.ECTextActionMessage.Text = CommonUploadSuccessfullyText;
             }
             catch (Exception ex)
             {
@@ -1683,14 +1551,12 @@ namespace ApiOnBoardingConfigurationTool
 
         #endregion
 
-        /// <summary>
-        /// Loads the API item list.
-        /// </summary>
+
         private void LoadApiItemList()
         {
             this.ECListItems.Items.Clear();
 
-            foreach (var item in ListCachedApiConfigurationData)
+            foreach (var item in ListCachedExtensionConfigurationData)
             {
                 if (item != null)
                 {
@@ -1699,17 +1565,13 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
-        /// <summary>
-        /// Loads the API configuration information to page.
-        /// </summary>
-        /// <param name="apiConfigInfo">The API configuration information.</param>
         private void LoadApiConfigInfoToPage(ApiConfigurationData apiConfigInfo)
         {
             ResetAllExtensionConfigurationControls();
-            ManualConfigurationData = RestoreApiConfigurationInfoFromResource(apiConfigInfo);
-            if (ManualConfigurationData.Icons.Count > 0)
+            ApiConfigurationData configData = RestoreApiConfigurationInfoFromResource(apiConfigInfo);
+            if (configData.Icons.Count > 0)
             {
-                this.ApiConfigIcons = ManualConfigurationData.Icons;
+                this.ApiConfigIcons = configData.Icons;
 
                 foreach (var icon in this.ApiConfigIcons)
                 {
@@ -1726,38 +1588,29 @@ namespace ApiOnBoardingConfigurationTool
 
             try
             {
-                if (ManualConfigurationData.ApiItem != null)
+                if (configData.ApiItem != null)
                 {
-                    SetControlContentText(this.ECTextApiItem, ManualConfigurationData.ApiItem.item, this.ECBtnApiFlag);
-                    SetControlContentText(this.ECTextApiTitle, ManualConfigurationData.ApiItem.title, this.ECBtnApiFlag);
-                    SetControlContentText(this.ECTextApiSubTitle, ManualConfigurationData.ApiItem.subtitle, this.ECBtnApiFlag);
-                    if (this.ApiConfigIcons.ContainsKey(ManualConfigurationData.ApiItem.iconData))
+                    SetControlContentText(this.ECTextApiItem, configData.ApiItem.item, this.ECBtnApiFlag);
+                    SetControlContentText(this.ECTextApiTitle, configData.ApiItem.title, this.ECBtnApiFlag);
+                    SetControlContentText(this.ECTextApiSubTitle, configData.ApiItem.subtitle, this.ECBtnApiFlag);
+                    if (this.ApiConfigIcons.ContainsKey(configData.ApiItem.iconData))
                     {
-                        SetControlContentText(this.ECCBApiIconData, ManualConfigurationData.ApiItem.iconData, this.ECBtnApiFlag);
+                        SetControlContentText(this.ECCBApiIconData, configData.ApiItem.iconData, this.ECBtnApiFlag);
                     }
                     else
                     {
                         SetControlContentText(this.ECCBApiIconData, null, this.ECBtnApiFlag);
                     }
 
-                    if (ManualConfigurationData.ApiItem.categories.Count > 0)
+                    if (configData.ApiItem.skuQuota.Count > 0)
                     {
-                        SetControlContentText(this.ECTextApiCategory, ManualConfigurationData.ApiItem.categories[0], this.ECBtnApiFlag);
-                    }
-                    else
-                    {
-                        SetControlContentText(this.ECTextApiCategory, null, this.ECBtnApiFlag);
+                        SetControlContentText(this.ECTextApiSkuQuotaData, JsonConvert.SerializeObject(configData.ApiItem.skuQuota, settingFormat), this.ECBtnApiFlag, false);
                     }
 
-                    if (ManualConfigurationData.ApiItem.skuQuota.Count > 0)
-                    {
-                        SetControlContentText(this.ECTextApiSkuQuotaData, JsonConvert.SerializeObject(ManualConfigurationData.ApiItem.skuQuota, settingFormat), this.ECBtnApiFlag, false);
-                    }
+                    this.ECRDBApiShowLegalTermTrue.Checked = configData.ApiItem.showLegalTerm;
+                    this.ECRDBApiShowLegalTermFalse.Checked = !configData.ApiItem.showLegalTerm;
 
-                    this.ECRDBApiShowLegalTermTrue.Checked = ManualConfigurationData.ApiItem.showLegalTerm;
-                    this.ECRDBApiShowLegalTermFalse.Checked = !ManualConfigurationData.ApiItem.showLegalTerm;
-
-                    SetControlContentText(this.ECTextApiDefaultLegalTerm, ManualConfigurationData.ApiItem.defaultLegalTerm, this.ECBtnApiFlag, false);
+                    SetControlContentText(this.ECTextApiDefaultLegalTerm, configData.ApiItem.defaultLegalTerm, this.ECBtnApiFlag, false);
                 }
                 else
                 {
@@ -1771,9 +1624,9 @@ namespace ApiOnBoardingConfigurationTool
 
             try
             {
-                if (ManualConfigurationData.QuickStart != null)
+                if (configData.QuickStart != null)
                 {
-                    SetControlContentText(this.ECTextQuickStartItems, JsonConvert.SerializeObject(ManualConfigurationData.QuickStart.quickStarts, settingFormat), this.ECBtnApiFlag);
+                    SetControlContentText(this.ECTextQuickStartItems, JsonConvert.SerializeObject(configData.QuickStart.quickStarts, settingFormat), this.ECBtnApiFlag);
                 }
                 else
                 {
@@ -1787,30 +1640,30 @@ namespace ApiOnBoardingConfigurationTool
 
             try
             {
-                if (ManualConfigurationData.Spec != null)
+                if (configData.Spec != null)
                 {
                     this.ECCBSpecItemFeatureID.Items.Add(string.Empty);
-                    foreach (SpecFeatureEntity feature in ManualConfigurationData.Spec.features)
+                    foreach (SpecFeatureEntity feature in configData.Spec.features)
                     {
                         this.ECCBSpecItemFeatureID.Items.Add(feature.id);
                     }
 
                     this.ECCBSpecDefaultItemSpecCode.Items.Add(string.Empty);
                     this.ECCBSpecAllowZeroCostSpecCode.Items.Add(string.Empty);
-                    foreach (SpecUnitEntity specItem in ManualConfigurationData.Spec.specs)
+                    foreach (SpecUnitEntity specItem in configData.Spec.specs)
                     {
                         this.ECCBSpecDefaultItemSpecCode.Items.Add(specItem.specCode);
                         this.ECCBSpecAllowZeroCostSpecCode.Items.Add(specItem.specCode);
                     }
 
-                    SetControlContentText(this.ECTextSpecItems, JsonConvert.SerializeObject(ManualConfigurationData.Spec.specs, settingFormat), this.ECBtnSpecFlag);
-                    SetControlContentText(this.ECTextSpecFeatureItems, JsonConvert.SerializeObject(ManualConfigurationData.Spec.features, settingFormat), this.ECBtnSpecFlag);
-                    if (ManualConfigurationData.Spec.resourceMap.specResourceMapDefault != null)
+                    SetControlContentText(this.ECTextSpecItems, JsonConvert.SerializeObject(configData.Spec.specs, settingFormat), this.ECBtnSpecFlag);
+                    SetControlContentText(this.ECTextSpecFeatureItems, JsonConvert.SerializeObject(configData.Spec.features, settingFormat), this.ECBtnSpecFlag);
+                    if (configData.Spec.resourceMap.specResourceMapDefault != null)
                     {
-                        SetControlContentText(this.ECTextSpecDefaultItems, JsonConvert.SerializeObject(ManualConfigurationData.Spec.resourceMap.specResourceMapDefault, settingFormat), this.ECBtnSpecFlag);
+                        SetControlContentText(this.ECTextSpecDefaultItems, JsonConvert.SerializeObject(configData.Spec.resourceMap.specResourceMapDefault, settingFormat), this.ECBtnSpecFlag);
                     }
 
-                    SetControlContentText(this.ECTextSpecAllowZeroCostSpecCodeItems, JsonConvert.SerializeObject(ManualConfigurationData.Spec.specsToAllowZeroCost, settingFormat), this.ECBtnSpecFlag);
+                    SetControlContentText(this.ECTextSpecAllowZeroCostSpecCodeItems, JsonConvert.SerializeObject(configData.Spec.specsToAllowZeroCost, settingFormat), this.ECBtnSpecFlag);
                 }
                 else
                 {
@@ -1844,123 +1697,129 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
-        /// <summary>
-        /// Seperates the API configuration information into resource.
-        /// </summary>
-        private void SeperateApiConfigurationInfoIntoResource()
+        private ApiConfigurationData SeperateApiConfigurationInfoIntoResource()
         {
-            string ErrorMessage = string.Empty;
-            if (string.IsNullOrWhiteSpace(this.ECTextOverAllApiJson.Text))
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.ECTextApiJsonContent.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Api.Json Content");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Api.Json Content"));
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECTextOverAllQuickStartsJson.Text))
+            if (string.IsNullOrWhiteSpace(this.ECTextQuickStartsJsonContent.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "QuickStarts.Json Content");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "QuickStarts.Json Content"));
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECTextOverAllSpecJson.Text))
+            if (string.IsNullOrWhiteSpace(this.ECTextSpecJsonContent.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Spec.Json Content");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Spec.Json Content"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
-                return;
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return null;
             }
+
+            ApiConfigurationData configData = new ApiConfigurationData();
 
             try
             {
-                ManualConfigurationData.ApiItem = JsonConvert.DeserializeObject<ApiEntity>(this.ECTextOverAllApiJson.Text, settingFormat);
+                configData.ApiItem = JsonConvert.DeserializeObject<ApiItemEntity>(this.ECTextApiJsonContent.Text, settingFormat);
+                configData.ApiTypeName = configData.ApiItem.item;
             }
             catch
             {
                 string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "Api.Json Content");
                 MessageBox.Show(exceptionMessage, ExceptionTitle);
-                return;
+                return null;
             }
 
             try
             {
-                ManualConfigurationData.QuickStart = JsonConvert.DeserializeObject<QuickStartsEntity>(this.ECTextOverAllQuickStartsJson.Text, settingFormat);
+                configData.QuickStart = JsonConvert.DeserializeObject<QuickStartsEntity>(this.ECTextQuickStartsJsonContent.Text, settingFormat);
             }
             catch
             {
                 string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "QuickStarts.Json Content");
                 MessageBox.Show(exceptionMessage, ExceptionTitle);
-                return;
+                return null;
             }
 
             try
             {
-                ManualConfigurationData.Spec = JsonConvert.DeserializeObject<SpecsEntity>(this.ECTextOverAllSpecJson.Text, settingFormat);
+                configData.Spec = JsonConvert.DeserializeObject<SpecsEntity>(this.ECTextSpecJsonContent.Text, settingFormat);
             }
             catch
             {
                 string exceptionMessage = string.Format(TemplateCannotBeDeserializedText, "Spec.Json Content");
                 MessageBox.Show(exceptionMessage, ExceptionTitle);
-                return;
+                return null;
             }
 
-            ManualConfigurationData.Icons = this.ApiConfigIcons;
+            configData.Icons = this.ApiConfigIcons;
 
             Dictionary<string, string> resource = new Dictionary<string, string>();
 
-            resource.Add("title", ManualConfigurationData.ApiItem.title);
-            ManualConfigurationData.ApiItem.title = string.Format("{0}{1}", ResourceToken, "title");
+            resource.Add("title", configData.ApiItem.title);
+            configData.ApiItem.title = string.Format("{0}{1}", ResourceToken, "title");
 
-            resource.Add("subtitle", ManualConfigurationData.ApiItem.subtitle);
-            ManualConfigurationData.ApiItem.subtitle = string.Format("{0}{1}", ResourceToken, "subtitle");
+            resource.Add("subtitle", configData.ApiItem.subtitle);
+            configData.ApiItem.subtitle = string.Format("{0}{1}", ResourceToken, "subtitle");
 
-            ManualConfigurationData.ApiItem.iconData = string.Format("{0}{1}", IconToken, ManualConfigurationData.ApiItem.iconData);
+            configData.ApiItem.iconData = string.Format("{0}{1}", IconToken, configData.ApiItem.iconData);
 
-            resource.Add("defaultLegalTerm", ManualConfigurationData.ApiItem.defaultLegalTerm);
-            ManualConfigurationData.ApiItem.defaultLegalTerm = string.Format("{0}{1}", ResourceToken, "defaultLegalTerm");
+            if (!string.IsNullOrWhiteSpace(configData.ApiItem.defaultLegalTerm))
+            {
+                resource.Add("defaultLegalTerm", configData.ApiItem.defaultLegalTerm);
+                configData.ApiItem.defaultLegalTerm = string.Format("{0}{1}", ResourceToken, "defaultLegalTerm");
+            }
 
 
-            for (int i = 0; i < ManualConfigurationData.QuickStart.quickStarts.Count; i++)
+            for (int i = 0; i < configData.QuickStart.quickStarts.Count; i++)
             {
                 string tempQuickStartItemTitle = string.Format("quickStart{0}.title", i);
-                resource.Add(tempQuickStartItemTitle, ManualConfigurationData.QuickStart.quickStarts[i].title);
-                ManualConfigurationData.QuickStart.quickStarts[i].title = string.Format("{0}{1}", ResourceToken, tempQuickStartItemTitle);
+                resource.Add(tempQuickStartItemTitle, configData.QuickStart.quickStarts[i].title);
+                configData.QuickStart.quickStarts[i].title = string.Format("{0}{1}", ResourceToken, tempQuickStartItemTitle);
 
                 string tempQuickStartItemDescription = string.Format("quickStart{0}.des", i);
-                resource.Add(tempQuickStartItemDescription, ManualConfigurationData.QuickStart.quickStarts[i].description);
-                ManualConfigurationData.QuickStart.quickStarts[i].description = string.Format("{0}{1}", ResourceToken, tempQuickStartItemDescription);
+                resource.Add(tempQuickStartItemDescription, configData.QuickStart.quickStarts[i].description);
+                configData.QuickStart.quickStarts[i].description = string.Format("{0}{1}", ResourceToken, tempQuickStartItemDescription);
 
-                for (int j = 0; j < ManualConfigurationData.QuickStart.quickStarts[i].links.Count; j++)
+                for (int j = 0; j < configData.QuickStart.quickStarts[i].links.Count; j++)
                 {
                     string tempQuickStartItemLinkItemText = string.Format("quickStart{0}.link{1}.text", i, j);
-                    resource.Add(tempQuickStartItemLinkItemText, ManualConfigurationData.QuickStart.quickStarts[i].links[j].text);
-                    ManualConfigurationData.QuickStart.quickStarts[i].links[j].text = string.Format("{0}{1}", ResourceToken, tempQuickStartItemLinkItemText);
+                    resource.Add(tempQuickStartItemLinkItemText, configData.QuickStart.quickStarts[i].links[j].text);
+                    configData.QuickStart.quickStarts[i].links[j].text = string.Format("{0}{1}", ResourceToken, tempQuickStartItemLinkItemText);
                 }
             }
 
-            for (int i = 0; i < ManualConfigurationData.Spec.features.Count; i++)
+            for (int i = 0; i < configData.Spec.features.Count; i++)
             {
-                string tempSpecFeatureDisplayName = string.Format("feature.{0}.displayName", ManualConfigurationData.Spec.features[i].id);
-                resource.Add(tempSpecFeatureDisplayName, ManualConfigurationData.Spec.features[i].displayName);
-                ManualConfigurationData.Spec.features[i].displayName = string.Format("{0}{1}", ResourceToken, tempSpecFeatureDisplayName);
+                string tempSpecFeatureDisplayName = string.Format("feature.{0}.displayName", configData.Spec.features[i].id);
+                resource.Add(tempSpecFeatureDisplayName, configData.Spec.features[i].displayName);
+                configData.Spec.features[i].displayName = string.Format("{0}{1}", ResourceToken, tempSpecFeatureDisplayName);
 
-                ManualConfigurationData.Spec.features[i].iconSvgData = string.Format("{0}{1}", IconToken, ManualConfigurationData.Spec.features[i].iconSvgData);
+                if (!string.IsNullOrWhiteSpace(configData.Spec.features[i].iconSvgData))
+                {
+                    configData.Spec.features[i].iconSvgData = string.Format("{0}{1}", IconToken, configData.Spec.features[i].iconSvgData);
+                }
             }
 
-            for (int i = 0; i < ManualConfigurationData.Spec.specs.Count; i++)
+            for (int i = 0; i < configData.Spec.specs.Count; i++)
             {
-                string tempSpecItemTitle = string.Format("spec.{0}.title", ManualConfigurationData.Spec.specs[i].id);
-                resource.Add(tempSpecItemTitle, ManualConfigurationData.Spec.specs[i].title);
-                ManualConfigurationData.Spec.specs[i].title = string.Format("{0}{1}", ResourceToken, tempSpecItemTitle);
+                string tempSpecItemTitle = string.Format("spec.{0}.title", configData.Spec.specs[i].id);
+                resource.Add(tempSpecItemTitle, configData.Spec.specs[i].title);
+                configData.Spec.specs[i].title = string.Format("{0}{1}", ResourceToken, tempSpecItemTitle);
 
-                for (int j = 0; j < ManualConfigurationData.Spec.specs[i].promotedFeatures.Count; j++)
+                for (int j = 0; j < configData.Spec.specs[i].promotedFeatures.Count; j++)
                 {
-                    SpecPromotedFeature promotedFeature = ManualConfigurationData.Spec.specs[i].promotedFeatures[j];
+                    SpecPromotedFeature promotedFeature = configData.Spec.specs[i].promotedFeatures[j];
                     string tempUnitDescription = string.Format("spec.promotedFeature.unitDescription{0}", j);
                     if (resource.ContainsValue(promotedFeature.unitDescription))
                     {
                         tempUnitDescription = resource.FirstOrDefault(d => d.Value == promotedFeature.unitDescription).Key;
-                        ManualConfigurationData.Spec.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, tempUnitDescription);
+                        configData.Spec.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, tempUnitDescription);
                     }
                     else
                     {
@@ -1971,7 +1830,7 @@ namespace ApiOnBoardingConfigurationTool
                             if (!resource.ContainsKey(tempUnitDescription))
                             {
                                 resource.Add(tempUnitDescription, promotedFeature.unitDescription);
-                                ManualConfigurationData.Spec.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, tempUnitDescription);
+                                configData.Spec.specs[i].promotedFeatures[j].unitDescription = string.Format("{0}{1}", ResourceToken, tempUnitDescription);
                                 break;
                             }
 
@@ -1980,20 +1839,16 @@ namespace ApiOnBoardingConfigurationTool
                     }
                 }
 
-                string tempSpecItemCostCaption = string.Format("spec.cost.{0}.caption.format", ManualConfigurationData.Spec.specs[i].id);
-                resource.Add(tempSpecItemCostCaption, ManualConfigurationData.Spec.specs[i].cost.caption);
-                ManualConfigurationData.Spec.specs[i].cost.caption = string.Format("{0}{1}", ResourceToken, tempSpecItemCostCaption);
+                string tempSpecItemCostCaption = string.Format("spec.cost.{0}.caption.format", configData.Spec.specs[i].id);
+                resource.Add(tempSpecItemCostCaption, configData.Spec.specs[i].cost.caption);
+                configData.Spec.specs[i].cost.caption = string.Format("{0}{1}", ResourceToken, tempSpecItemCostCaption);
             }
 
-            ManualConfigurationData.Resources.Clear();
-            ManualConfigurationData.Resources.Add("en", resource);
+            configData.Resources.Clear();
+            configData.Resources.Add("en", resource);
+            return configData;
         }
 
-        /// <summary>
-        /// Restores the API configuration information from resource.
-        /// </summary>
-        /// <param name="apiConfigInfo">The API configuration information.</param>
-        /// <returns></returns>
         private ApiConfigurationData RestoreApiConfigurationInfoFromResource(ApiConfigurationData apiConfigInfo)
         {
             ApiConfigurationData configInfo = new ApiConfigurationData();
@@ -2014,7 +1869,7 @@ namespace ApiOnBoardingConfigurationTool
 
             try
             {
-                configInfo.ApiItem = new ApiEntity();
+                configInfo.ApiItem = new ApiItemEntity();
                 configInfo.ApiItem.item = apiConfigInfo.ApiItem.item;
                 configInfo.ApiItem.title = resourceEN[apiConfigInfo.ApiItem.title.Replace(ResourceToken, string.Empty)];
                 configInfo.ApiItem.subtitle = resourceEN[apiConfigInfo.ApiItem.subtitle.Replace(ResourceToken, string.Empty)];
@@ -2097,7 +1952,7 @@ namespace ApiOnBoardingConfigurationTool
 
                         if (!string.IsNullOrWhiteSpace(apiConfigInfo.Spec.features[i].iconSvgData))
                         {
-                            feature.iconSvgData = apiConfigInfo.Spec.features[i].iconSvgData.Replace(ResourceToken, "");
+                            feature.iconSvgData = apiConfigInfo.Spec.features[i].iconSvgData.Replace(IconToken, "");
                         }
 
                         if (!string.IsNullOrWhiteSpace(apiConfigInfo.Spec.features[i].iconName))
@@ -2176,23 +2031,173 @@ namespace ApiOnBoardingConfigurationTool
 
         #region PPE
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnPPEAddLocationItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void SCPPEBtnLoadFromPPE_Click(object sender, EventArgs e)
+        {
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            if (string.IsNullOrWhiteSpace(apiConfigurationPublicAccessUrl))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationPublicAccessUrl"), AlertTitle);
+                return;
+            }
+
+            this.SCPPEBtnLoadFromPPE.Enabled = false;
+
+            Uri uri = new Uri(apiConfigurationPublicAccessUrl);
+            CloudBlobClient blobClient = new CloudBlobClient(uri);
+            CloudBlobContainer container = blobClient.GetContainerReference(SCConfigurationStorageContainerName);
+            var files = container.ListBlobs();
+            var requestOption = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
+
+            ListCachedSkuConfigurationData.Clear();
+            this.SCPPEListItems.Items.Clear();
+            foreach (var file in files.OfType<CloudBlockBlob>())
+            {
+                using (var blobStream = file.OpenRead(null, requestOption))
+                {
+                    using (StreamReader reader = new StreamReader(blobStream))
+                    {
+                        ListCachedSkuConfigurationData.Add(file.Name.Replace(".json", ""), reader.ReadToEnd());
+                    }
+                }
+
+                this.SCPPEListItems.Items.Add(file.Name.Replace(".json", ""));
+            }
+
+            this.SCPPETextActionMessage.Text = "Loaded!";
+            this.SCPPEBtnLoadFromPPE.Enabled = true;
+        }
+
+        private void SCPPEBtnLoadFromLocal_Click(object sender, EventArgs e)
+        {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileInfo file = new FileInfo(this.OpenFileDialog.FileName);
+                if (!file.Extension.ToLower().Equals(".json"))
+                {
+                    MessageBox.Show("Only support Json file!", AlertTitle);
+                    return;
+                }
+                else
+                {
+                    SkuConfigEntity skuConfigEntity = null;
+                    string content = string.Empty;
+                    using (Stream stream = file.OpenRead())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            content = reader.ReadToEnd();
+                        }
+                    }
+
+                    try
+                    {
+                        skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(content, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.SCTextPPEName.Text = skuConfigEntity.name;
+                    this.SCTextPPEDisplayName.Text = skuConfigEntity.displayName;
+                    this.SCTextPPEApimInstance.Text = skuConfigEntity.apimInstance;
+                    this.SCTextPPEApiPath.Text = skuConfigEntity.apiPath;
+                    this.SCTextPPESkuItems.Text = JsonConvert.SerializeObject(skuConfigEntity.skus, specialSettingFormat);
+                    this.SCTextPPEJsonContent.Text = content;
+                    this.TabControlSkuPPE.SelectedTab = this.TabSkuPPEJsonContent;
+                    this.SCPPETextActionMessage.Text = "Loaded!";
+                }
+            }
+        }
+
+        private void SCPPEListItems_DoubleClick(object sender, EventArgs e)
+        {
+            foreach (var skuConfigData in ListCachedSkuConfigurationData)
+            {
+                if (this.SCPPEListItems.SelectedItem.ToString() == skuConfigData.Key)
+                {
+                    SkuConfigEntity skuConfigEntity = null;
+                    try
+                    {
+                        skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(skuConfigData.Value, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.SCTextPPEName.Text = skuConfigEntity.name;
+                    this.SCTextPPEDisplayName.Text = skuConfigEntity.displayName;
+                    this.SCTextPPEApimInstance.Text = skuConfigEntity.apimInstance;
+                    this.SCTextPPEApiPath.Text = skuConfigEntity.apiPath;
+                    this.SCTextPPESkuItems.Text = JsonConvert.SerializeObject(skuConfigEntity.skus, specialSettingFormat);
+                    this.SCTextPPEJsonContent.Text = skuConfigData.Value;
+                    this.TabControlSkuPPE.SelectedTab = this.TabSkuPPEJsonContent;
+                    this.SCPPETextActionMessage.Text = "Loaded!";
+                    break;
+                }
+            }
+        }
+
+        private void SCPPEBtnDeleteFromPPEBlob_Click(object sender, EventArgs e)
+        {
+            if (this.SCPPEListItems.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select item to delete!", AlertTitle);
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to delete these items from PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+
+            List<string> selectedItems = new List<string>();
+            foreach (var item in this.SCPPEListItems.CheckedItems)
+            {
+                selectedItems.Add(item.ToString());
+                this.SCPPEListItems.Items.Remove(item);
+            }
+
+            BlobHelper.DeleteApiConfigurationListFromBlobContainer(credentials, SCConfigurationStorageContainerName, selectedItems, "json");
+            this.SCPPETextActionMessage.Text = "Deleted these items!";
+        }
+
         private void SCBtnPPEAddLocationItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemLocationItemLocation.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Location");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Location"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemApimProductID.Text) && string.IsNullOrWhiteSpace(this.SCTextPPESkuItemLocationItemApimProductID.Text))
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                ErrorMessage.Append(string.Format(TemplateShouldNotAllBeEmptyText, "ApimProductID", "Locations.ApimProductID"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2223,23 +2228,18 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextPPESkuItemLocationItemApimProductID.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnAddPPESkuItemMeterID control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnAddPPESkuItemMeterID_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemMeterID.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "MeterID");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterID"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2262,23 +2262,18 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextPPESkuItemMeterID.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnPPEAddSkuItemRequiredFeature control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnPPEAddSkuItemRequiredFeature_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemRequiredFeature.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Feature");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Feature"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2301,38 +2296,33 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextPPESkuItemRequiredFeature.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnPPEAddSkuItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnPPEAddSkuItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Name");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Name"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemTier.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Tier");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Tier"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemLocations.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Locations");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Locations"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItemMeterIDs.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "MeterIDs");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterIDs"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2414,42 +2404,37 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextPPESkuItemRequiredFeatures.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnUploadToPPE control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void SCBtnUploadToPPE_Click(object sender, EventArgs e)
+        private void SCPPEBtnSave_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
             if (string.IsNullOrWhiteSpace(this.SCTextPPEName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Name");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Name"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPEDisplayName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "DisplayName");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "DisplayName"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPEApimInstance.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "ApimInstance");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApimInstance"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPEApiPath.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "ApiPath");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApiPath"));
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextPPESkuItems.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "SkuItems");
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SkuItems"));
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2461,7 +2446,7 @@ namespace ApiOnBoardingConfigurationTool
 
             try
             {
-                skuConfigEntity.skus = JsonConvert.DeserializeObject<List<SkuEntity>>(this.SCTextPPESkuItems.Text, settingFormat);
+                skuConfigEntity.skus = JsonConvert.DeserializeObject<List<SkuEntity>>(this.SCTextPPESkuItems.Text, specialSettingFormat);
             }
             catch
             {
@@ -2469,40 +2454,239 @@ namespace ApiOnBoardingConfigurationTool
                 return;
             }
 
+            this.SCTextPPEJsonContent.Text = JsonConvert.SerializeObject(skuConfigEntity, specialSettingFormat);
+            this.TabControlSkuPPE.SelectedTab = this.TabSkuPPEJsonContent;
+            this.SCPPETextActionMessage.Text = "Saved successfully!";
+        }
+
+        private void SCBtnUploadToPPE_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Confirm to upload to PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.SCTextPPEJsonContent.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "JsonContent"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            SkuConfigEntity skuConfigEntity = new SkuConfigEntity();
+            try
+            {
+                skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(this.SCTextPPEJsonContent.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "JsonContent"));
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
             string tempFileName = string.Format("{0}.json", skuConfigEntity.name.Replace(".", ""));
-            ApiConfigurationManager.SaveContentStringToLocalFile(ApiOnBoardingConfigurationToolInnerTempFolder, tempFileName,JsonConvert.SerializeObject(skuConfigEntity,specialSettingFormat));
+            string jsonContent = JsonConvert.SerializeObject(skuConfigEntity, specialSettingFormat);
+            byte[] array = Encoding.ASCII.GetBytes(jsonContent);
+
+            using (MemoryStream stream = new MemoryStream(array))
+            {
+                BlobHelper.UploadConfifuratuinToBlobContainer(credentials, SCConfigurationStorageContainerName, tempFileName, stream);
+            }
+
+            this.SCPPETextActionMessage.Text = "Upload successfully!";
         }
 
         #endregion
 
         #region Production
-        private void SCBtnLoadFromPPE_Click(object sender, EventArgs e)
-        {
 
+        private void SCProBtnLoadFromPPE_Click(object sender, EventArgs e)
+        {
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            if (string.IsNullOrWhiteSpace(apiConfigurationPublicAccessUrl))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationPublicAccessUrl"), AlertTitle);
+                return;
+            }
+
+            this.SCProBtnLoadFromPPE.Enabled = false;
+
+            Uri uri = new Uri(apiConfigurationPublicAccessUrl);
+            CloudBlobClient blobClient = new CloudBlobClient(uri);
+            CloudBlobContainer container = blobClient.GetContainerReference(SCConfigurationStorageContainerName);
+            var files = container.ListBlobs();
+            var requestOption = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
+
+            ListCachedSkuConfigurationData.Clear();
+            this.SCProListItems.Items.Clear();
+            foreach (var file in files.OfType<CloudBlockBlob>())
+            {
+                using (var blobStream = file.OpenRead(null, requestOption))
+                {
+                    using (StreamReader reader = new StreamReader(blobStream))
+                    {
+                        ListCachedSkuConfigurationData.Add(file.Name.Replace(".json", ""), reader.ReadToEnd());
+                    }
+                }
+
+                this.SCProListItems.Items.Add(file.Name.Replace(".json", ""));
+            }
+
+            this.SCPPETextActionMessage.Text = "Loaded!";
+            this.SCProBtnLoadFromPPE.Enabled = true;
         }
 
-        private void SCListItems_DoubleClick(object sender, EventArgs e)
+        private void SCProBtnLoadFromLocal_Click(object sender, EventArgs e)
         {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileInfo file = new FileInfo(this.OpenFileDialog.FileName);
+                if (!file.Extension.ToLower().Equals(".json"))
+                {
+                    MessageBox.Show("Only support Json file!", AlertTitle);
+                    return;
+                }
+                else
+                {
+                    SkuConfigEntity skuConfigEntity = null;
+                    string content = string.Empty;
+                    using (Stream stream = file.OpenRead())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            content = reader.ReadToEnd();
+                        }
+                    }
 
+                    try
+                    {
+                        skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(content, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.SCTextProName.Text = skuConfigEntity.name;
+                    this.SCTextProDisplayName.Text = skuConfigEntity.displayName;
+                    this.SCTextProApimInstance.Text = skuConfigEntity.apimInstance;
+                    this.SCTextProApiPath.Text = skuConfigEntity.apiPath;
+                    this.SCTextProSkuItems.Text = JsonConvert.SerializeObject(skuConfigEntity.skus, specialSettingFormat);
+                    this.SCTextProJsonContent.Text = content;
+                    this.TabControlSkuPro.SelectedTab = this.TabSkuProJsonContent;
+                    this.SCProTextActionMessage.Text = "Loaded!";
+                }
+            }
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnProAddLocationItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void SCProListItems_DoubleClick(object sender, EventArgs e)
+        {
+            foreach (var skuConfigData in ListCachedSkuConfigurationData)
+            {
+                if (this.SCProListItems.SelectedItem.ToString() == skuConfigData.Key)
+                {
+                    SkuConfigEntity skuConfigEntity = null;
+                    try
+                    {
+                        skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(skuConfigData.Value, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.SCTextProName.Text = skuConfigEntity.name;
+                    this.SCTextProDisplayName.Text = skuConfigEntity.displayName;
+                    this.SCTextProApimInstance.Text = skuConfigEntity.apimInstance;
+                    this.SCTextProApiPath.Text = skuConfigEntity.apiPath;
+                    this.SCTextProSkuItems.Text = JsonConvert.SerializeObject(skuConfigEntity.skus, specialSettingFormat);
+                    this.SCTextProJsonContent.Text = skuConfigData.Value;
+                    this.TabControlSkuPro.SelectedTab = this.TabSkuProJsonContent;
+                    this.SCPPETextActionMessage.Text = "Loaded!";
+                    break;
+                }
+            }
+        }
+
+        private void SCProBtnDeleteFromPPEBlob_Click(object sender, EventArgs e)
+        {
+            if (this.SCProListItems.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select item to delete!", AlertTitle);
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to delete these items from PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+
+            List<string> selectedItems = new List<string>();
+            foreach (var item in this.SCProListItems.CheckedItems)
+            {
+                selectedItems.Add(item.ToString());
+                this.SCProListItems.Items.Remove(item);
+            }
+
+            BlobHelper.DeleteApiConfigurationListFromBlobContainer(credentials, SCConfigurationStorageContainerName, selectedItems, "json");
+            this.SCPPETextActionMessage.Text = "Deleted these items!";
+        }
+
         private void SCBtnProAddLocationItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemLocationItemLocation.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Location"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Location")); ;
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemApimProductID.Text) && string.IsNullOrWhiteSpace(this.SCTextProSkuItemLocationItemApimProductID.Text))
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                ErrorMessage.Append(string.Format(TemplateShouldNotAllBeEmptyText, "ApimProductID", "Locations.ApimProductID"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2533,23 +2717,18 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextProSkuItemLocationItemApimProductID.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnAddProSkuItemMeterID control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnAddProSkuItemMeterID_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemMeterID.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "MeterID"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterID")); ;
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2572,23 +2751,18 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextProSkuItemMeterID.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnProAddSkuItemRequiredFeature control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnProAddSkuItemRequiredFeature_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemRequiredFeature.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Feature"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Feature")); ;
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2611,38 +2785,33 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextProSkuItemRequiredFeature.Text = string.Empty;
         }
 
-        /// <summary>
-        /// Handles the Click event of the SCBtnProAddSkuItem control.
-        /// </summary>
-        /// <param name="sender">The source of the event.</param>
-        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void SCBtnProAddSkuItem_Click(object sender, EventArgs e)
         {
-            string ErrorMessage = string.Empty;
+            StringBuilder ErrorMessage = new StringBuilder();
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemName.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Name"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Name")); ;
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemTier.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Tier"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Tier")); ;
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemLocations.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "Locations"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Locations")); ;
             }
 
             if (string.IsNullOrWhiteSpace(this.SCTextProSkuItemMeterIDs.Text))
             {
-                ErrorMessage += string.Format(TemplateShouldNotBeEmptyText, "MeterIDs"); ;
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterIDs")); ;
             }
 
-            if (!string.IsNullOrWhiteSpace(ErrorMessage))
+            if (ErrorMessage.Length > 0)
             {
-                MessageBox.Show(ErrorMessage, AlertTitle);
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
                 return;
             }
 
@@ -2724,23 +2893,945 @@ namespace ApiOnBoardingConfigurationTool
             this.SCTextProSkuItemRequiredFeatures.Text = string.Empty;
         }
 
+        private void SCProBtnSave_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.SCTextProName.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Name"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.SCTextProDisplayName.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "DisplayName"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.SCTextProApimInstance.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApimInstance"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.SCTextProApiPath.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApiPath"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.SCTextProSkuItems.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "SkuItems"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            SkuConfigEntity skuConfigEntity = new SkuConfigEntity();
+            skuConfigEntity.name = this.SCTextProName.Text;
+            skuConfigEntity.displayName = this.SCTextProDisplayName.Text;
+            skuConfigEntity.apimInstance = this.SCTextProApimInstance.Text;
+            skuConfigEntity.apiPath = this.SCTextProApiPath.Text;
+
+            try
+            {
+                skuConfigEntity.skus = JsonConvert.DeserializeObject<List<SkuEntity>>(this.SCTextProSkuItems.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "SkuItems"));
+                return;
+            }
+
+            this.SCTextProJsonContent.Text = JsonConvert.SerializeObject(skuConfigEntity, specialSettingFormat);
+            this.TabControlSkuPro.SelectedTab = this.TabSkuProJsonContent;
+            this.SCProTextActionMessage.Text = "Saved successfully!";
+        }
+
+        private void SCProBtnUploadToProductionBlob_Click(object sender, EventArgs e)
+        {
+            string ApiCongigurationProBlobAccountName = this.SCProTextStorageAccount.Text;
+            string ApiConfigurationProBlobAccountKey = this.SCProTextStorageAccountKey.Text;
+            StringBuilder ErrorMessage = new StringBuilder();
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationProBlobAccountName))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountAlertText);
+            }
+
+            if (string.IsNullOrWhiteSpace(ApiConfigurationProBlobAccountKey))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountKeyAlertText);
+            }
+
+            if (string.IsNullOrWhiteSpace(this.SCTextProJsonContent.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "JsonContent"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            SkuConfigEntity skuConfigEntity = new SkuConfigEntity();
+            try
+            {
+                skuConfigEntity = JsonConvert.DeserializeObject<SkuConfigEntity>(this.SCTextProJsonContent.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "JsonContent"));
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to upload to PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationProBlobAccountName, ApiConfigurationProBlobAccountKey, "AccountKey");
+            string tempFileName = string.Format("{0}.json", skuConfigEntity.name.Replace(".", ""));
+            string jsonContent = JsonConvert.SerializeObject(skuConfigEntity, specialSettingFormat);
+            byte[] array = Encoding.ASCII.GetBytes(jsonContent);
+
+            using (MemoryStream stream = new MemoryStream(array))
+            {
+                BlobHelper.UploadConfifuratuinToBlobContainer(credentials, SCConfigurationStorageContainerName, tempFileName, stream);
+            }
+
+            this.SCProTextActionMessage.Text = "Upload successfully!";
+        }
+
         #endregion
 
         #endregion
 
         #region Meter Configuration
 
+        #region PPE
 
+        private void MCPPEBtnLoadFromPPE_Click(object sender, EventArgs e)
+        {
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            if (string.IsNullOrWhiteSpace(apiConfigurationPublicAccessUrl))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationPublicAccessUrl"), AlertTitle);
+                return;
+            }
+
+            this.MCPPEBtnLoadFromPPE.Enabled = false;
+
+            Uri uri = new Uri(apiConfigurationPublicAccessUrl);
+            CloudBlobClient blobClient = new CloudBlobClient(uri);
+            CloudBlobContainer container = blobClient.GetContainerReference(MCConfigurationStorageContainerName);
+            var files = container.ListBlobs();
+            var requestOption = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
+
+            ListCachedMeterConfigurationData.Clear();
+            this.MCPPEListItems.Items.Clear();
+            foreach (var file in files.OfType<CloudBlockBlob>())
+            {
+                using (var blobStream = file.OpenRead(null, requestOption))
+                {
+                    using (StreamReader reader = new StreamReader(blobStream))
+                    {
+                        ListCachedMeterConfigurationData.Add(file.Name.Replace(".json", ""), reader.ReadToEnd());
+                    }
+                }
+
+                this.MCPPEListItems.Items.Add(file.Name.Replace(".json", ""));
+            }
+
+            this.MCPPETextActionMessage.Text = "Loaded!";
+            this.MCPPEBtnLoadFromPPE.Enabled = true;
+        }
+
+        private void MCPPEBtnLoadFromLocal_Click(object sender, EventArgs e)
+        {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileInfo file = new FileInfo(this.OpenFileDialog.FileName);
+                if (!file.Extension.ToLower().Equals(".json"))
+                {
+                    MessageBox.Show("Only support Json file!", AlertTitle);
+                    return;
+                }
+                else
+                {
+                    List<MeterConfigEntity> meterConfigEntities = null;
+                    string content = string.Empty;
+                    using (Stream stream = file.OpenRead())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            content = reader.ReadToEnd();
+                        }
+                    }
+
+                    try
+                    {
+                        meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(content, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.MCPPETextFileName.Text = file.Name.Replace(file.Extension, "");
+                    this.MCTextPPEJsonContent.Text = content;
+                    this.TabControlMeterPPE.SelectedTab = this.TabMeterPPEJsonContent;
+                    this.MCPPETextActionMessage.Text = "Loaded!";
+                }
+            }
+        }
+
+        private void MCPPEListItems_DoubleClick(object sender, EventArgs e)
+        {
+            foreach (var meterConfigData in ListCachedMeterConfigurationData)
+            {
+                if (this.MCPPEListItems.SelectedItem.ToString() == meterConfigData.Key)
+                {
+                    List<MeterConfigEntity> meterConfigEntities = null;
+                    try
+                    {
+                        meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(meterConfigData.Value, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.MCPPETextFileName.Text = this.MCPPEListItems.SelectedItem.ToString();
+                    this.MCTextPPEJsonContent.Text = meterConfigData.Value;
+                    this.TabControlMeterPPE.SelectedTab = this.TabMeterPPEJsonContent;
+                    this.MCPPETextActionMessage.Text = "Loaded!";
+                    break;
+                }
+            }
+        }
+
+        private void MCPPEBtnDeleteFromPPEBlob_Click(object sender, EventArgs e)
+        {
+            if (this.MCPPEListItems.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select item to delete!", AlertTitle);
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to delete these items from PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+
+            List<string> selectedItems = new List<string>();
+            foreach (var item in this.MCPPEListItems.CheckedItems)
+            {
+                selectedItems.Add(item.ToString());
+                this.MCPPEListItems.Items.Remove(item);
+            }
+
+            BlobHelper.DeleteApiConfigurationListFromBlobContainer(credentials, MCConfigurationStorageContainerName, selectedItems, "json");
+            this.MCPPETextActionMessage.Text = "Deleted these items!";
+        }
+
+        private void MCBtnPPEAddOperation_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEApiItemOperationItem.Text))
+            {
+                ErrorMessage.AppendLine(string.Format(TemplateShouldNotBeEmptyText, "Operation"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            List<string> operations = new List<string>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEApiItemOperations.Text))
+            {
+                try
+                {
+                    operations = JsonConvert.DeserializeObject<List<string>>(this.MCTextPPEApiItemOperations.Text, settingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "Operations"), AlertTitle);
+                    return;
+                }
+            }
+
+            operations.Add(this.MCTextPPEApiItemOperationItem.Text);
+            this.MCTextPPEApiItemOperations.Text = JsonConvert.SerializeObject(operations);
+            this.MCTextPPEApiItemOperationItem.Text = string.Empty;
+        }
+
+        private void MCBtnPPEAddApiItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEApiItemApiID.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApiID"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEApiItemOperations.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Operations"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            ApiEntity apiEntity = new ApiEntity();
+            apiEntity.apiId = this.MCTextPPEApiItemApiID.Text;
+            apiEntity.operations = new List<string>();
+            try
+            {
+                apiEntity.operations = JsonConvert.DeserializeObject<List<string>>(this.MCTextPPEApiItemOperations.Text, settingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "Operations"), AlertTitle);
+                return;
+            }
+
+            List<ApiEntity> apis = new List<ApiEntity>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEApiItems.Text))
+            {
+                try
+                {
+                    apis = JsonConvert.DeserializeObject<List<ApiEntity>>(this.MCTextPPEApiItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "ApimMeterDefinition.Apis"), AlertTitle);
+                    return;
+                }
+            }
+
+            apis.Add(apiEntity);
+            this.MCTextPPEApiItems.Text = JsonConvert.SerializeObject(apis, specialSettingFormat);
+            this.MCTextPPEApiItemApiID.Text = string.Empty;
+            this.MCTextPPEApiItemOperations.Text = string.Empty;
+        }
+
+        private void MCBtnPPEAddMeterItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEID.Text))
+            {
+                ErrorMessage.AppendLine(string.Format(TemplateShouldNotBeEmptyText, "ID"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCTextPPECommerceMeterID.Text))
+            {
+                ErrorMessage.AppendLine(string.Format(TemplateShouldNotBeEmptyText, "CommerceMeterID"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            MeterConfigEntity meterConfigEntity = new MeterConfigEntity();
+            meterConfigEntity.id = this.MCTextPPEID.Text;
+            meterConfigEntity.commerceMeterId = this.MCTextPPECommerceMeterID.Text;
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPECallCountUnit.Text))
+            {
+                meterConfigEntity.callcountPerUnit = this.MCTextPPECallCountUnit.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEType.Text))
+            {
+                meterConfigEntity.Type = this.MCTextPPEType.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEUOM.Text))
+            {
+                meterConfigEntity.UOM = this.MCTextPPEUOM.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPECadence.Text))
+            {
+                meterConfigEntity.Cadence = this.MCTextPPECadence.Text;
+            }
+
+            meterConfigEntity.apimMeterDefinition = new ApimMeterDefinitionEntity();
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEApiItems.Text))
+            {
+                try
+                {
+                    meterConfigEntity.apimMeterDefinition.apis = JsonConvert.DeserializeObject<List<ApiEntity>>(this.MCTextPPEApiItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "ApimMeterDefinition.Apis"), AlertTitle);
+                    return;
+                }
+            }
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextPPEMeterItems.Text))
+            {
+                try
+                {
+                    meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextPPEMeterItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "MeterItems"), AlertTitle);
+                    return;
+                }
+            }
+
+            meterConfigEntities.Add(meterConfigEntity);
+            this.MCTextPPEMeterItems.Text = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            this.MCTextPPEID.Text = string.Empty;
+            this.MCTextPPECommerceMeterID.Text = string.Empty;
+            this.MCTextPPEType.Text = string.Empty;
+            this.MCTextPPECallCountUnit.Text = string.Empty;
+            this.MCTextPPEUOM.Text = string.Empty;
+            this.MCTextPPECadence.Text = string.Empty;
+            this.MCTextPPEApiItems.Text = string.Empty;
+        }
+
+        private void MCPPEBtnSave_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEMeterItems.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterItems"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            try
+            {
+                meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextPPEMeterItems.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "MeterItems"), AlertTitle);
+                return;
+            }
+
+            this.MCTextPPEJsonContent.Text = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            this.TabControlMeterPPE.SelectedTab = this.TabMeterPPEJsonContent;
+            this.MCPPETextActionMessage.Text = "Saved successfully!";
+        }
+
+        private void MCBtnUploadToPPE_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCPPETextFileName.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FileName"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCTextPPEJsonContent.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "JsonContent"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            try
+            {
+                meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextPPEJsonContent.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "JsonContent"), AlertTitle);
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to upload to PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+            string tempFileName = string.Format("{0}.json", this.MCPPETextFileName.Text);
+            string jsonContent = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            byte[] array = Encoding.ASCII.GetBytes(jsonContent);
+
+            using (MemoryStream stream = new MemoryStream(array))
+            {
+                BlobHelper.UploadConfifuratuinToBlobContainer(credentials, MCConfigurationStorageContainerName, tempFileName, stream);
+            }
+
+            this.MCPPETextActionMessage.Text = "Upload successfully!";
+        }
 
         #endregion
 
-        /// <summary>
-        /// Sets the control content text.
-        /// </summary>
-        /// <param name="control">The control.</param>
-        /// <param name="contentText">The content text.</param>
-        /// <param name="flagControl">The flag control.</param>
-        /// <param name="isRequired">if set to <c>true</c> [is required].</param>
+        #region Production
+
+        private void MCProBtnLoadFromPPE_Click(object sender, EventArgs e)
+        {
+            var apiConfigurationPublicAccessUrl = CloudConfigurationManager.GetSetting("ApiConfigurationPublicAccessUrl");
+            if (string.IsNullOrWhiteSpace(apiConfigurationPublicAccessUrl))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationPublicAccessUrl"), AlertTitle);
+                return;
+            }
+
+            this.MCProBtnLoadFromPPE.Enabled = false;
+
+            Uri uri = new Uri(apiConfigurationPublicAccessUrl);
+            CloudBlobClient blobClient = new CloudBlobClient(uri);
+            CloudBlobContainer container = blobClient.GetContainerReference(MCConfigurationStorageContainerName);
+            var files = container.ListBlobs();
+            var requestOption = new BlobRequestOptions { RetryPolicy = new ExponentialRetry() };
+
+            ListCachedMeterConfigurationData.Clear();
+            this.MCProListItems.Items.Clear();
+            foreach (var file in files.OfType<CloudBlockBlob>())
+            {
+                using (var blobStream = file.OpenRead(null, requestOption))
+                {
+                    using (StreamReader reader = new StreamReader(blobStream))
+                    {
+                        ListCachedMeterConfigurationData.Add(file.Name.Replace(".json", ""), reader.ReadToEnd());
+                    }
+                }
+
+                this.MCProListItems.Items.Add(file.Name.Replace(".json", ""));
+            }
+
+            this.MCProTextActionMessage.Text = "Loaded!";
+            this.MCProBtnLoadFromPPE.Enabled = true;
+        }
+
+        private void MCProBtnLoadFromLocal_Click(object sender, EventArgs e)
+        {
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                FileInfo file = new FileInfo(this.OpenFileDialog.FileName);
+                if (!file.Extension.ToLower().Equals(".json"))
+                {
+                    MessageBox.Show("Only support Json file!", AlertTitle);
+                    return;
+                }
+                else
+                {
+                    List<MeterConfigEntity> meterConfigEntities = null;
+                    string content = string.Empty;
+                    using (Stream stream = file.OpenRead())
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            content = reader.ReadToEnd();
+                        }
+                    }
+
+                    try
+                    {
+                        meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(content, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.MCProTextFileName.Text = file.Name.Replace(file.Extension, "");
+                    this.MCTextProJsonContent.Text = content;
+                    this.TabControlMeterPro.SelectedTab = this.TabMeterProJsonContent;
+                    this.MCProTextActionMessage.Text = "Loaded!";
+                }
+            }
+        }
+
+        private void MCProListItems_DoubleClick(object sender, EventArgs e)
+        {
+            foreach (var meterConfigData in ListCachedMeterConfigurationData)
+            {
+                if (this.MCProListItems.SelectedItem.ToString() == meterConfigData.Key)
+                {
+                    List<MeterConfigEntity> meterConfigEntities = null;
+                    try
+                    {
+                        meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(meterConfigData.Value, specialSettingFormat);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(string.Format("The selected item can not be Deserialized!\r\nException:\r\n    {0}", ex.Message), AlertTitle);
+                        return;
+                    }
+
+                    this.MCProTextFileName.Text = this.MCProListItems.SelectedItem.ToString();
+                    this.MCTextProJsonContent.Text = meterConfigData.Value;
+                    this.TabControlMeterPro.SelectedTab = this.TabMeterProJsonContent;
+                    this.MCProTextActionMessage.Text = "Loaded!";
+                    break;
+                }
+            }
+        }
+
+        private void MCProBtnDeleteFromPPEBlob_Click(object sender, EventArgs e)
+        {
+            if (this.MCProListItems.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select item to delete!", AlertTitle);
+                return;
+            }
+
+            string ApiCongigurationPPEBlobAccountName = CloudConfigurationManager.GetSetting("ApiCongigurationTestBlobAccountName");
+            string ApiConfigurationPPEBlobAccountKey = CloudConfigurationManager.GetSetting("ApiConfigurationTestBlobAccountKey");
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationPPEBlobAccountName))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiCongigurationTestBlobAccountName"), AlertTitle);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(ApiConfigurationPPEBlobAccountKey))
+            {
+                MessageBox.Show(string.Format(TemplateConnotFindConfigKeyValue, "ApiConfigurationTestBlobAccountKey"), AlertTitle);
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to delete these items from PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationPPEBlobAccountName, ApiConfigurationPPEBlobAccountKey, "AccountKey");
+
+            List<string> selectedItems = new List<string>();
+            foreach (var item in this.MCProListItems.CheckedItems)
+            {
+                selectedItems.Add(item.ToString());
+                this.MCProListItems.Items.Remove(item);
+            }
+
+            BlobHelper.DeleteApiConfigurationListFromBlobContainer(credentials, MCConfigurationStorageContainerName, selectedItems, "json");
+            this.MCProTextActionMessage.Text = "Deleted these items!";
+        }
+
+        private void MCBtnProAddOperation_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextProApiItemOperationItem.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Operation"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            List<string> operations = new List<string>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextProApiItemOperations.Text))
+            {
+                try
+                {
+                    operations = JsonConvert.DeserializeObject<List<string>>(this.MCTextProApiItemOperations.Text, settingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "Operations"), AlertTitle);
+                    return;
+                }
+            }
+
+            operations.Add(this.MCTextProApiItemOperationItem.Text);
+            this.MCTextProApiItemOperations.Text = JsonConvert.SerializeObject(operations);
+            this.MCTextProApiItemOperationItem.Text = string.Empty;
+        }
+
+        private void MCBtnProAddApiItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextProApiItemApiID.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "ApiID"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCTextProApiItemOperations.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Operations"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            ApiEntity apiEntity = new ApiEntity();
+            apiEntity.apiId = this.MCTextProApiItemApiID.Text;
+            apiEntity.operations = new List<string>();
+            try
+            {
+                apiEntity.operations = JsonConvert.DeserializeObject<List<string>>(this.MCTextProApiItemOperations.Text, settingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "Operations"), AlertTitle);
+                return;
+            }
+
+            List<ApiEntity> apis = new List<ApiEntity>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextProApiItems.Text))
+            {
+                try
+                {
+                    apis = JsonConvert.DeserializeObject<List<ApiEntity>>(this.MCTextProApiItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "ApimMeterDefinition.Apis"), AlertTitle);
+                    return;
+                }
+            }
+
+            apis.Add(apiEntity);
+            this.MCTextProApiItems.Text = JsonConvert.SerializeObject(apis, specialSettingFormat);
+            this.MCTextProApiItemApiID.Text = string.Empty;
+            this.MCTextProApiItemOperations.Text = string.Empty;
+        }
+
+        private void MCBtnProAddMeterItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextProID.Text))
+            {
+                ErrorMessage.AppendLine(string.Format(TemplateShouldNotBeEmptyText, "ID"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCTextProCommerceMeterID.Text))
+            {
+                ErrorMessage.AppendLine(string.Format(TemplateShouldNotBeEmptyText, "CommerceMeterID"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            MeterConfigEntity meterConfigEntity = new MeterConfigEntity();
+            meterConfigEntity.id = this.MCTextProID.Text;
+            meterConfigEntity.commerceMeterId = this.MCTextProCommerceMeterID.Text;
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextProCallCountUnit.Text))
+            {
+                meterConfigEntity.callcountPerUnit = this.MCTextProCallCountUnit.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextProType.Text))
+            {
+                meterConfigEntity.Type = this.MCTextProType.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextProUOM.Text))
+            {
+                meterConfigEntity.UOM = this.MCTextProUOM.Text;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextProCadence.Text))
+            {
+                meterConfigEntity.Cadence = this.MCTextProCadence.Text;
+            }
+
+            meterConfigEntity.apimMeterDefinition = new ApimMeterDefinitionEntity();
+
+            if (!string.IsNullOrWhiteSpace(this.MCTextProApiItems.Text))
+            {
+                try
+                {
+                    meterConfigEntity.apimMeterDefinition.apis = JsonConvert.DeserializeObject<List<ApiEntity>>(this.MCTextProApiItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "ApimMeterDefinition.Apis"), AlertTitle);
+                    return;
+                }
+            }
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            if (!string.IsNullOrWhiteSpace(this.MCTextProMeterItems.Text))
+            {
+                try
+                {
+                    meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextProMeterItems.Text, specialSettingFormat);
+                }
+                catch
+                {
+                    MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "MeterItems"), AlertTitle);
+                    return;
+                }
+            }
+
+            meterConfigEntities.Add(meterConfigEntity);
+            this.MCTextProMeterItems.Text = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            this.MCTextProID.Text = string.Empty;
+            this.MCTextProCommerceMeterID.Text = string.Empty;
+            this.MCTextProType.Text = string.Empty;
+            this.MCTextProCallCountUnit.Text = string.Empty;
+            this.MCTextProUOM.Text = string.Empty;
+            this.MCTextProCadence.Text = string.Empty;
+            this.MCTextProApiItems.Text = string.Empty;
+        }
+
+        private void MCProBtnSave_Click(object sender, EventArgs e)
+        {
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextProMeterItems.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "MeterItems"));
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            try
+            {
+                meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextProMeterItems.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "MeterItems"), AlertTitle);
+                return;
+            }
+
+            this.MCTextProJsonContent.Text = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            this.TabControlMeterPro.SelectedTab = this.TabMeterProJsonContent;
+            this.MCProTextActionMessage.Text = "Saved successfully!";
+        }
+
+        private void MCProBtnUploadToProductionBlob_Click(object sender, EventArgs e)
+        {
+            string ApiCongigurationProBlobAccountName = this.MCProTextStorageAccount.Text;
+            string ApiConfigurationProBlobAccountKey = this.MCProTextStorageAccountKey.Text;
+            StringBuilder ErrorMessage = new StringBuilder();
+            if (string.IsNullOrWhiteSpace(this.MCTextProJsonContent.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "JsonContent"));
+            }
+
+            if (string.IsNullOrWhiteSpace(this.MCProTextFileName.Text))
+            {
+                ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "FileName"));
+            }
+
+            if (string.IsNullOrWhiteSpace(ApiCongigurationProBlobAccountName))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountAlertText);
+            }
+
+            if (string.IsNullOrWhiteSpace(ApiConfigurationProBlobAccountKey))
+            {
+                ErrorMessage.Append(CommonInputStorageAccountKeyAlertText);
+            }
+
+            if (ErrorMessage.Length > 0)
+            {
+                MessageBox.Show(ErrorMessage.ToString(), AlertTitle);
+                return;
+            }
+
+            List<MeterConfigEntity> meterConfigEntities = new List<MeterConfigEntity>();
+            try
+            {
+                meterConfigEntities = JsonConvert.DeserializeObject<List<MeterConfigEntity>>(this.MCTextProJsonContent.Text, specialSettingFormat);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format(TemplateCannotBeDeserializedText, "JsonContent"));
+                return;
+            }
+
+            if (MessageBox.Show("Confirm to upload to PPE Blob?", AlertTitle, MessageBoxButtons.OKCancel) != DialogResult.OK)
+            {
+                return;
+            }
+
+            StorageCredentials credentials = new StorageCredentials(ApiCongigurationProBlobAccountName, ApiConfigurationProBlobAccountKey, "AccountKey");
+            string tempFileName = string.Format("{0}.json", this.MCProTextFileName.Text);
+            string jsonContent = JsonConvert.SerializeObject(meterConfigEntities, specialSettingFormat);
+            byte[] array = Encoding.ASCII.GetBytes(jsonContent);
+
+            using (MemoryStream stream = new MemoryStream(array))
+            {
+                BlobHelper.UploadConfifuratuinToBlobContainer(credentials, MCConfigurationStorageContainerName, tempFileName, stream);
+            }
+
+            this.MCProTextActionMessage.Text = "Upload successfully!";
+        }
+
+        #endregion
+
+        #endregion
+
+        private void TextBoxSelectAll_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Modifiers == Keys.Control && e.KeyCode == Keys.A)
+            {
+                ((TextBox)sender).SelectAll();
+            }
+        }
+
         private void SetControlContentText(Control control, string contentText, Control flagControl, bool isRequired = true)
         {
             if (isRequired)
@@ -2766,16 +3857,17 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
-        /// <summary>
-        /// Logs the error.
-        /// </summary>
-        /// <param name="content">The content.</param>
         private void LogError(string content)
         {
             try
             {
-                string logFileName = string.Format("ErrorLog--{0}.txt", DateTime.Now.ToString("yyyy-MM-dd"));
-                string logFilePath = string.Format("{0}{1}", ApiOnBoardingConfigurationToolFolder, logFileName);
+                if (!Directory.Exists(ApiOnBoardingConfigurationToolRootFolder))
+                {
+                    Directory.CreateDirectory(ApiOnBoardingConfigurationToolRootFolder);
+                }
+
+                string logFileName = string.Format("ErrorLog  {0}.txt", DateTime.Now.ToString("yyyy-MM-dd hh-mm-ss"));
+                string logFilePath = string.Format(@"{0}\{1}", ApiOnBoardingConfigurationToolRootFolder, logFileName);
                 using (FileStream fs = File.Open(logFilePath, FileMode.OpenOrCreate))
                 {
                     using (StreamWriter sw = new StreamWriter(fs))
@@ -2789,6 +3881,5 @@ namespace ApiOnBoardingConfigurationTool
                 MessageBox.Show(ex.Message, ExceptionTitle);
             }
         }
-
     }
 }

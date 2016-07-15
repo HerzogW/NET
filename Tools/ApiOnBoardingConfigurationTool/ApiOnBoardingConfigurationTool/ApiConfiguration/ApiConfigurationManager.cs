@@ -11,6 +11,7 @@ namespace ApiOnBoardingConfigurationTool
     using Microsoft.WindowsAzure.Storage.RetryPolicies;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
+    using ExtensionConfigurationEntity;
 
     /// <summary>
     /// The Api configuration manager.
@@ -66,6 +67,7 @@ namespace ApiOnBoardingConfigurationTool
             NullValueHandling = NullValueHandling.Ignore,
             MissingMemberHandling = MissingMemberHandling.Ignore
         };
+
         /// <summary>
         /// The configuration container
         /// </summary>
@@ -110,7 +112,7 @@ namespace ApiOnBoardingConfigurationTool
             {
                 using (var blobStream = apiZip.OpenRead(null, requestOption))
                 {
-                    CacheData.Add(VeriliadteStream(blobStream, apiZip.Name.ToLower().Replace(".zip", "")));
+                    CacheData.Add(VeriliadteStream(blobStream, apiZip.Name.Replace(".zip", "")));
                 }
             }
 
@@ -145,7 +147,7 @@ namespace ApiOnBoardingConfigurationTool
 
                     originalApiConfig.ApiFolderName = apiFolderName;
                     errorEntity.errorType = ErrorType.CanNotConvertToJson;
-                    originalApiConfig.ApiItem = JsonConvert.DeserializeObject<ApiEntity>(apiItemJson);
+                    originalApiConfig.ApiItem = JsonConvert.DeserializeObject<ApiItemEntity>(apiItemJson);
 
                     errorEntity.jsonFileName = SpecFileName;
                     errorEntity.errorType = ErrorType.NotFound;
@@ -219,6 +221,7 @@ namespace ApiOnBoardingConfigurationTool
                         errorEntity.exceptionMessage = ex.Message;
                         listError.Add(errorEntity);
                     }
+
                     return null;
                 }
             }
@@ -276,9 +279,26 @@ namespace ApiOnBoardingConfigurationTool
         /// <param name="configurationData">The configuration data.</param>
         /// <param name="apiFolderName">Name of the API Folder.</param>
         /// <returns></returns>
-        public static void SaveConfigurationDataToLocalZip(ApiConfigurationData configurationData, string tempFolderPath, string apiFolderName)
+        public static void SaveConfigurationDataToLocalZip(ApiConfigurationData configurationData, string tempFolderPath, string apiFolderName = null)
         {
-            string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, apiFolderName);
+            string targetFileOrFolderName = string.Empty;
+            if (!string.IsNullOrWhiteSpace(apiFolderName))
+            {
+                targetFileOrFolderName = apiFolderName;
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(configurationData.ApiFolderName))
+                {
+                    targetFileOrFolderName = configurationData.ApiFolderName;
+                }
+                else
+                {
+                    targetFileOrFolderName = configurationData.ApiTypeName;
+                }
+            }
+
+            string tempZipFileName = string.Format("{0}\\{1}.zip", tempFolderPath, targetFileOrFolderName);
 
             if (!Directory.Exists(tempFolderPath))
             {
@@ -294,16 +314,16 @@ namespace ApiOnBoardingConfigurationTool
             {
                 zipStream.SetLevel(6);
 
-                Compress(zipStream, JsonConvert.SerializeObject(configurationData.ApiItem, specialSettingFormat), string.Format("{0}/{1}", apiFolderName, ApiItemFileName));
-                Compress(zipStream, JsonConvert.SerializeObject(configurationData.Spec, specialSettingFormat), string.Format("{0}/{1}", apiFolderName, SpecFileName));
-                Compress(zipStream, JsonConvert.SerializeObject(configurationData.QuickStart, specialSettingFormat), string.Format("{0}/{1}", apiFolderName, QuickStartsFileName));
+                Compress(zipStream, JsonConvert.SerializeObject(configurationData.ApiItem, specialSettingFormat), string.Format("{0}/{1}", targetFileOrFolderName, ApiItemFileName));
+                Compress(zipStream, JsonConvert.SerializeObject(configurationData.Spec, specialSettingFormat), string.Format("{0}/{1}", targetFileOrFolderName, SpecFileName));
+                Compress(zipStream, JsonConvert.SerializeObject(configurationData.QuickStart, specialSettingFormat), string.Format("{0}/{1}", targetFileOrFolderName, QuickStartsFileName));
 
                 foreach (var resource in configurationData.Resources)
                 {
-                    string filePath = string.Format("{0}/{1}/{2}", apiFolderName, "strings", ResourceFileName);
+                    string filePath = string.Format("{0}/{1}/{2}", targetFileOrFolderName, "strings", ResourceFileName);
                     if (resource.Key != "en")
                     {
-                        filePath = string.Format("{0}/{1}/{2}/{3}", apiFolderName, "strings", resource.Key, ResourceFileName);
+                        filePath = string.Format("{0}/{1}/{2}/{3}", targetFileOrFolderName, "strings", resource.Key, ResourceFileName);
                     }
 
                     Compress(zipStream, JsonConvert.SerializeObject(resource.Value, new JsonSerializerSettings()
@@ -315,7 +335,7 @@ namespace ApiOnBoardingConfigurationTool
 
                 foreach (var entity in configurationData.Icons)
                 {
-                    Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", apiFolderName, "icons", entity.Key));
+                    Compress(zipStream, entity.Value, string.Format("{0}/{1}/{2}", targetFileOrFolderName, "icons", entity.Key));
                 }
             }
         }
@@ -341,11 +361,26 @@ namespace ApiOnBoardingConfigurationTool
             zipStream.Write(buffer, 0, buffer.Length);
         }
 
+        /// <summary>
+        /// Saves the configuration data to local folder.
+        /// </summary>
+        /// <param name="configurationData">The configuration data.</param>
+        /// <param name="tempFolderPath">The temporary folder path.</param>
         public static void SaveConfigurationDataToLocalFolder(ApiConfigurationData configurationData, string tempFolderPath)
         {
             try
             {
-                string targetApiFolderPath = string.Format("{0}{1}", tempFolderPath, configurationData.ApiFolderName);
+                string targetFileOrFolderName = string.Empty;
+                if (!string.IsNullOrWhiteSpace(configurationData.ApiFolderName))
+                {
+                    targetFileOrFolderName = configurationData.ApiFolderName;
+                }
+                else
+                {
+                    targetFileOrFolderName = configurationData.ApiTypeName;
+                }
+
+                string targetApiFolderPath = string.Format(@"{0}\{1}", tempFolderPath, targetFileOrFolderName);
                 string targetApiIconsFolderPath = string.Format(@"{0}\{1}", targetApiFolderPath, "icons");
                 string targetApiStringsFolderPath = string.Format(@"{0}\{1}", targetApiFolderPath, "strings");
                 if (Directory.Exists(targetApiFolderPath))
@@ -389,8 +424,19 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
+        /// <summary>
+        /// Saves the content string to local file.
+        /// </summary>
+        /// <param name="targetFolderPath">The target folder path.</param>
+        /// <param name="fileName">Name of the file.</param>
+        /// <param name="content">The content.</param>
         public static void SaveContentStringToLocalFile(string targetFolderPath, string fileName, string content)
         {
+            if (!Directory.Exists(targetFolderPath))
+            {
+                Directory.CreateDirectory(targetFolderPath);
+            }
+
             string filePath = string.Format(@"{0}\{1}", targetFolderPath, fileName);
 
             using (FileStream fs = File.Open(filePath, FileMode.Create))
@@ -400,9 +446,7 @@ namespace ApiOnBoardingConfigurationTool
                     sw.Write(content);
                 }
             }
-
         }
-
 
         /// <summary>
         /// Compresses the folder content into stream.
@@ -470,7 +514,11 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
-
+        /// <summary>
+        /// Loads the singel API configuration form load folder path.
+        /// </summary>
+        /// <param name="localFolderPath">The local folder path.</param>
+        /// <returns></returns>
         public static ApiConfigurationData LoadSingelApiConfigurationFormLoadFolderPath(string localFolderPath)
         {
             string apiFolderName = localFolderPath.Substring(localFolderPath.LastIndexOf(@"\") + 1);
@@ -490,7 +538,7 @@ namespace ApiOnBoardingConfigurationTool
             {
                 try
                 {
-                    apiconfigData.ApiItem = JsonConvert.DeserializeObject<ApiEntity>(apiJsonContent, specialSettingFormat);
+                    apiconfigData.ApiItem = JsonConvert.DeserializeObject<ApiItemEntity>(apiJsonContent, specialSettingFormat);
                     apiconfigData.ApiTypeName = apiconfigData.ApiItem.item;
                 }
                 catch (Exception ex)
@@ -633,10 +681,14 @@ namespace ApiOnBoardingConfigurationTool
                 }
             }
 
-
             return apiconfigData;
         }
 
+        /// <summary>
+        /// Reads the local file to string.
+        /// </summary>
+        /// <param name="filePath">The file path.</param>
+        /// <returns></returns>
         private static string ReadLocalFileToString(string filePath)
         {
             if (File.Exists(filePath))
@@ -655,6 +707,11 @@ namespace ApiOnBoardingConfigurationTool
             }
         }
 
+        /// <summary>
+        /// Reads the file information to string.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         private static string ReadFileInfoToString(FileInfo file)
         {
             using (Stream stream = file.Open(FileMode.Open))

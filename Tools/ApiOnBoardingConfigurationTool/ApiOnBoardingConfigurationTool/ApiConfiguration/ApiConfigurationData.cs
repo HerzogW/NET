@@ -7,6 +7,7 @@ namespace ApiOnBoardingConfigurationTool
     using System.Collections.Generic;
     using System;
     using System.Runtime.Serialization;
+    using ExtensionConfigurationEntity;
 
     /// <summary>
     /// The Api configuration data class.
@@ -76,7 +77,7 @@ namespace ApiOnBoardingConfigurationTool
         /// <value>
         /// The API item json.
         /// </value>
-        public ApiEntity ApiItem { get; set; }
+        public ApiItemEntity ApiItem { get; set; }
 
         /// <summary>
         /// The icons
