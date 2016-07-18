@@ -309,8 +309,11 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage6 = new System.Windows.Forms.TabPage();
-            this.MCPPETextFileName = new System.Windows.Forms.TextBox();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.MCPPEBtnUploadToPPE = new System.Windows.Forms.Button();
+            this.MCPPETextFileName = new System.Windows.Forms.TextBox();
+            this.label81 = new System.Windows.Forms.Label();
+            this.label82 = new System.Windows.Forms.Label();
             this.TabControlMeterPPE = new System.Windows.Forms.TabControl();
             this.TabMeterPPEFields = new System.Windows.Forms.TabPage();
             this.MCPPEBtnSave = new System.Windows.Forms.Button();
@@ -351,6 +354,10 @@
             this.MCPPEBtnLoadFromPPE = new System.Windows.Forms.Button();
             this.MCPPEListItems = new System.Windows.Forms.CheckedListBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label72 = new System.Windows.Forms.Label();
+            this.MCProTextFileName = new System.Windows.Forms.TextBox();
+            this.label71 = new System.Windows.Forms.Label();
             this.groupBox51 = new System.Windows.Forms.GroupBox();
             this.MCProTextActionMessage = new System.Windows.Forms.TextBox();
             this.TabControlMeterPro = new System.Windows.Forms.TabControl();
@@ -398,13 +405,8 @@
             this.MCProBtnLoadFromPPE = new System.Windows.Forms.Button();
             this.ECFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.label71 = new System.Windows.Forms.Label();
-            this.MCProTextFileName = new System.Windows.Forms.TextBox();
-            this.label72 = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label81 = new System.Windows.Forms.Label();
-            this.label82 = new System.Windows.Forms.Label();
+            this.label69 = new System.Windows.Forms.Label();
+            this.label70 = new System.Windows.Forms.Label();
             this.TabTotal.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox43.SuspendLayout();
@@ -480,6 +482,7 @@
             this.tabPage3.SuspendLayout();
             this.tabControl3.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.TabControlMeterPPE.SuspendLayout();
             this.TabMeterPPEFields.SuspendLayout();
             this.groupBox33.SuspendLayout();
@@ -491,6 +494,7 @@
             this.groupBox49.SuspendLayout();
             this.groupBox50.SuspendLayout();
             this.tabPage7.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.groupBox51.SuspendLayout();
             this.TabControlMeterPro.SuspendLayout();
             this.TabMeterProFields.SuspendLayout();
@@ -502,8 +506,6 @@
             this.groupBox53.SuspendLayout();
             this.groupBox41.SuspendLayout();
             this.groupBox40.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // TabTotal
@@ -2616,7 +2618,7 @@
             this.SCPPEBtnSave.Name = "SCPPEBtnSave";
             this.SCPPEBtnSave.Size = new System.Drawing.Size(170, 23);
             this.SCPPEBtnSave.TabIndex = 22;
-            this.SCPPEBtnSave.Text = "Save (PPE)";
+            this.SCPPEBtnSave.Text = "Save (For PPE)";
             this.SCPPEBtnSave.UseVisualStyleBackColor = true;
             this.SCPPEBtnSave.Click += new System.EventHandler(this.SCPPEBtnSave_Click);
             // 
@@ -3276,7 +3278,7 @@
             this.SCProBtnSave.Name = "SCProBtnSave";
             this.SCProBtnSave.Size = new System.Drawing.Size(170, 23);
             this.SCProBtnSave.TabIndex = 22;
-            this.SCProBtnSave.Text = "Save (Pro)";
+            this.SCProBtnSave.Text = "Save (For Pro)";
             this.SCProBtnSave.UseVisualStyleBackColor = true;
             this.SCProBtnSave.Click += new System.EventHandler(this.SCProBtnSave_Click);
             // 
@@ -3981,14 +3983,19 @@
             this.tabPage6.TabIndex = 2;
             this.tabPage6.Text = "PPE";
             // 
-            // MCPPETextFileName
+            // panel3
             // 
-            this.MCPPETextFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MCPPETextFileName.Location = new System.Drawing.Point(89, 9);
-            this.MCPPETextFileName.Name = "MCPPETextFileName";
-            this.MCPPETextFileName.Size = new System.Drawing.Size(180, 20);
-            this.MCPPETextFileName.TabIndex = 14;
-            this.MCPPETextFileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
+            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel3.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel3.Controls.Add(this.MCPPEBtnUploadToPPE);
+            this.panel3.Controls.Add(this.MCPPETextFileName);
+            this.panel3.Controls.Add(this.label81);
+            this.panel3.Controls.Add(this.label82);
+            this.panel3.Location = new System.Drawing.Point(176, 657);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(756, 36);
+            this.panel3.TabIndex = 17;
             // 
             // MCPPEBtnUploadToPPE
             // 
@@ -4000,6 +4007,33 @@
             this.MCPPEBtnUploadToPPE.Text = "Upload To PPE Blob";
             this.MCPPEBtnUploadToPPE.UseVisualStyleBackColor = true;
             this.MCPPEBtnUploadToPPE.Click += new System.EventHandler(this.MCBtnUploadToPPE_Click);
+            // 
+            // MCPPETextFileName
+            // 
+            this.MCPPETextFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MCPPETextFileName.Location = new System.Drawing.Point(89, 9);
+            this.MCPPETextFileName.Name = "MCPPETextFileName";
+            this.MCPPETextFileName.Size = new System.Drawing.Size(180, 20);
+            this.MCPPETextFileName.TabIndex = 14;
+            this.MCPPETextFileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
+            // 
+            // label81
+            // 
+            this.label81.AutoSize = true;
+            this.label81.Location = new System.Drawing.Point(275, 12);
+            this.label81.Name = "label81";
+            this.label81.Size = new System.Drawing.Size(34, 13);
+            this.label81.TabIndex = 2;
+            this.label81.Text = ".json";
+            // 
+            // label82
+            // 
+            this.label82.AutoSize = true;
+            this.label82.Location = new System.Drawing.Point(20, 12);
+            this.label82.Name = "label82";
+            this.label82.Size = new System.Drawing.Size(63, 13);
+            this.label82.TabIndex = 0;
+            this.label82.Text = "FileName:";
             // 
             // TabControlMeterPPE
             // 
@@ -4018,6 +4052,7 @@
             // 
             // TabMeterPPEFields
             // 
+            this.TabMeterPPEFields.Controls.Add(this.label69);
             this.TabMeterPPEFields.Controls.Add(this.MCPPEBtnSave);
             this.TabMeterPPEFields.Controls.Add(this.MCBtnPPEAddMeterItem);
             this.TabMeterPPEFields.Controls.Add(this.groupBox33);
@@ -4037,7 +4072,7 @@
             this.MCPPEBtnSave.Name = "MCPPEBtnSave";
             this.MCPPEBtnSave.Size = new System.Drawing.Size(170, 23);
             this.MCPPEBtnSave.TabIndex = 8;
-            this.MCPPEBtnSave.Text = "Save (PPE)";
+            this.MCPPEBtnSave.Text = "Save (For PPE)";
             this.MCPPEBtnSave.UseVisualStyleBackColor = true;
             this.MCPPEBtnSave.Click += new System.EventHandler(this.MCPPEBtnSave_Click);
             // 
@@ -4479,6 +4514,46 @@
             this.tabPage7.TabIndex = 1;
             this.tabPage7.Text = "Production";
             // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panel2.Controls.Add(this.label72);
+            this.panel2.Controls.Add(this.MCProTextFileName);
+            this.panel2.Controls.Add(this.label71);
+            this.panel2.Location = new System.Drawing.Point(176, 587);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(756, 36);
+            this.panel2.TabIndex = 14;
+            // 
+            // label72
+            // 
+            this.label72.AutoSize = true;
+            this.label72.Location = new System.Drawing.Point(275, 9);
+            this.label72.Name = "label72";
+            this.label72.Size = new System.Drawing.Size(34, 13);
+            this.label72.TabIndex = 2;
+            this.label72.Text = ".json";
+            // 
+            // MCProTextFileName
+            // 
+            this.MCProTextFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.MCProTextFileName.Location = new System.Drawing.Point(89, 9);
+            this.MCProTextFileName.Name = "MCProTextFileName";
+            this.MCProTextFileName.Size = new System.Drawing.Size(180, 20);
+            this.MCProTextFileName.TabIndex = 1;
+            this.MCProTextFileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
+            // 
+            // label71
+            // 
+            this.label71.AutoSize = true;
+            this.label71.Location = new System.Drawing.Point(23, 12);
+            this.label71.Name = "label71";
+            this.label71.Size = new System.Drawing.Size(63, 13);
+            this.label71.TabIndex = 0;
+            this.label71.Text = "FileName:";
+            // 
             // groupBox51
             // 
             this.groupBox51.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -4520,6 +4595,7 @@
             // 
             // TabMeterProFields
             // 
+            this.TabMeterProFields.Controls.Add(this.label70);
             this.TabMeterProFields.Controls.Add(this.MCProBtnSave);
             this.TabMeterProFields.Controls.Add(this.groupBox36);
             this.TabMeterProFields.Controls.Add(this.MCBtnProAddMeterItem);
@@ -4539,7 +4615,7 @@
             this.MCProBtnSave.Name = "MCProBtnSave";
             this.MCProBtnSave.Size = new System.Drawing.Size(170, 23);
             this.MCProBtnSave.TabIndex = 9;
-            this.MCProBtnSave.Text = "Save (Pro)";
+            this.MCProBtnSave.Text = "Save (For Pro)";
             this.MCProBtnSave.UseVisualStyleBackColor = true;
             this.MCProBtnSave.Click += new System.EventHandler(this.MCProBtnSave_Click);
             // 
@@ -4842,7 +4918,7 @@
             this.TabMeterProJsonContent.Location = new System.Drawing.Point(23, 4);
             this.TabMeterProJsonContent.Name = "TabMeterProJsonContent";
             this.TabMeterProJsonContent.Padding = new System.Windows.Forms.Padding(3);
-            this.TabMeterProJsonContent.Size = new System.Drawing.Size(729, 557);
+            this.TabMeterProJsonContent.Size = new System.Drawing.Size(729, 567);
             this.TabMeterProJsonContent.TabIndex = 1;
             this.TabMeterProJsonContent.Text = "JsonContent";
             this.TabMeterProJsonContent.UseVisualStyleBackColor = true;
@@ -4855,7 +4931,7 @@
             this.groupBox53.Controls.Add(this.MCTextProJsonContent);
             this.groupBox53.Location = new System.Drawing.Point(6, 6);
             this.groupBox53.Name = "groupBox53";
-            this.groupBox53.Size = new System.Drawing.Size(717, 545);
+            this.groupBox53.Size = new System.Drawing.Size(717, 555);
             this.groupBox53.TabIndex = 0;
             this.groupBox53.TabStop = false;
             this.groupBox53.Text = "JsonContent";
@@ -4870,7 +4946,7 @@
             this.MCTextProJsonContent.Multiline = true;
             this.MCTextProJsonContent.Name = "MCTextProJsonContent";
             this.MCTextProJsonContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.MCTextProJsonContent.Size = new System.Drawing.Size(705, 520);
+            this.MCTextProJsonContent.Size = new System.Drawing.Size(705, 530);
             this.MCTextProJsonContent.TabIndex = 0;
             this.MCTextProJsonContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
             // 
@@ -5008,77 +5084,29 @@
             // 
             this.OpenFileDialog.FileName = "openFileDialog1";
             // 
-            // panel2
+            // label69
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel2.Controls.Add(this.label72);
-            this.panel2.Controls.Add(this.MCProTextFileName);
-            this.panel2.Controls.Add(this.label71);
-            this.panel2.Location = new System.Drawing.Point(176, 587);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(756, 36);
-            this.panel2.TabIndex = 14;
+            this.label69.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label69.AutoSize = true;
+            this.label69.BackColor = System.Drawing.Color.GreenYellow;
+            this.label69.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label69.Location = new System.Drawing.Point(6, 618);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(69, 13);
+            this.label69.TabIndex = 24;
+            this.label69.Text = "OPTIONAL";
             // 
-            // label71
+            // label70
             // 
-            this.label71.AutoSize = true;
-            this.label71.Location = new System.Drawing.Point(23, 12);
-            this.label71.Name = "label71";
-            this.label71.Size = new System.Drawing.Size(63, 13);
-            this.label71.TabIndex = 0;
-            this.label71.Text = "FileName:";
-            // 
-            // MCProTextFileName
-            // 
-            this.MCProTextFileName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MCProTextFileName.Location = new System.Drawing.Point(89, 9);
-            this.MCProTextFileName.Name = "MCProTextFileName";
-            this.MCProTextFileName.Size = new System.Drawing.Size(180, 20);
-            this.MCProTextFileName.TabIndex = 1;
-            this.MCProTextFileName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
-            // 
-            // label72
-            // 
-            this.label72.AutoSize = true;
-            this.label72.Location = new System.Drawing.Point(275, 9);
-            this.label72.Name = "label72";
-            this.label72.Size = new System.Drawing.Size(34, 13);
-            this.label72.TabIndex = 2;
-            this.label72.Text = ".json";
-            // 
-            // panel3
-            // 
-            this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel3.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panel3.Controls.Add(this.MCPPEBtnUploadToPPE);
-            this.panel3.Controls.Add(this.MCPPETextFileName);
-            this.panel3.Controls.Add(this.label81);
-            this.panel3.Controls.Add(this.label82);
-            this.panel3.Location = new System.Drawing.Point(176, 657);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(756, 36);
-            this.panel3.TabIndex = 17;
-            // 
-            // label81
-            // 
-            this.label81.AutoSize = true;
-            this.label81.Location = new System.Drawing.Point(275, 12);
-            this.label81.Name = "label81";
-            this.label81.Size = new System.Drawing.Size(34, 13);
-            this.label81.TabIndex = 2;
-            this.label81.Text = ".json";
-            // 
-            // label82
-            // 
-            this.label82.AutoSize = true;
-            this.label82.Location = new System.Drawing.Point(20, 12);
-            this.label82.Name = "label82";
-            this.label82.Size = new System.Drawing.Size(63, 13);
-            this.label82.TabIndex = 0;
-            this.label82.Text = "FileName:";
+            this.label70.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label70.AutoSize = true;
+            this.label70.BackColor = System.Drawing.Color.GreenYellow;
+            this.label70.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label70.Location = new System.Drawing.Point(6, 548);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(69, 13);
+            this.label70.TabIndex = 24;
+            this.label70.Text = "OPTIONAL";
             // 
             // MainForm
             // 
@@ -5213,8 +5241,11 @@
             this.tabPage3.ResumeLayout(false);
             this.tabControl3.ResumeLayout(false);
             this.tabPage6.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.TabControlMeterPPE.ResumeLayout(false);
             this.TabMeterPPEFields.ResumeLayout(false);
+            this.TabMeterPPEFields.PerformLayout();
             this.groupBox33.ResumeLayout(false);
             this.groupBox33.PerformLayout();
             this.groupBox32.ResumeLayout(false);
@@ -5230,10 +5261,13 @@
             this.groupBox49.PerformLayout();
             this.groupBox50.ResumeLayout(false);
             this.tabPage7.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.groupBox51.ResumeLayout(false);
             this.groupBox51.PerformLayout();
             this.TabControlMeterPro.ResumeLayout(false);
             this.TabMeterProFields.ResumeLayout(false);
+            this.TabMeterProFields.PerformLayout();
             this.groupBox36.ResumeLayout(false);
             this.groupBox36.PerformLayout();
             this.groupBox37.ResumeLayout(false);
@@ -5248,10 +5282,6 @@
             this.groupBox41.ResumeLayout(false);
             this.groupBox41.PerformLayout();
             this.groupBox40.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -5634,6 +5664,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label81;
         private System.Windows.Forms.Label label82;
+        private System.Windows.Forms.Label label69;
+        private System.Windows.Forms.Label label70;
     }
 }
 
