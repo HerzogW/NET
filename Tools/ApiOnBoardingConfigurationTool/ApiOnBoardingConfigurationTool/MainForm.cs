@@ -18,6 +18,7 @@ namespace ApiOnBoardingConfigurationTool
 
     public partial class MainForm : Form
     {
+        #region folder path
         private const string ApiOnBoardingConfigurationToolRootFolder = @"C:\ApiOnBoardingConfigurationTool";
 
         private const string ApiOnBoardingConfigurationToolECSaveToLocalFolder = @"C:\ApiOnBoardingConfigurationTool\Extension\SaveToLocal";
@@ -26,10 +27,9 @@ namespace ApiOnBoardingConfigurationTool
 
         private const string ApiOnBoardingConfigurationToolECTempConfigurationFolder = @"C:\ApiOnBoardingConfigurationTool\Extension\TempConfiguration";
 
-        private const string LoadingFileMessage = "Loading files...";
+        #endregion
 
-        private const string LoadedMessage = "Loaded!\r\nCreate or Edit?";
-
+        #region
 
         private const string ResourceToken = "ms-resource:";
 
@@ -41,11 +41,17 @@ namespace ApiOnBoardingConfigurationTool
 
         public string MCConfigurationStorageContainerName = "meters";
 
+        #endregion
+
         #region Common Text
 
         private const string AlertTitle = "Alert";
 
         private const string ExceptionTitle = "Exception";
+
+        private const string LoadingFileMessage = "Loading files...";
+
+        private const string LoadedMessage = "Loaded!\r\nCreate or Edit?";
 
         private const string CommonLoadedSuccessfullyText = "Loaded successfully!";
 
@@ -698,10 +704,10 @@ namespace ApiOnBoardingConfigurationTool
                     ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Description"));
                 }
 
-                if (string.IsNullOrWhiteSpace(this.ECCBApiIconData.Text))
-                {
-                    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Api Icon"));
-                }
+                //if (string.IsNullOrWhiteSpace(this.ECCBApiIconData.Text))
+                //{
+                //    ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Api Icon"));
+                //}
 
                 if (ErrorMessage.Length > 0)
                 {
@@ -1005,10 +1011,10 @@ namespace ApiOnBoardingConfigurationTool
                 ErrorMessage.Append(string.Format(TemplateShouldNotBeEmptyText, "Display Name"));
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECCBSpecFeatureItemIconSvgData.Text) && string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItemIconName.Text))
-            {
-                ErrorMessage.Append(string.Format(TemplateShouldNotAllBeEmptyText, "Feature Icon", "Icon Name"));
-            }
+            //if (string.IsNullOrWhiteSpace(this.ECCBSpecFeatureItemIconSvgData.Text) && string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItemIconName.Text))
+            //{
+            //    ErrorMessage.Append(string.Format(TemplateShouldNotAllBeEmptyText, "Feature Icon", "Icon Name"));
+            //}
 
             if (ErrorMessage.Length > 0)
             {
@@ -1023,9 +1029,13 @@ namespace ApiOnBoardingConfigurationTool
             {
                 specFeatureEntity.iconSvgData = this.ECCBSpecFeatureItemIconSvgData.Text;
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(this.ECTextSpecFeatureItemIconName.Text))
             {
                 specFeatureEntity.iconName = this.ECTextSpecFeatureItemIconName.Text;
+            }
+            else
+            {
+                specFeatureEntity.iconSvgData = string.Empty;
             }
 
             List<SpecFeatureEntity> features = new List<SpecFeatureEntity>();
@@ -1457,7 +1467,7 @@ namespace ApiOnBoardingConfigurationTool
                 specsEntity.resourceMap = new SpecResourceMapEntity();
             }
 
-            if (string.IsNullOrWhiteSpace(this.ECTextSpecAllowZeroCostSpecCodeItems.Text))
+            if (!string.IsNullOrWhiteSpace(this.ECTextSpecAllowZeroCostSpecCodeItems.Text))
             {
                 try
                 {
@@ -1767,7 +1777,10 @@ namespace ApiOnBoardingConfigurationTool
             resource.Add("subtitle", configData.ApiItem.subtitle);
             configData.ApiItem.subtitle = string.Format("{0}{1}", ResourceToken, "subtitle");
 
-            configData.ApiItem.iconData = string.Format("{0}{1}", IconToken, configData.ApiItem.iconData);
+            if (!string.IsNullOrWhiteSpace(configData.ApiItem.iconData))
+            {
+                configData.ApiItem.iconData = string.Format("{0}{1}", IconToken, configData.ApiItem.iconData);
+            }
 
             if (!string.IsNullOrWhiteSpace(configData.ApiItem.defaultLegalTerm))
             {

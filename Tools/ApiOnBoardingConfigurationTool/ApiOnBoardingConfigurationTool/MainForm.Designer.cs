@@ -316,6 +316,7 @@
             this.label82 = new System.Windows.Forms.Label();
             this.TabControlMeterPPE = new System.Windows.Forms.TabControl();
             this.TabMeterPPEFields = new System.Windows.Forms.TabPage();
+            this.label69 = new System.Windows.Forms.Label();
             this.MCPPEBtnSave = new System.Windows.Forms.Button();
             this.MCBtnPPEAddMeterItem = new System.Windows.Forms.Button();
             this.groupBox33 = new System.Windows.Forms.GroupBox();
@@ -362,6 +363,7 @@
             this.MCProTextActionMessage = new System.Windows.Forms.TextBox();
             this.TabControlMeterPro = new System.Windows.Forms.TabControl();
             this.TabMeterProFields = new System.Windows.Forms.TabPage();
+            this.label70 = new System.Windows.Forms.Label();
             this.MCProBtnSave = new System.Windows.Forms.Button();
             this.groupBox36 = new System.Windows.Forms.GroupBox();
             this.MCTextProMeterItems = new System.Windows.Forms.TextBox();
@@ -405,8 +407,6 @@
             this.MCProBtnLoadFromPPE = new System.Windows.Forms.Button();
             this.ECFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.label69 = new System.Windows.Forms.Label();
-            this.label70 = new System.Windows.Forms.Label();
             this.TabTotal.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox43.SuspendLayout();
@@ -528,6 +528,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.BackColor = System.Drawing.Color.LightSkyBlue;
             this.tabPage1.Controls.Add(this.groupBox43);
             this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.groupBox2);
@@ -539,7 +540,6 @@
             this.tabPage1.Size = new System.Drawing.Size(952, 741);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Extension Configuration";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // groupBox43
             // 
@@ -705,7 +705,7 @@
             // ECBtnSpecFlag
             // 
             this.ECBtnSpecFlag.BackColor = System.Drawing.Color.Orange;
-            this.ECBtnSpecFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ECBtnSpecFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ECBtnSpecFlag.Location = new System.Drawing.Point(139, 48);
             this.ECBtnSpecFlag.Name = "ECBtnSpecFlag";
             this.ECBtnSpecFlag.Size = new System.Drawing.Size(75, 23);
@@ -717,7 +717,7 @@
             // ECBtnQuickStartsFlag
             // 
             this.ECBtnQuickStartsFlag.BackColor = System.Drawing.Color.Orange;
-            this.ECBtnQuickStartsFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ECBtnQuickStartsFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ECBtnQuickStartsFlag.Location = new System.Drawing.Point(139, 19);
             this.ECBtnQuickStartsFlag.Name = "ECBtnQuickStartsFlag";
             this.ECBtnQuickStartsFlag.Size = new System.Drawing.Size(75, 23);
@@ -729,7 +729,7 @@
             // ECBtnApiFlag
             // 
             this.ECBtnApiFlag.BackColor = System.Drawing.Color.Orange;
-            this.ECBtnApiFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ECBtnApiFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ECBtnApiFlag.Location = new System.Drawing.Point(52, 48);
             this.ECBtnApiFlag.Name = "ECBtnApiFlag";
             this.ECBtnApiFlag.Size = new System.Drawing.Size(75, 23);
@@ -741,7 +741,7 @@
             // ECBtnIconsFlag
             // 
             this.ECBtnIconsFlag.BackColor = System.Drawing.Color.Orange;
-            this.ECBtnIconsFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ECBtnIconsFlag.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ECBtnIconsFlag.Location = new System.Drawing.Point(52, 19);
             this.ECBtnIconsFlag.Name = "ECBtnIconsFlag";
             this.ECBtnIconsFlag.Size = new System.Drawing.Size(75, 23);
@@ -2479,6 +2479,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.BackColor = System.Drawing.Color.SkyBlue;
             this.tabPage2.Controls.Add(this.tabControl2);
             this.tabPage2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPage2.Location = new System.Drawing.Point(4, 24);
@@ -2487,7 +2488,6 @@
             this.tabPage2.Size = new System.Drawing.Size(952, 741);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Sku Configuration";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // tabControl2
             // 
@@ -3948,6 +3948,7 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.tabPage3.Controls.Add(this.tabControl3);
             this.tabPage3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabPage3.Location = new System.Drawing.Point(4, 24);
@@ -3955,7 +3956,6 @@
             this.tabPage3.Size = new System.Drawing.Size(952, 741);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Meter Configuration";
-            this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // tabControl3
             // 
@@ -4064,6 +4064,18 @@
             this.TabMeterPPEFields.TabIndex = 0;
             this.TabMeterPPEFields.Text = "Fields";
             this.TabMeterPPEFields.UseVisualStyleBackColor = true;
+            // 
+            // label69
+            // 
+            this.label69.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label69.AutoSize = true;
+            this.label69.BackColor = System.Drawing.Color.GreenYellow;
+            this.label69.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label69.Location = new System.Drawing.Point(6, 618);
+            this.label69.Name = "label69";
+            this.label69.Size = new System.Drawing.Size(69, 13);
+            this.label69.TabIndex = 24;
+            this.label69.Text = "OPTIONAL";
             // 
             // MCPPEBtnSave
             // 
@@ -4608,6 +4620,18 @@
             this.TabMeterProFields.Text = "Fields";
             this.TabMeterProFields.UseVisualStyleBackColor = true;
             // 
+            // label70
+            // 
+            this.label70.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label70.AutoSize = true;
+            this.label70.BackColor = System.Drawing.Color.GreenYellow;
+            this.label70.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.label70.Location = new System.Drawing.Point(6, 548);
+            this.label70.Name = "label70";
+            this.label70.Size = new System.Drawing.Size(69, 13);
+            this.label70.TabIndex = 24;
+            this.label70.Text = "OPTIONAL";
+            // 
             // MCProBtnSave
             // 
             this.MCProBtnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -4625,9 +4649,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox36.Controls.Add(this.MCTextProMeterItems);
-            this.groupBox36.Location = new System.Drawing.Point(7, 343);
+            this.groupBox36.Location = new System.Drawing.Point(6, 343);
             this.groupBox36.Name = "groupBox36";
-            this.groupBox36.Size = new System.Drawing.Size(716, 189);
+            this.groupBox36.Size = new System.Drawing.Size(717, 189);
             this.groupBox36.TabIndex = 7;
             this.groupBox36.TabStop = false;
             this.groupBox36.Text = "Meter Items";
@@ -4642,7 +4666,7 @@
             this.MCTextProMeterItems.Multiline = true;
             this.MCTextProMeterItems.Name = "MCTextProMeterItems";
             this.MCTextProMeterItems.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.MCTextProMeterItems.Size = new System.Drawing.Size(704, 164);
+            this.MCTextProMeterItems.Size = new System.Drawing.Size(705, 164);
             this.MCTextProMeterItems.TabIndex = 0;
             this.MCTextProMeterItems.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxSelectAll_KeyDown);
             // 
@@ -5084,36 +5108,13 @@
             // 
             this.OpenFileDialog.FileName = "openFileDialog1";
             // 
-            // label69
-            // 
-            this.label69.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label69.AutoSize = true;
-            this.label69.BackColor = System.Drawing.Color.GreenYellow;
-            this.label69.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label69.Location = new System.Drawing.Point(6, 618);
-            this.label69.Name = "label69";
-            this.label69.Size = new System.Drawing.Size(69, 13);
-            this.label69.TabIndex = 24;
-            this.label69.Text = "OPTIONAL";
-            // 
-            // label70
-            // 
-            this.label70.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label70.AutoSize = true;
-            this.label70.BackColor = System.Drawing.Color.GreenYellow;
-            this.label70.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label70.Location = new System.Drawing.Point(6, 548);
-            this.label70.Name = "label70";
-            this.label70.Size = new System.Drawing.Size(69, 13);
-            this.label70.TabIndex = 24;
-            this.label70.Text = "OPTIONAL";
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(971, 727);
+            this.BackColor = System.Drawing.Color.LightSkyBlue;
             this.ClientSize = new System.Drawing.Size(984, 793);
             this.Controls.Add(this.TabTotal);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

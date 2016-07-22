@@ -48,96 +48,150 @@ namespace ConsoleApplication1
     //    }
     //}
 
+    //    class Test
+    //    {
+
+    //        static void Main(string[] args)
+    //        {
+    //            int[] arr = { 3, 2, 1, 4, 7, 6, 5, 4, 3, 6 };
+    //            GetTheMaxLengthSortedArray(arr);
+
+    //            Console.ReadKey();
+    //        }
+    //        public static void GetTheMaxLengthSortedArray(int[] arr)
+    //        {
+    //            int startindex = 0;
+    //            int maxlength = 2;
+    //            int tempStart = 0;
+    //            int templength = 1;
+    //            bool flag = false; //false:减少 ； true:增加
+
+    //            if (arr.Length == 0)
+    //            {
+    //                //长度为0
+    //            }
+    //            else if (arr.Length <= 2)
+    //            {
+    //                //最大有序长度为arr.length；
+    //            }
+
+    //            for (int i = 1; i < arr.Length; i++)
+    //            {
+    //                if (!flag)//前面的序列为递减
+    //                {
+    //                    if (arr[i - 1] > arr[i])
+    //                    {
+    //                        templength++;
+    //                    }
+    //                    else if (arr[i - 1] < arr[i])
+    //                    {
+    //                        if (templength > maxlength)
+    //                        {
+    //                            maxlength = templength;
+    //                            startindex = tempStart;
+    //                        }
+
+    //                        tempStart = i - 1;
+    //                        templength = 2;
+    //                        flag = true;
+    //                    }
+    //                    else
+    //                    {
+    //                        if (templength > maxlength)
+    //                        {
+    //                            maxlength = templength;
+    //                            startindex = tempStart;
+    //                        }
+    //                        tempStart = i;
+    //                        templength = 1;
+    //                    }
+    //                }
+    //                else//前面的序列为递增
+    //                {
+    //                    if (arr[i - 1] > arr[i])
+    //                    {
+    //                        if (templength > maxlength)
+    //                        {
+    //                            maxlength = templength;
+    //                            startindex = tempStart;
+    //                        }
+
+    //                        tempStart = i - 1;
+    //                        templength = 2;
+    //                        flag = false;
+    //                    }
+    //                    else if (arr[i - 1] < arr[i])
+    //                    {
+    //                        templength++;
+    //                    }
+    //                    else
+    //                    {
+    //                        if (templength > maxlength)
+    //                        {
+    //                            maxlength = templength;
+    //                            startindex = tempStart;
+    //                        }
+    //                        tempStart = i;
+    //                        templength = 1;
+    //                    }
+    //                }
+    //            }
+
+    //            Console.WriteLine("Start:{0},Length:{1}", startindex, maxlength);
+    //        }
+    //    }
+
     class Test
     {
-
         static void Main(string[] args)
         {
-            int[] arr = { 3, 2, 1, 4, 7, 6, 5, 4, 3, 6 };
-            GetTheMaxLengthSortedArray(arr);
+            string str = "-123456789012346789846464";
+            int? result = ConvertStringIntoInt32(str);
 
+            Console.WriteLine(result);
             Console.ReadKey();
         }
-        public static void GetTheMaxLengthSortedArray(int[] arr)
+
+        public static int? ConvertStringIntoInt32(string originalStr)
         {
-            int startindex = 0;
-            int maxlength = 2;
-            int tempStart = 0;
-            int templength = 1;
-            bool flag = false; //false:减少 ； true:增加
+            char[] arr = originalStr.ToCharArray();
+            int result = 0;
+            bool negative = false;
 
-            if (arr.Length == 0)
-            {
-                //长度为0
-            }
-            else if (arr.Length <= 2)
-            {
-                //最大有序长度为arr.length；
-            }
 
-            for (int i = 1; i < arr.Length; i++)
+            for (int i = 0; i < arr.Length; i++)
             {
-                if (!flag)//前面的序列为递减
+                if (arr[i] == '-')
                 {
-                    if (arr[i - 1] > arr[i])
-                    {
-                        templength++;
-                    }
-                    else if (arr[i - 1] < arr[i])
-                    {
-                        if (templength > maxlength)
-                        {
-                            maxlength = templength;
-                            startindex = tempStart;
-                        }
-
-                        tempStart = i - 1;
-                        templength = 2;
-                        flag = true;
-                    }
-                    else
-                    {
-                        if (templength > maxlength)
-                        {
-                            maxlength = templength;
-                            startindex = tempStart;
-                        }
-                        tempStart = i;
-                        templength = 1;
-                    }
+                    negative = true;
                 }
-                else//前面的序列为递增
+                else if (arr[i] == '+')
                 {
-                    if (arr[i - 1] > arr[i])
+                    negative = false;
+                }
+                else if (arr[i] - '0' < 0 || arr[i] - '0' > 9)
+                {
+                    return null;
+                }
+                else
+                {
+                    if (result > (int.MaxValue - (arr[i] - '0')) / 10)
                     {
-                        if (templength > maxlength)
-                        {
-                            maxlength = templength;
-                            startindex = tempStart;
-                        }
+                        return null;
+                    }
 
-                        tempStart = i - 1;
-                        templength = 2;
-                        flag = false;
-                    }
-                    else if (arr[i - 1] < arr[i])
-                    {
-                        templength++;
-                    }
-                    else
-                    {
-                        if (templength > maxlength)
-                        {
-                            maxlength = templength;
-                            startindex = tempStart;
-                        }
-                        tempStart = i;
-                        templength = 1;
-                    }
+                    result = result * 10 + (arr[i] - '0');
+
                 }
             }
 
-            Console.WriteLine("Start:{0},Length:{1}", startindex, maxlength);
+            if (negative)
+            {
+                result = -result;
+            }
+
+            return result;
         }
+
     }
 }
