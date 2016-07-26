@@ -141,57 +141,96 @@ namespace ConsoleApplication1
     //        }
     //    }
 
+    //class Test
+    //{
+    //    static void Main(string[] args)
+    //    {
+    //        string str = "-123456789012346789846464";
+    //        int? result = ConvertStringIntoInt32(str);
+
+    //        Console.WriteLine(result);
+    //        Console.ReadKey();
+    //    }
+
+    //    public static int? ConvertStringIntoInt32(string originalStr)
+    //    {
+    //        char[] arr = originalStr.ToCharArray();
+    //        int result = 0;
+    //        bool negative = false;
+
+
+    //        for (int i = 0; i < arr.Length; i++)
+    //        {
+    //            if (arr[i] == '-')
+    //            {
+    //                negative = true;
+    //            }
+    //            else if (arr[i] == '+')
+    //            {
+    //                negative = false;
+    //            }
+    //            else if (arr[i] - '0' < 0 || arr[i] - '0' > 9)
+    //            {
+    //                return null;
+    //            }
+    //            else
+    //            {
+    //                if (result > (int.MaxValue - (arr[i] - '0')) / 10)
+    //                {
+    //                    return null;
+    //                }
+
+    //                result = result * 10 + (arr[i] - '0');
+
+    //            }
+    //        }
+
+    //        if (negative)
+    //        {
+    //            result = -result;
+    //        }
+
+    //        return result;
+    //    }
+
+    //}
+
     class Test
     {
         static void Main(string[] args)
         {
-            string str = "-123456789012346789846464";
-            int? result = ConvertStringIntoInt32(str);
+            int[] array = { 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+            BubbleSort(array);
 
-            Console.WriteLine(result);
+            Console.WriteLine(array.ToString());
             Console.ReadKey();
         }
 
-        public static int? ConvertStringIntoInt32(string originalStr)
+        public static void BubbleSort(int[] array)
         {
-            char[] arr = originalStr.ToCharArray();
-            int result = 0;
-            bool negative = false;
-
-
-            for (int i = 0; i < arr.Length; i++)
+            if (array == null)
             {
-                if (arr[i] == '-')
+                return;
+            }
+
+            if (array.Length == 0)
+            {
+                return;
+            }
+
+            int temp;
+            for (int i = 0; i < array.Length; i++)
+            {
+                for (int j = 0; j < array.Length - i - 1; j++)
                 {
-                    negative = true;
-                }
-                else if (arr[i] == '+')
-                {
-                    negative = false;
-                }
-                else if (arr[i] - '0' < 0 || arr[i] - '0' > 9)
-                {
-                    return null;
-                }
-                else
-                {
-                    if (result > (int.MaxValue - (arr[i] - '0')) / 10)
+                    if (array[j] > array[j + 1])
                     {
-                        return null;
+                        temp = array[j];
+                        array[j] = array[j + 1];
+                        array[j + 1] = temp;
                     }
-
-                    result = result * 10 + (arr[i] - '0');
-
                 }
             }
-
-            if (negative)
-            {
-                result = -result;
-            }
-
-            return result;
         }
-
     }
 }
