@@ -259,7 +259,6 @@
       <Namespace>ProjectOxfordExtension</Namespace>
       <IsAmd>true</IsAmd>
     </SvgLogoTypeScriptCompile>
-    <Svg Include="Content\SVG\sample.svg" />
     <TypeScriptCompile Include="Client\Resource\Summary\ViewModels\ResourceSummaryPartViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsBladeViewModel.ts" />
     <TypeScriptCompile Include="Client\Resource\Settings\ViewModels\SettingsPartViewModel.ts" />
@@ -269,40 +268,17 @@
     <Content Include="Client\Resource\Settings\Templates\DiagnosticsInfoBox.html" />
     <Content Include="Client\Resource\Settings\Templates\DiagnosticsOptionPicker.html" />
     <Content Include="Client\Resource\Summary\Templates\ApiUsagePart.html" />
-    <Svg Include="Content\SVG\FaceDetection.svg" />
-    <Svg Include="Content\SVG\FaceGrouping.svg" />
-    <Svg Include="Content\SVG\FaceIdentification.svg" />
-    <Svg Include="Content\SVG\FaceVerification.svg" />
-    <Svg Include="Content\SVG\SimilarFaceSearching.svg" />
-    <SvgLogo Include="Content\SVG\ComputerVision.svg" />
-    <SvgLogo Include="Content\SVG\Emotion.svg" />
-    <SvgLogo Include="Content\SVG\Face.svg" />
-    <SvgLogo Include="Content\SVG\Luis.svg" />
-    <SvgLogo Include="Content\SVG\Speech.svg" />
-    <SvgLogo Include="Content\SVG\SpellCheck.svg" />
-    <SvgLogo Include="Content\SVG\Video.svg" />
     <Svg Include="Content\SVG\ProjectOxford.svg" />
     <SvgLogo Include="Content\SVG\ProjectOxford2.svg" />
+    <SvgLogo Include="Content\SVG\CognitiveServices2.svg" />
+    <SvgLogo Include="Content\SVG\sampleLogo.svg" />
     <Svg Include="Content\SVG\RegenerateKeyOne.svg" />
     <Svg Include="Content\SVG\RegenerateKeyTwo.svg" />
-    <SvgLogo Include="Content\SVG\CognitiveServices2.svg" />
-    <SvgLogo Include="Content\SVG\Recommendations.svg" />
-    <SvgLogo Include="Content\SVG\TextAnalytics.svg" />
-    <SvgLogo Include="Content\SVG\WebLM.svg" />
-    <Svg Include="Content\SVG\EmotionRecognition.svg" />
-    <Svg Include="Content\SVG\LanguageUnderstanding.svg" />
-    <Svg Include="Content\SVG\SpeechIntentRecognition.svg" />
-    <Svg Include="Content\SVG\SpeechRecognition.svg" />
-    <Svg Include="Content\SVG\TextToSpeechConversion.svg" />
-    <Svg Include="Content\SVG\VisionFeatureAnalysis.svg" />
-    <Svg Include="Content\SVG\VisionOCR.svg" />
-    <Svg Include="Content\SVG\VisionThumbnail.svg" />
-    <Svg Include="Content\SVG\WebLanguageModel.svg" />
-    <Svg Include="Content\SVG\keyPhrasesExtraction.svg" />
-    <Svg Include="Content\SVG\languageDetection.svg" />
-    <Svg Include="Content\SVG\topicDetection.svg" />
-    <Svg Include="Content\SVG\sentimentAnalysis.svg" />
-    <SvgLogo Include="Content\SVG\sampleLogo.svg" />
+    <Svg Include="Content\SVG\sampleA.svg" />
+    <Svg Include="Content\SVG\sampleB.svg" />
+    <Svg Include="Content\SVG\sampleC.svg" />
+    <Svg Include="Content\SVG\sampleD.svg" />
+    <Svg Include="Content\SVG\sampleE.svg" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Hero.png" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Large.png" />
     <Content Include="GalleryPackages\CognitiveServicesCreate\Icons\Medium.png" />

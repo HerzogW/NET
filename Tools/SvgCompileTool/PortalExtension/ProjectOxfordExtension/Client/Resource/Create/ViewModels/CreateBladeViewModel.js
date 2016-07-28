@@ -405,15 +405,35 @@ define(["require", "exports", "ClientResources", "../../../_generated/Svg", "../
             });
         };
         CreateBladeViewModel.prototype._initializeSvgContent = function () {
-            this.svgContent = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
-                label: ko.observable("SvgContent"),
-                emptyValueText: ko.observable("Please Reload this page!"),
-                defaultValue: ko.observable(Svg.Content.SVG.sample.data)
-            });
             this.svgLogoContent = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svgLogo", {
                 label: ko.observable("SvgLogoContent"),
                 emptyValueText: ko.observable("Please Reload this page!"),
                 defaultValue: ko.observable(SvgLogo.Content.SVG.sampleLogo.data)
+            });
+            this.svgContentA = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
+                label: ko.observable("SvgAContent"),
+                emptyValueText: ko.observable("Please Reload this page!"),
+                defaultValue: ko.observable(Svg.Content.SVG.sampleA.data)
+            });
+            this.svgContentB = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
+                label: ko.observable("SvgBContent"),
+                emptyValueText: ko.observable("Please Reload this page!"),
+                defaultValue: ko.observable(Svg.Content.SVG.sampleB.data)
+            });
+            this.svgContentC = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
+                label: ko.observable("SvgCContent"),
+                emptyValueText: ko.observable("Please Reload this page!"),
+                defaultValue: ko.observable(Svg.Content.SVG.sampleC.data)
+            });
+            this.svgContentD = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
+                label: ko.observable("SvgDContent"),
+                emptyValueText: ko.observable("Please Reload this page!"),
+                defaultValue: ko.observable(Svg.Content.SVG.sampleD.data)
+            });
+            this.svgContentE = new Forms.MultiLineTextBox.ViewModel(this._container, this, "svg", {
+                label: ko.observable("SvgEContent"),
+                emptyValueText: ko.observable("Please Reload this page!"),
+                defaultValue: ko.observable(Svg.Content.SVG.sampleE.data)
             });
         };
         return CreateBladeViewModel;

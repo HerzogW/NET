@@ -432,7 +432,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc406e420e94b74e2e9e509e6fcec22d95",
+        "htmlTemplate": "pdcc49d8eb957834502848e0c55ea57ecb9",
         "parameterProvider": true,
         "details": [
           {
@@ -464,7 +464,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc9db72bd11dd84fe6a8fe71ee67c82b2c",
+        "htmlTemplate": "pdc84cdea0a44554934b18cd0f1ef3beedc",
         "parameterProvider": true,
         "partSize": 0
       }
@@ -483,7 +483,7 @@ module ExtensionDefinition {
                 "partKind": 0,
                 "inputs": [],
                 "bindings": [],
-                "htmlTemplate": "pdc05c7061449fa4c0b9418077b22a46b1f",
+                "htmlTemplate": "pdcb22799a5fff54214b2fe57f155436e7f",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -835,7 +835,7 @@ module ExtensionDefinition {
                     ]
                   }
                 ],
-                "htmlTemplate": "pdc49b4dee4e0ff4e15840a4969fb6a18ec",
+                "htmlTemplate": "pdc08e9092657924c8cb6572a04dab8e01b",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -922,7 +922,7 @@ module ExtensionDefinition {
         "bindings": []
       },
       "templateBlade": {
-        "htmlTemplate": "pdc406e420e94b74e2e9e509e6fcec22d95",
+        "htmlTemplate": "pdcc49d8eb957834502848e0c55ea57ecb9",
         "parameterProvider": true,
         "details": [
           {
@@ -953,7 +953,7 @@ module ExtensionDefinition {
                 "partKind": 0,
                 "inputs": [],
                 "bindings": [],
-                "htmlTemplate": "pdc05c7061449fa4c0b9418077b22a46b1f",
+                "htmlTemplate": "pdcb22799a5fff54214b2fe57f155436e7f",
                 "details": [
                   {
                     "invocationInputArguments": [
@@ -1147,19 +1147,19 @@ module ExtensionDefinition {
     }
   ],
   "htmlTemplates": {
-    "pdc406e420e94b74e2e9e509e6fcec22d95": {
+    "pdcc49d8eb957834502848e0c55ea57ecb9": {
       "file": "Create.html",
-      "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgContent\"></div> <div data-bind=\"formElement: svgLogoContent\"></div> <!--<div data-bind=\"formElement: nameTextBox\"></div>\r\n    <div data-bind=\"formElement: apiTypeSelector\"></div>\r\n    <div data-bind=\"formElement: accountSpecSelector.control\"></div>\r\n    <div data-bind=\"formElement: subscriptionDropDown.control\"></div>\r\n    <div data-bind=\"formElement: resourceGroupDropDown.control\"></div>\r\n    <div data-bind=\"formElement: locationDropDown.control\"></div>\r\n    <div data-bind=\"formElement: legalSelector, visible: showLegalTerms\"></div>--> </div>"
+      "content": "<div class=\"msportalfx-form msportalfx-form-create\"> <div data-bind=\"formElement: svgLogoContent\"></div> <div data-bind=\"formElement: svgContentA\"></div> <div data-bind=\"formElement: svgContentB\"></div> <div data-bind=\"formElement: svgContentC\"></div> <div data-bind=\"formElement: svgContentD\"></div> <div data-bind=\"formElement: svgContentE\"></div> </div>"
     },
-    "pdc9db72bd11dd84fe6a8fe71ee67c82b2c": {
+    "pdc84cdea0a44554934b18cd0f1ef3beedc": {
       "file": "LegalForm.html",
       "content": "<div class=\"msportalfx-form\"> By clicking “I Agree”, you acknowledge that the Microsoft Cognitive Services are in preview. You may use the Computer Vision API, Emotion API, Face API, Language Understanding Intelligent Service (LUIS), Bing Speech API, and Web Language Model in accordance with the use, privacy, data, security, and other terms in parts B, C, and D of the <a target=\"_blank\" href=\"http://go.microsoft.com/fwlink/?LinkId=533207\">Microsoft Cognitive Services Preview Terms</a> and the <a target=\"_blank\" href=\"http://go.microsoft.com/fwlink/?LinkId=521839\">Microsoft Privacy Statement</a>. As further described in these parts of the Microsoft Cognitive Services Preview Terms, you give us permission to use Customer Data to improve Microsoft products and services. For example we may improve our underlying algorithms and models over time based on content you or your end users provide to the service. These services provide no means for you to access or extract Customer Data and Microsoft has no obligation to delete Customer Data received by these services. You may not use these services in connection with Customer Applications that are used by or targeted to children under the age of fourteen. For details on these and other variations, please see parts B, C, and D of the Microsoft Cognitive Services Preview Terms linked above. </div> "
     },
-    "pdc05c7061449fa4c0b9418077b22a46b1f": {
+    "pdcb22799a5fff54214b2fe57f155436e7f": {
       "file": "Client/Resource/Create/CognitiveServicesCreate.pdl",
       "content": "<div data-bind=\"pcPickerV3: $root\"></div>"
     },
-    "pdc49b4dee4e0ff4e15840a4969fb6a18ec": {
+    "pdc08e9092657924c8cb6572a04dab8e01b": {
       "file": "Client/Resource/Settings/SettingsBlade.pdl",
       "content": "<div data-bind=\"pcGrid: settingList\"></div>"
     }
